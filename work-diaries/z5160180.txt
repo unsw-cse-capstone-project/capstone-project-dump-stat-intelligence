@@ -1,0 +1,14 @@
+Week 1
+
+Posted on the tute forum as instructed. Nominated Sam as Scrum Master and had her reach out to Zach and Tom, completing our group.
+Following group formationcommunication channels were set up and a short meeting was held from 4-4:30 on Thursday, mainly introductions
+and broad project details (e.g. software for frontend/backend, preferred project). A second meeting was held on Friday morning from
+9-11:45, mostly during our scheduled lab time. After a brief presentation from Maryam about what she expected from us we split off into
+groups. Our scrum master emailed Maryam all our group details and we set to work creating our Jira and Github organisations. We then
+discussed what epic stories were required to satisfy the provided project objectives, and then populated these epics with the appropriate
+user stories determined during our discussion. We also discussed potential novel features we could create outside of the project scope,
+such as highlighting ingredients which are expiring soon (based on a user entered expiry date) or creating a "pantry", allowing you to
+quickly select from ingredients you have on hand rather than having to re-enter them with every search. Finally, we organised our next 
+meeting for Monday 1-2. Before then we would review and refine our user story backlog, research existing websites and work on the external
+actor descriptions. In the meeting we plan to consider the underlying system architecture, design some storyboards and work towards a draft
+project proposal.
