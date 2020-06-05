@@ -1,7 +1,0 @@
-Week 1
-
-Formed a group before the week 1 lab. I created a Jira account and 
-linked it to the project, as well as linking my pre-existing GitHub 
-account to the project GitHub. Discussing with the team we defined the 
-scope of the project and wrote up the user epics and user stories on 
-Jira.
