@@ -1,0 +1,4 @@
+Thursday 4/6, 4pm - 4:30pm
+Initial meeting to meet other group members and agree on project. Discussed which frameworks we would consider using, and how we would
+work as a team to complete this project - we agreed on mostly individual work (once user stories are assigned) and one or two weekly meetings
+to check in on progress.
