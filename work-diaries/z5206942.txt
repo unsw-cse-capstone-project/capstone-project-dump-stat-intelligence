@@ -1,0 +1,8 @@
+# Week 1
+
+- formed group
+- decided on MealMatch project
+- began User Stories and project proposal
+- began discussing architecture decisions
+- began discussing novel functionality such as ingredient expiry
+- began researching NLP techniques for ingredient parsing
