@@ -1,0 +1,13 @@
+Week 1:
+
+Formed our group. I volunteered to be the Scrum Master, so made the group on WebCMS and added members. Had a brief meeting on Thursday
+afternoon. After the meeting, I set up the group Jira and GitHub pages.
+During our lab slot on Friday morning, we added the user stories Rohan had drafted to Jira, added a few that were missing and made
+sure they fit the Connextra format. We decided over the weekend to further refine the user stories and also do some background research
+into existing websites.
+
+Week 2:
+
+Had a meeting on Monday where we discussed some high level functionality of our site. We went through what would be required for the
+project proposal, and split up the tasks amongst the group. Before Friday, I am going to make the storyboard diagrams with Rohan's help.
+We aim to each have drafted our parts for the proposal by Friday so that we can review them as a group during our lab.
