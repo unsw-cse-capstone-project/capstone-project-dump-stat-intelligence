@@ -1,4 +1,15 @@
+MEETING LOG
+
 Thursday 4/6, 4pm - 4:30pm
 Initial meeting to meet other group members and agree on project. Discussed which frameworks we would consider using, and how we would
-work as a team to complete this project - we agreed on mostly individual work (once user stories are assigned) and one or two weekly meetings
-to check in on progress.
+work as a team to complete this project - we agreed on mostly individual work (once user stories are assigned) and one or two weekly meetings to check in on progress.
+
+Friday 5/6, 9am - 11:45am
+Met up during our lab slot. Added user stories to Jira under epic categories. Discussed features we plan on implementing - basic ones required by spec, extensions, and further extensions that may be added if time permits. Before next meeting - review user stories, do background research.
+
+Monday 8/6, 1pm - 2pm
+Discussed results of research over weekend. Discussed system architecture. Split up tasks for project proposal as follows:
+  - background and user stories: Michael
+  - interface and flow diagrams: Sam and Rohan
+  - system architecture diagrams: Zach and Tom
+Before next meeting (on Friday, lab slot) - finish drafts of above tasks so they can be reviewed by the group. Email tutor about some questions we have about the proposal - specifically, whether further diagrams are needed, and whether we need any more info before we can start coding.
