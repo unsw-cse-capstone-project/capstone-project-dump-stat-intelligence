@@ -5,3 +5,11 @@ linked it to the project, as well as linking my pre-existing GitHub
 account to the project GitHub. Discussing with the team we defined the 
 scope of the project and wrote up the user epics and user stories on 
 Jira.
+
+Week 2
+
+Team met again on Monday. We discussed user stories defined previously, 
+refining and adding a few. We also began the project proposal and 
+distributed work between the team members. On a high level project 
+structure was decided. I was assigned to flow diagrams in the technical 
+section of the proposal along with my team member Samantha.
