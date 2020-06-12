@@ -1,3 +1,6 @@
 Week 1
 Our group was formed. Had a meeting on Thursday to align our understanding of our intentions and our goals. Chose our project, MealMatch. Set up Jira and the git repository for the project. As a whole group, worked through and created the epics and user stories on Jira, as well as discussed which additional functionality we inteded to add. 
 Looking ahead we planned our next meeting for early week 2, and decided to individually go over the user stories, look at some websites similar to the project and have a think about the different frameworks we might want to use.
+
+Week 2
+We started working through our proposal properly. Tom and I were working mainly on the system architecture. This included thinking about user interactions and what the interaction between the frontend and backend might look like. Also discussed what the database might look like (specifically in regard to ER diagram). Met on Monday and Friday to check in and work through proposal.
