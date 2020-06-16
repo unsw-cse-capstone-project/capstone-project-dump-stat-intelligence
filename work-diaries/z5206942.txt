@@ -6,3 +6,15 @@
 - began discussing architecture decisions
 - began discussing novel functionality such as ingredient expiry
 - began researching NLP techniques for ingredient parsing
+
+# Week 2
+
+- Zach and I discussed architecture for backend and frontend
+- Made many decisions regarding frontend frameworks
+- Decided on using Django as the backend framework
+- Described solution architecture in project proposal and started an ER diagram
+- Completed most user stories
+
+# Week 3
+
+- Generated initial project files
