@@ -12,3 +12,34 @@ quickly select from ingredients you have on hand rather than having to re-enter 
 meeting for Monday 1-2. Before then we would review and refine our user story backlog, research existing websites and work on the external
 actor descriptions. In the meeting we plan to consider the underlying system architecture, design some storyboards and work towards a draft
 project proposal.
+
+Week 2
+
+During Monday's meeting we clarified the team's visions for the overall project design and began working on a draft project proposal,
+which we intend to finish by the end of this week. I was assigned to work mainly on the first two sections of the proposal, taking care
+of project background, cleaning up and finalising our user story backlog developed in Friday's meeting, creating our first sprint (and
+planning the rest) and describe how our stories address the project objectives whilst also exploring their own niches.
+
+I thus spent most of my week working on these aspects, with much time spent removing duplicate user stories and using subtasks to group
+similar ones, to make it easier for us to address them in the future. I also provided consultation on the team's storyboards (assigned to
+Sam and Rohan), having an impromtu meeting with Rohan on Tuesday to discuss conflicting visions and periodically discussing storyboards
+with Sam. During the Tuesday meeting, Rohan and I were able to create a new UI design which satisfied both our concerns.
+
+During the lab on Friday each member of our team took the chance to discuss what they had achieved and any outstanding work that needed to
+be done. Every group member had completed the tasks they'd been delegated and written them up in the draft report, but some revisions were
+agreed upon, namely a more detailed software architecture diagram (based on the tutorial slides) and some modifications to the existing
+storyboards. With the following changes in mind, we organised our next meeting for 6pm on Monday to accomodate everyone's availabilities,
+with the plan to discuss starting writing the front and backends of the project.
+
+Week 3
+
+This week was mostly spent putting the finishing touches on our project proposal. During Monday's brief meeting we decided to assign Tom
+to create templates for the frontend and Zach templates for the backend, in order to maintain a consistent code style and avoid overlaps
+in work. Sam volunteered to format the final report and I offered to assign priority and story points to the user stories in our backlog.
+
+However, based on this weeks 3900 lecture, specifically concerning planning poker, I know believe that we are meant to assign these story
+points as a team. To comprimise, I set priorities and story points for every story in our current sprint as reccomendations, and plan to
+discuss them with my team in Friday's lab. Additionally, I also spent some more time working on the final proposal, adding and organising
+screenshots of each user story in the backlog grouped by epic and expanding on the niches that our site addresses.
+
+Will update following Friday's lab.
