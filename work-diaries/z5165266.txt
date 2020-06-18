@@ -13,3 +13,11 @@ refining and adding a few. We also began the project proposal and
 distributed work between the team members. On a high level project 
 structure was decided. I was assigned to flow diagrams in the technical 
 section of the proposal along with my team member Samantha.
+
+Week 3
+
+Quiet week as we prepare for the start of the actual project having done 
+most of the work on the proposal as a group already. I began looking at 
+Django which I will be working with significantly during the project. We 
+also met on Friday during the lab in which we finalised the project and 
+distributed work with the intention of completing the first sprint.
