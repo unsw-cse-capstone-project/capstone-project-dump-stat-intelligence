@@ -1,6 +1,6 @@
 Sam's work diary - COMP3900 'MealMatch' Project
 
-Week 1:
+WEEK 1:
 
 Formed our group. I volunteered to be the Scrum Master, so made the group on WebCMS and added members. Had a brief meeting on Thursday
 afternoon. After the meeting, I set up the group Jira and GitHub pages.
@@ -8,8 +8,22 @@ During our lab slot on Friday morning, we added the user stories Rohan had draft
 sure they fit the Connextra format. We decided over the weekend to further refine the user stories and also do some background research
 into existing websites.
 
-Week 2:
+WEEK 2:
 
 Had a meeting on Monday where we discussed some high level functionality of our site. We went through what would be required for the
 project proposal, and split up the tasks amongst the group. Before Friday, I am going to make the storyboard diagrams with Rohan's help.
 We aim to each have drafted our parts for the proposal by Friday so that we can review them as a group during our lab.
+
+Made storyboard drafts for Friday's lab - worked with Rohan to come up with basic layout elements of site. Main discussion was around
+how the pantry/running list interaction would work. After settling on a solution and doing a quick sketch up, Rohan made up some 
+template screens in draw.io. I later made some changes (changed where running list ingredients are selected - was in the pantry, now 
+directly from the list overlay) and added the storyboard arrows. The final storyboard was split into four separate diagrams for clarity.
+
+Met again on Friday, went through what everyone had worked on. Decided on some revisions to be revisited on Monday.
+
+WEEK 3:
+
+Short meeting on Monday to see how proposal was coming along. Prior to the meeting, I added a table to the proposal document
+tracking which storyboard each user story was shown on. After the meeting, I tidied up the storyboards again and made some final
+formatting changes to the proposal doc so that it is ready for submission. I also worked on familiarising myself with the architecture
+elements we will be using.
