@@ -40,23 +40,23 @@ class Recipe(models.Model):
         return self.name
 
 
-class MealCatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MealCategory
-        fields = ['name']
-
 class RecipeSerializer(serializers.ModelSerializer):
-    categories = MealCatSerializer(many=True)
 
     class Meta:
         model = Recipe
-        fields = ['name', 'categories']
+        fields = ['name', 'cook_time', 'method', 'author', 'meal_cat']
+
+
+class MealCatSerializer(serializers.ModelSerializer):
+    recipes = RecipeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MealCategory
+        fields = ['name', 'recipes']
 
 
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=30)
-    recipe = models.ForeignKey(Recipe, related_name='categories', on_delete=models.CASCADE)
-
 
     def __str__(self):
         return self.name

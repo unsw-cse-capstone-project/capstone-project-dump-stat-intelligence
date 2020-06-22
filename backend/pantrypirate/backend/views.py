@@ -12,10 +12,10 @@ def example(request):
 def recipe(request, recipe_id):
 
     recipe = Recipe.objects.get(pk=recipe_id)
-    serializer = RecipeSerializer(instance=recipe)
+    # serializer = RecipeSerializer(instance=recipe)
     
-    # data = {'name': recipe.name, 'cook_time': recipe.cook_time, 
-    #         'method': recipe.method, 'author': recipe_id.author.name,
-    #         'meal_cat': recipe_id.meal_cat.name}
+    data = {'name': recipe.name, 'cook_time': recipe.cook_time,
+            'method': recipe.method, 'author': recipe.author.name,
+            'meal_cat': recipe.meal_cat.name}
 
-    return JsonResponse(serializer.data)
+    return HttpResponse(data)
