@@ -12,14 +12,16 @@ def example(request):
 def recipe(request, recipe_id):
     #cat = serializers.serialize('json', Recipe.objects.get(pk=1))
 
-    template = loader.get_template('polls/index.html')
-    context = {}
+    recipe = Recipe.objects.get(pk=1)
 
-    recipe_id = Recipe.objects.get(pk=1)
+    # data = {'name': recipe_id.name, 'cook_time': recipe_id.cook_time, 
+    #         'method': recipe_id.method, 'author': recipe_id.author.name,
+    #         'favourite': recipe_id.favourite.name, 'diet_req': recipe_id.diet_req.name,
+    #         'meal_cat': recipe_id.meal_cat.name}
 
-    data = {'name': recipe_id.name, 'cook_time': recipe_id.cook_time, 
-            'method': recipe_id.method, 'author': recipe_id.author.name,
-            'favourite': recipe_id.favourite.name, 'diet_req': recipe_id.diet_req.name,
-            'meal_cat': recipe_id.meal_cat.name}
+    template = loader.get_template('backend/index.html')
+    context = {'name': recipe.name, 'cook_time': recipe.cook_time, 'author': recipe.author,
+               'method': recipe.method, 'favourite': recipe.favourite, 
+               'diet_req': recipe.diet_req.name, 'meal_cat': recipe.meal_cat.name}
 
-    return JsonResponse(data)
+    return HttpResponse(template.render(context,request))
