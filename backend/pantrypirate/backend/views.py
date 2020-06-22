@@ -5,17 +5,16 @@ from .models import *
 from django.template import loader
 from django.core import serializers
 
+
 # Create your views here.
 def example(request):
     return JsonResponse({'hello' : 'world'})
 
+
 def recipe(request, recipe_id):
-
     recipe = Recipe.objects.get(pk=recipe_id)
-    # serializer = RecipeSerializer(instance=recipe)
-    
-    data = {'name': recipe.name, 'cook_time': recipe.cook_time,
-            'method': recipe.method, 'author': recipe.author.name,
-            'meal_cat': recipe.meal_cat.name}
+    serializer = RecipeSerializer(instance=recipe)
+    template = loader.get_template('backend/index.html')
 
-    return HttpResponse(data)
+    return HttpResponse(template.render(serializer.data, request))
+

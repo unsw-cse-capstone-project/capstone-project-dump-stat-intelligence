@@ -34,25 +34,27 @@ class Recipe(models.Model):
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="author_recipe")
-    meal_cat = models.ManyToManyField(MealCategory, related_name="categories")
+    meal_cat = models.ManyToManyField(MealCategory,
+                                      related_name="categories",
+                                      db_column='name')
 
     def __str__(self):
         return self.name
 
 
-class RecipeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Recipe
-        fields = ['name', 'cook_time', 'method', 'author', 'meal_cat']
-
-
 class MealCatSerializer(serializers.ModelSerializer):
-    recipes = RecipeSerializer(many=True, read_only=True)
 
     class Meta:
         model = MealCategory
         fields = ['name', 'recipes']
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    meal_cat = serializers.RelatedField(source="meal_cat.name")
+
+    class Meta:
+        model = Recipe
+        fields = ['name', 'cook_time', 'method', 'author', 'meal_cat']
 
 
 class IngredientCategory(models.Model):
