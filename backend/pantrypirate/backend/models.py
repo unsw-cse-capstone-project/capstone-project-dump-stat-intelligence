@@ -49,7 +49,7 @@ class IngredientCategory(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, primary_key=True)
     category = models.ForeignKey(IngredientCategory, on_delete=models.CASCADE)
 
     def __str__(self):
