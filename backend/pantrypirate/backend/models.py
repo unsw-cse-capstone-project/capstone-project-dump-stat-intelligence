@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from rest_framework import serializers
 
 import datetime
 
@@ -28,22 +29,34 @@ class MealCategory(models.Model):
 
 
 class Recipe(models.Model):
-    readonly_fields=('id',)
     name = models.CharField(max_length=50)
     cook_time = models.CharField(max_length=50)
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="author_recipe")
-    favourite = models.ManyToManyField(User, related_name="favourite_recipe", blank=True)
-    diet_req = models.ManyToManyField(DietaryRequirement, blank=True)
-    meal_cat = models.ManyToManyField(MealCategory)
+    meal_cat = models.ManyToManyField(MealCategory, related_name="categories")
 
     def __str__(self):
         return self.name
 
 
+class MealCatSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MealCategory
+        fields = ['name']
+
+class RecipeSerializer(serializers.ModelSerializer):
+    categories = MealCatSerializer(many=True)
+
+    class Meta:
+        model = Recipe
+        fields = ['name', 'categories']
+
+
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=30)
+    recipe = models.ForeignKey(Recipe, related_name='categories', on_delete=models.CASCADE)
+
 
     def __str__(self):
         return self.name

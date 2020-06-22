@@ -10,16 +10,12 @@ def example(request):
     return JsonResponse({'hello' : 'world'})
 
 def recipe(request, recipe_id):
-    #cat = serializers.serialize('json', Recipe.objects.get(pk=1))
 
-    template = loader.get_template('polls/index.html')
-    context = {}
+    recipe = Recipe.objects.get(pk=recipe_id)
+    serializer = RecipeSerializer(instance=recipe)
+    
+    # data = {'name': recipe.name, 'cook_time': recipe.cook_time, 
+    #         'method': recipe.method, 'author': recipe_id.author.name,
+    #         'meal_cat': recipe_id.meal_cat.name}
 
-    recipe_id = Recipe.objects.get(pk=1)
-
-    data = {'name': recipe_id.name, 'cook_time': recipe_id.cook_time, 
-            'method': recipe_id.method, 'author': recipe_id.author.name,
-            'favourite': recipe_id.favourite.name, 'diet_req': recipe_id.diet_req.name,
-            'meal_cat': recipe_id.meal_cat.name}
-
-    return JsonResponse(data)
+    return JsonResponse(serializer.data)
