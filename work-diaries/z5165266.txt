@@ -21,3 +21,10 @@ most of the work on the proposal as a group already. I began looking at
 Django which I will be working with significantly during the project. We 
 also met on Friday during the lab in which we finalised the project and 
 distributed work with the intention of completing the first sprint.
+
+Began template models with the other backend members.
+
+Week 4
+
+Met with backend memebers on Monday and worked as a group to familiarise 
+more with Django, as well as set out view and url drafts.
