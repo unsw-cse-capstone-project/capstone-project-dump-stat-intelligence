@@ -28,13 +28,14 @@ class MealCategory(models.Model):
 
 
 class Recipe(models.Model):
+    readonly_fields=('id',)
     name = models.CharField(max_length=50)
-    cook_time = models.TimeField()
+    cook_time = models.CharField(max_length=50)
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="author_recipe")
-    favourite = models.ManyToManyField(User, related_name="favourite_recipe")
-    diet_req = models.ManyToManyField(DietaryRequirement)
+    favourite = models.ManyToManyField(User, related_name="favourite_recipe", blank=True)
+    diet_req = models.ManyToManyField(DietaryRequirement, blank=True)
     meal_cat = models.ManyToManyField(MealCategory)
 
     def __str__(self):
