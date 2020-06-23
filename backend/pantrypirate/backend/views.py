@@ -1,14 +1,14 @@
-from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
+from .serializers import *
 from .models import *
-#from django.forms.models import model_to_dict
-from django.template import loader
-from django.core import serializers
-import json
 
-# Create your views here.
-def example(request):
-    return JsonResponse({'hello' : 'world'})
+
+# Extract list of dict values
+def extract_values(x, key):
+    out = []
+    for y in x:
+        out.append(y.get(key))
+    return out
 
 
 # Recipe view
@@ -20,11 +20,9 @@ def recipe(request, recipe_id):
     # Take serialise dump and extract out name fields for meal category and
     # dietary requirements
     data = serializer.data
-    temp = data["meal_cat"]
-    out = []
-    for x in temp:
-        out.append(x.get("name"))
-    data["meal_cat"] = out
+    data["author"] = recipe.author.name
+    data["meal_cat"] = extract_values(data["meal_cat"], "name")
+    data["diet_req"] = extract_values(data["diet_req"], "name")
+    data["favourites"] = extract_values(data["favourites"], "name")
 
-    return JsonResponse(data, safe=False)
-
+    return JsonResponse(data)

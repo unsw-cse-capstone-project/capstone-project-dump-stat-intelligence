@@ -1,8 +1,4 @@
 from django.db import models
-from django.utils import timezone
-from rest_framework import serializers
-
-import datetime
 
 
 class User(models.Model):
@@ -50,21 +46,6 @@ class Recipe(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class MealCatSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = MealCategory
-        fields = ['name']
-
-
-class RecipeSerializer(serializers.ModelSerializer):
-    meal_cat = MealCatSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Recipe
-        fields = ['name', 'cook_time', 'method', 'author', 'meal_cat']
 
 
 class IngredientCategory(models.Model):
