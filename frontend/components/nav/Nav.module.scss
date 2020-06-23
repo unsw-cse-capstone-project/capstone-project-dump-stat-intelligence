@@ -1,0 +1,9 @@
+.nav {
+    background-color:var(--dark);
+    position:fixed;
+    width:5rem;
+    height:100vh;
+    transition: width 600ms ease;
+    top:0;
+    left:0;
+}
