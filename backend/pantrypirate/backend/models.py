@@ -13,18 +13,27 @@ class User(models.Model):
     def __str__(self):
         return self.name
 
+    def __unicode__(self):
+        return self.name
+
 
 class DietaryRequirement(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, primary_key=True)
 
     def __str__(self):
         return self.name
 
+    def __unicode__(self):
+        return self.name
+
 
 class MealCategory(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, primary_key=True)
 
     def __str__(self):
+        return self.name
+
+    def __unicode__(self):
         return self.name
 
 
@@ -34,9 +43,10 @@ class Recipe(models.Model):
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="author_recipe")
-    meal_cat = models.ManyToManyField(MealCategory,
-                                      related_name="categories",
-                                      db_column='name')
+    meal_cat = models.ManyToManyField(MealCategory, related_name="categories")
+    diet_req = models.ManyToManyField(DietaryRequirement,
+                                      related_name="requirements")
+    favourites = models.ManyToManyField(User, related_name="favourites")
 
     def __str__(self):
         return self.name
@@ -46,11 +56,11 @@ class MealCatSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MealCategory
-        fields = ['name', 'recipes']
+        fields = ['name']
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    meal_cat = serializers.RelatedField(source="meal_cat.name")
+    meal_cat = MealCatSerializer(many=True, read_only=True)
 
     class Meta:
         model = Recipe
@@ -58,7 +68,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 
 class IngredientCategory(models.Model):
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
         return self.name
