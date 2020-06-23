@@ -1,7 +1,8 @@
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, HttpResponse, Http404
 from .serializers import *
 from .models import *
-
+from .forms import *
+import json
 
 # Extract list of dict values
 def extract_values(x, key):
@@ -12,8 +13,7 @@ def extract_values(x, key):
 
 
 # Recipe view
-def recipe(request, recipe_id, title=None, method=None, author=None, mealCat=None,
-           dietReq=None):
+def recipe(request, recipe_id=None):
     if request.method == 'GET':
         # Extract recipe with id and serialise
         try:
@@ -40,9 +40,13 @@ def recipe(request, recipe_id, title=None, method=None, author=None, mealCat=Non
             raise Http404("Recipe does not exist")
         recipe.delete()
 
-        return JsonResponse()
+        return HttpResponse()
 
-    # if request.method == 'POST':
-    #     recipe = Recipe.
-
-
+    if request.method == 'POST':
+        try:
+            recipe = RecipeForm(request.POST)
+        except RuntimeError as error:
+            raise error
+        recipe.is_valid()
+        recipe = recipe.save()
+        return JsonResponse({"id" : recipe.id})

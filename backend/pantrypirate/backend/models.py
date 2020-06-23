@@ -39,18 +39,15 @@ class Recipe(models.Model):
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="author_recipe")
-    meal_cat = models.ManyToManyField(MealCategory, related_name="categories")
+    meal_cat = models.ManyToManyField(MealCategory,
+                                      related_name="categories", blank=True)
     diet_req = models.ManyToManyField(DietaryRequirement,
-                                      related_name="requirements")
-    favourites = models.ManyToManyField(User, related_name="favourites")
+                                      related_name="requirements", blank=True)
+    favourites = models.ManyToManyField(User, related_name="favourites",
+                                        blank=True)
 
     def __str__(self):
         return self.name
-
-    # def create(self, name, cook_time, method, author, meal_cat,
-    #            diet_req):
-    #     recipe =
-
 
 
 class IngredientCategory(models.Model):
