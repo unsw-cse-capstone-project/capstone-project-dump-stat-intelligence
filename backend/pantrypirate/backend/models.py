@@ -47,6 +47,11 @@ class Recipe(models.Model):
     def __str__(self):
         return self.name
 
+    # def create(self, name, cook_time, method, author, meal_cat,
+    #            diet_req):
+    #     recipe =
+
+
 
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=50)
