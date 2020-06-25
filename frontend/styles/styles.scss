@@ -1,28 +1,27 @@
 @import "./bulma-0.9.0/bulma.sass";
 
-
 :root {
-  --primary:#fd0536;
-  --secondary:#7C0B2B;
-  --tertiary:#A69658;
-  --background:#F5F4F5;
-  --dark:#3A3637;
+  --primary: #fd0536;
+  --secondary: #7c0b2b;
+  --tertiary: #a69658;
+  --background: #f5f4f5;
+  --dark: #3a3637;
 }
 
 html {
-  background-color:var(--background);
+  background-color: #f4f6fa;
 }
 main {
-  margin-left:5rem;
+  margin-left: 5rem;
 }
 
-@media only screen and (min-width:600px) {
+@media only screen and (min-width: 600px) {
   nav {
-    width:5rem;
-    height:100vh;
+    width: 5rem;
+    height: 100vh;
   }
-  
+
   main {
-    margin-left:5rem;
+    margin-left: 5rem;
   }
 }

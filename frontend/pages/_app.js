@@ -5,16 +5,18 @@ import Nav from "../components/nav/Nav";
 
 export default function PantryPirate({ Component, pageProps }) {
   return (
-    <div>
+    <>
       <Head>
         <title>Pantry Pirate</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Nav />
-      <div className="container" style={{ marginLeft: 5 + "rem" }}>
-        <Component {...pageProps} />
+      <div style={{ marginLeft: 5 + "rem" }}>
+        <div className="container">
+          <Component {...pageProps} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }
