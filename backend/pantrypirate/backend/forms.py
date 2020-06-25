@@ -13,3 +13,13 @@ class RecipeForm(ModelForm):
         super(RecipeForm, self).__init__(*args, **kwargs)
         self.fields['meal_cat'].required = False
         self.fields['diet_req'].required = False
+
+# note - currenty zero security (should fix this)
+class UserForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(RecipeForm, self).__init__(*args, **kwargs)

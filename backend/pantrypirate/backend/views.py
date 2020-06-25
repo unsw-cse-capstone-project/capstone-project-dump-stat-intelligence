@@ -50,3 +50,57 @@ def recipe(request, recipe_id=None):
         recipe.is_valid()
         recipe = recipe.save()
         return JsonResponse({"id" : recipe.id})
+
+# User profiles
+def user(request, user_id=None):
+
+    if request.method == 'GET':
+
+        # Extract user with given id
+        try:
+            user = User.objects.get(pk=user_id)
+        except User.DoesNotExist:
+            raise Http404("User does not exist")
+        
+        # get info from user profile (pop first element, state info)
+        details = (vars(user))
+        details.pop("_state")
+
+        return JsonResponse(details)
+
+    if request.method == 'POST':
+        try:
+            user = UserForm(request.POST)
+        except RuntimeError as error:
+            raise error
+
+        user.is_valid()
+        user = user.save()
+        return JsonResponse({"id" : user.id})
+
+# WIP
+# def pantry(request, user_id=None):
+
+#     if request.method == 'GET':
+
+#         # return nested dictionary, looks like:
+#         #    pantry_contents = { 'item1': {'category': category, 'expiry': date},
+#         #                        'item2': {'category': category, 'expiry': date}}
+
+#         pantry_contents = {}
+#         items = PantryIngredient.objects.filter(user__pk=user_id)
+
+#         for item in items:
+#             attr = vars(item)
+#             # print(attr)
+
+#             # new_dict = {}
+#             # new_dict["expiry_date"] = attr["expiry_date"]
+#             # new_dict["category"] = 
+            
+#             ingrs = Ingredient.objects.filter(category__pk=attr["id"])
+#             for ingr in ingrs:
+#                 print(vars(ingr))
+
+
+#         return JsonResponse()
