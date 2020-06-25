@@ -1,5 +1,28 @@
 @import "./bulma-0.9.0/bulma.sass";
 
-body {
-  // background-color: red;
+
+:root {
+  --primary:#fd0536;
+  --secondary:#7C0B2B;
+  --tertiary:#A69658;
+  --background:#F5F4F5;
+  --dark:#3A3637;
+}
+
+html {
+  background-color:var(--background);
+}
+main {
+  margin-left:5rem;
+}
+
+@media only screen and (min-width:600px) {
+  nav {
+    width:5rem;
+    height:100vh;
+  }
+  
+  main {
+    margin-left:5rem;
+  }
 }

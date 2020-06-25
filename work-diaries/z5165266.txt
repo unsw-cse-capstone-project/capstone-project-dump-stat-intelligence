@@ -27,4 +27,8 @@ Began template models with the other backend members.
 Week 4
 
 Met with backend memebers on Monday and worked as a group to familiarise 
-more with Django, as well as set out view and url drafts.
+more with Django, as well as set out view and url drafts. Added forms 
+and serialisers files. Worked on the views, models, forms, serializers 
+and tests for Recipe. Having got a grasp on how they work together 
+combined with Django, will begin to focus on satisfying sprint user 
+stories.

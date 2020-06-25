@@ -18,3 +18,11 @@
 # Week 3
 
 - Generated initial project files
+- Completed the proposal
+- Discussed with Zach ideas around frontend
+- Learnt some Django
+
+# Week 4
+
+- Zach began work on Nav bar and I began work on API, frontend routes and RecipeCards
+- Clarified API spec to be consistant with stubbed out API request routes
