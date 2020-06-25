@@ -1,6 +1,5 @@
 import Head from "next/head";
 
-import Nav from "../components/nav/Nav";
 import Hello from "../components/Hello";
 
 export default function Home() {
