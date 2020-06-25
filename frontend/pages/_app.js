@@ -12,11 +12,11 @@ export default function PantryPirate({ Component, pageProps }) {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <Nav />
-      <div style={{ marginLeft: 5 + "rem" }}>
+      <main>
         <div className="container">
           <Component {...pageProps} />
         </div>
-      </div>
+      </main>
     </>
   );
 }
