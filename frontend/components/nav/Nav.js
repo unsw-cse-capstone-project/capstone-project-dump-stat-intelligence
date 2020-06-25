@@ -13,7 +13,7 @@ export default function Nav() {
       <ul>
         <NavItem icon={<Brand />} brand={true} href="/" />
         <NavItem icon={<Explore />} name={"Explore"} href="/explore" />
-        <NavItem icon={<Pantry />} name={"Pantry"} href="/" />
+        <NavItem icon={<Pantry />} name={"Pantry"} href="/pantry" />
         <NavItem icon={<Cookbook />} name={"Cookbook"} href="/cookbook" />
         <NavItem icon={<Create />} name={"Create"} href="/recipe/create" />
         <NavItem icon={<Settings />} name={"Settings"} href="/settings" />

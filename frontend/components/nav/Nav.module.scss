@@ -1,9 +1,11 @@
 .nav {
-    background-color:var(--dark);
-    position:fixed;
-    width:5rem;
-    height:100vh;
-    transition: width 600ms ease;
-    top:0;
-    left:0;
+  background-color: var(--dark);
+  position: fixed;
+  z-index: 10000;
+  width: 5rem;
+  height: 100vh;
+  transition: width 600ms ease;
+  top: 0;
+  left: 0;
+  box-shadow: 5px 0px 5px #00000044;
 }
