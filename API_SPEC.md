@@ -110,10 +110,12 @@ DELETE `/user/pantry/{id}`
 GET `/recipes`
 
 **Query String**
-`?limit={10}&offset={21}`
+`?meal={dinner}&diet={vegan}&limit={10}&offset={21}`
 
 - limit: number of recipes to respond with
 - offset: offset by n recipes (calculated as page * limit)
+- meal: mealType string
+- diet: dietry requirement string
 
 #### Expected Response
 
