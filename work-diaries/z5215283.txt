@@ -4,3 +4,6 @@ Looking ahead we planned our next meeting for early week 2, and decided to indiv
 
 Week 2
 We started working through our proposal properly. Tom and I were working mainly on the system architecture. This included thinking about user interactions and what the interaction between the frontend and backend might look like. Also discussed what the database might look like (specifically in regard to ER diagram). Met on Monday and Friday to check in and work through proposal.
+
+Week 3
+The main objective for week 3 was to complete the proposal. I finalised the information in the system architecture. We also worked towards getting ready to start coding. In this regard, I set up the backend framework with django. We had a big meeting on friday, where we went over the proposal one more time. After discussion, we worked through the API between frontend and backend and I remade the ER diagram based on our revised version.
