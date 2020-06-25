@@ -51,6 +51,7 @@ def recipe(request, recipe_id=None):
         recipe = recipe.save()
         return JsonResponse({"id" : recipe.id})
 
+
 # User profiles
 def user(request, user_id=None):
 
@@ -62,7 +63,9 @@ def user(request, user_id=None):
         except User.DoesNotExist:
             raise Http404("User does not exist")
         
-        # get info from user profile (pop first element, state info)
+        # get info from user profile 
+        # vars returns a dictionary of the attributes
+        # (pop first element, state info)
         details = (vars(user))
         details.pop("_state")
 
@@ -78,29 +81,24 @@ def user(request, user_id=None):
         user = user.save()
         return JsonResponse({"id" : user.id})
 
-# WIP
-# def pantry(request, user_id=None):
 
-#     if request.method == 'GET':
+# User pantry
+def pantry(request, user_id=None):
 
-#         # return nested dictionary, looks like:
-#         #    pantry_contents = { 'item1': {'category': category, 'expiry': date},
-#         #                        'item2': {'category': category, 'expiry': date}}
+    if request.method == 'GET':
 
-#         pantry_contents = {}
-#         items = PantryIngredient.objects.filter(user__pk=user_id)
+        # return nested dictionary, looks like:
+        #    pantry_contents = { 'item1': {'category': category, 'expiry': date},
+        #                        'item2': {'category': category, 'expiry': date}}
 
-#         for item in items:
-#             attr = vars(item)
-#             # print(attr)
+        pantry_contents = {}
+        items = PantryIngredient.objects.filter(user__pk=user_id)
 
-#             # new_dict = {}
-#             # new_dict["expiry_date"] = attr["expiry_date"]
-#             # new_dict["category"] = 
-            
-#             ingrs = Ingredient.objects.filter(category__pk=attr["id"])
-#             for ingr in ingrs:
-#                 print(vars(ingr))
+        for item in items:
+            new_dict = {}
+            new_dict["category"] = item.ingredient.category.name
+            new_dict["expiry_date"] = item.expiry_date
 
+            pantry_contents[item.ingredient.name] = new_dict
 
-#         return JsonResponse()
+        return JsonResponse(pantry_contents)
