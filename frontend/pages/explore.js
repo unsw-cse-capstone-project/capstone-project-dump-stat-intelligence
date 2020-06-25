@@ -1,20 +1,27 @@
 import Head from "next/head";
 
-import Hello from "../components/Hello";
+import RecipeCard from "../components/RecipeCard/RecipeCard";
 
 export default function Home() {
+  const recipes = ["Sushi", "Dumplings", "Shepard's Pie"];
   return (
     <div>
       <Head>
         <title>Pantry Pirate | Explore</title>
       </Head>
       <div className="container">
-        <div className="columns is-centered">
-          <div className="box column is-6">
-            <h1 className="title">/explore</h1>
-            <p>Probs good idea to read README.md</p>
-            <Hello />
-          </div>
+        <h1 className="title">Explore Recipes</h1>
+        <div className="columns multiline">
+          {recipes.map((recipe, idx) => (
+            <div key={idx} className="column is-3">
+              <RecipeCard
+                className="column is-3"
+                src={`https://source.unsplash.com/400x300/?food&sig=${recipe}`}
+                title={recipe}
+                id={idx} // TODO: alter
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>
