@@ -3,7 +3,7 @@ import Head from "next/head";
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 
 export default function Home() {
-  const recipes = ["Sushi", "Dumplings", "Shepard's Pie"];
+  const recipes = ["Sushi", "Dumplings", "Shepard's Pie Pie Pie"];
   return (
     <div>
       <Head>

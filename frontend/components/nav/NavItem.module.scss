@@ -1,15 +1,20 @@
 .box,
+.active,
 .brand {
   width: 5rem;
   height: 5rem;
   position: relative;
   display: flex;
   align-items: center;
+  transition: ease padding 500ms;
 }
 .box {
   padding: 0.8rem;
   background-color: var(--dark);
   fill: white;
+}
+.active {
+  padding:0.8rem;
 }
 .brand {
   padding: 0.3rem;
@@ -17,17 +22,22 @@
   fill: white;
 }
 .box:hover,
+.active:hover,
 .brand:hover {
   cursor: pointer;
 }
-.box:hover {
+.box:hover,
+.active:hover {
   fill: var(--primary);
+  padding:0.7rem;
 }
+.active,
 .brand:hover {
   background-color: var(--background);
   fill: var(--dark);
 }
-.box:hover .tag {
+.box:hover .tag,
+.active:hover .tag {
   display: inline-block;
   opacity: 1;
   transform: scale(1) translateX(5rem);
@@ -36,10 +46,18 @@
 .tag {
   opacity: 0;
   position: fixed;
-  border: #3a363733 1px solid;
+  border: var(--dark) 1px solid;
   border-radius: 0.2rem;
   padding: 0.2rem;
   transform: scale(0);
-  background-color: #3a3637;
+  background-color: var(--dark);
   color: white;
+}
+.shadowblock {
+  background-color:var(--background);
+  height:5rem;
+  width:5rem;
+  position:fixed;
+  left:10px;
+  z-index:-100;
 }
