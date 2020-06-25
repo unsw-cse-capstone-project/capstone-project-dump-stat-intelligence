@@ -11,7 +11,7 @@ export default function Home() {
     "Hello world",
   ];
   return (
-    <div>
+    <>
       <Head>
         <title>Pantry Pirate | Explore</title>
       </Head>
@@ -30,6 +30,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
