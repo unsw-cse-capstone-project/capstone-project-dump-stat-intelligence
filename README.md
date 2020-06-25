@@ -5,6 +5,8 @@ COMP3900 Group Project - Dump Stat Intelligence
 
 ### Frontend
 
+See [The API Spec](API_SPEC.md) for details on what the frontend expects
+
 #### Running the project**
 
 - Ensure nodejs and yarn are installed
