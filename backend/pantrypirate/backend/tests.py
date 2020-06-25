@@ -31,7 +31,10 @@ class RecipeTestCase(TestCase):
                    "method" : "Put in water", "author" : "1"}
         c = Client()
         response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
+        self.assertContains(response, recipe1['name'])
+        self.assertContains(response, recipe1['cook_time'])
+        self.assertContains(response, recipe1['method'])
+        self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
         self.assertContains(response, recipe1['name'])
         self.assertContains(response, recipe1['cook_time'])
@@ -44,7 +47,12 @@ class RecipeTestCase(TestCase):
                 "Lunch", "Dinner"]}
         c = Client()
         response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
+        self.assertContains(response, recipe1['name'])
+        self.assertContains(response, recipe1['cook_time'])
+        self.assertContains(response, recipe1['method'])
+        for item in recipe1['meal_cat']:
+            self.assertContains(response, item)
+        self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
         self.assertContains(response, recipe1['name'])
         self.assertContains(response, recipe1['cook_time'])
@@ -59,7 +67,14 @@ class RecipeTestCase(TestCase):
                 "Lunch", "Dinner"], "diet_req" : ["Vegan"]}
         c = Client()
         response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
+        self.assertContains(response, recipe1['name'])
+        self.assertContains(response, recipe1['cook_time'])
+        self.assertContains(response, recipe1['method'])
+        for item in recipe1['meal_cat']:
+            self.assertContains(response, item)
+        for item in recipe1['diet_req']:
+            self.assertContains(response, item)
+        self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
         self.assertContains(response, recipe1['name'])
         self.assertContains(response, recipe1['cook_time'])

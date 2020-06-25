@@ -29,6 +29,7 @@ def recipe(request, recipe_id=None):
         data["meal_cat"] = extract_values(data["meal_cat"], "name")
         data["diet_req"] = extract_values(data["diet_req"], "name")
         data["favourites"] = extract_values(data["favourites"], "name")
+        data = {"recipe" : data}
 
         return JsonResponse(data)
 
@@ -49,7 +50,18 @@ def recipe(request, recipe_id=None):
             raise error
         recipe.is_valid()
         recipe = recipe.save()
-        return JsonResponse({"id" : recipe.id})
+        serializer = RecipeSerializer(instance=recipe)
+
+        # Take serialise dump and extract out name fields for meal category and
+        # dietary requirements
+        data = serializer.data
+        data["author"] = recipe.author.name
+        data["meal_cat"] = extract_values(data["meal_cat"], "name")
+        data["diet_req"] = extract_values(data["diet_req"], "name")
+        data["favourites"] = extract_values(data["favourites"], "name")
+        data = {"recipe" : data}
+
+        return JsonResponse(data)
 
 
 # User profiles
