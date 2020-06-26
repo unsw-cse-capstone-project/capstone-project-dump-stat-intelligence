@@ -29,14 +29,14 @@ $family-secondary: $font-primary-sans-serif;
 
 // Import bulma after you define variables
 
-@import "./bulma-0.9.0/sass/utilities/_all";
-@import "./bulma-0.9.0/sass/base/_all";
-@import "./bulma-0.9.0/sass/elements/_all";
-@import "./bulma-0.9.0/sass/form/_all";
-@import "./bulma-0.9.0/sass/components/_all";
-@import "./bulma-0.9.0/sass/grid/_all";
-@import "./bulma-0.9.0/sass/helpers/_all";
-@import "./bulma-0.9.0/sass/layout/_all";
+@import "../node_modules/bulma/sass/utilities/_all";
+@import "../node_modules/bulma/sass/base/_all";
+@import "../node_modules/bulma/sass/elements/_all";
+@import "../node_modules/bulma/sass/form/_all";
+@import "../node_modules/bulma/sass/components/_all";
+@import "../node_modules/bulma/sass/grid/_all";
+@import "../node_modules/bulma/sass/helpers/_all";
+@import "../node_modules/bulma/sass/layout/_all";
 
 // Other stuff
 
