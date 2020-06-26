@@ -45,7 +45,7 @@ def recipe(request, recipe_id=None):
 
     if request.method == 'POST':
         try:
-            recipe = RecipeForm(request.POST)
+            recipe = RecipeForm(json.loads(request.body)['recipe'])
         except RuntimeError as error:
             raise error
         recipe.is_valid()
@@ -62,6 +62,58 @@ def recipe(request, recipe_id=None):
         data = {"recipe" : data}
 
         return JsonResponse(data)
+
+
+# Recipe view
+# def ingredient(request, ingredient_id=None):
+#     if request.method == 'GET':
+#         # Extract ingredient with id and serialise
+#         try:
+#             ingredient = Ingredient.objects.get(pk=ingredient_id)
+#         except Ingredient.DoesNotExist:
+#             raise Http404("Recipe does not exist")
+#         serializer = IngredientSerializer(instance=ingredient)
+#
+#         # Take serialise dump and extract out name fields for meal category and
+#         # dietary requirements
+#         data = serializer.data
+#         data["author"] = ingredient.author.name
+#         data["meal_cat"] = extract_values(data["meal_cat"], "name")
+#         data["diet_req"] = extract_values(data["diet_req"], "name")
+#         data["favourites"] = extract_values(data["favourites"], "name")
+#         data = {"ingredient" : data}
+#
+#         return JsonResponse(data)
+#
+#     if request.method == 'DELETE':
+#         # Try to delete ingredient
+#         try:
+#             ingredient = Ingredient.objects.get(pk=ingredient_id)
+#         except Ingredient.DoesNotExist:
+#             raise Http404("Recipe does not exist")
+#         ingredient.delete()
+#
+#         return HttpResponse()
+#
+#     if request.method == 'POST':
+#         try:
+#             ingredient = IngredientForm(request.POST)
+#         except RuntimeError as error:
+#             raise error
+#         ingredient.is_valid()
+#         ingredient = ingredient.save()
+#         serializer = IngredientSerializer(instance=ingredient)
+#
+#         # Take serialise dump and extract out name fields for meal category and
+#         # dietary requirements
+#         data = serializer.data
+#         data["author"] = ingredient.author.name
+#         data["meal_cat"] = extract_values(data["meal_cat"], "name")
+#         data["diet_req"] = extract_values(data["diet_req"], "name")
+#         data["favourites"] = extract_values(data["favourites"], "name")
+#         data = {"ingredient" : data}
+#
+#         return JsonResponse(data)
 
 
 # User profiles
@@ -85,7 +137,7 @@ def user(request, user_id=None):
 
     if request.method == 'POST':
         try:
-            user = UserForm(request.POST)
+            user = UserForm(request.body)
         except RuntimeError as error:
             raise error
 
