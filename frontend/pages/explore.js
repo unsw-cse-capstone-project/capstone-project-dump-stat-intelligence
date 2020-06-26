@@ -16,7 +16,8 @@ export default function Home() {
         <title>Pantry Pirate | Explore</title>
       </Head>
       <div>
-        <h1 className="title">Explore Recipes</h1>
+        <br />
+        <h1 className="title is-2">Explore Recipes</h1>
         <div className="columns is-multiline">
           {recipes.map((recipe, idx) => (
             <div key={idx} className="column is-3">
