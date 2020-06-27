@@ -1,29 +1,57 @@
-@import "./bulma-0.9.0/bulma.sass";
+// ==== Fonts ==== //
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;900&family=Source+Serif+Pro:wght@400;600;700&display=swap");
 
+$font-primary-serif: "Source Serif Pro";
+$font-primary-sans-serif: "Roboto";
 
+// ==== Colors ==== //
+$primary: #fd0536;
+$secondary: #7c0b2b;
+$tertiary: #a69658;
+$background: #f5f4f5;
+$dark: #3a3637;
+
+// CSS vars - don't know why but you can't use sass variables with them
 :root {
-  --primary:#fd0536;
-  --secondary:#7C0B2B;
-  --tertiary:#A69658;
-  --background:#F5F4F5;
-  --dark:#3A3637;
+  --primary: #fd0536;
+  --secondary: #7c0b2b;
+  --tertiary: #a69658;
+  --background: #f5f4f5;
+  --dark: #3a3637;
 }
 
-html {
-  background-color:var(--background);
-}
+// ==== Bulma globals ==== //
+$link: $primary;
+$info: $dark;
+$body-background-color: #f4f6fa;
+$family-primary: $font-primary-serif;
+$family-secondary: $font-primary-sans-serif;
+
+// Import bulma after you define variables
+
+@import "../node_modules/bulma/sass/utilities/_all";
+@import "../node_modules/bulma/sass/base/_all";
+@import "../node_modules/bulma/sass/elements/_all";
+@import "../node_modules/bulma/sass/form/_all";
+@import "../node_modules/bulma/sass/components/_all";
+@import "../node_modules/bulma/sass/grid/_all";
+@import "../node_modules/bulma/sass/helpers/_all";
+@import "../node_modules/bulma/sass/layout/_all";
+
+// Other stuff
+
 main {
   margin-left:5rem;
   padding:20px;
 }
 
-@media only screen and (min-width:600px) {
+@media only screen and (min-width: 600px) {
   nav {
-    width:5rem;
-    height:100vh;
+    width: 5rem;
+    height: 100vh;
   }
-  
+
   main {
-    margin-left:5rem;
+    margin-left: 5rem;
   }
 }
