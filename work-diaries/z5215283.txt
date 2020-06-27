@@ -9,3 +9,4 @@ Week 3
 The main objective for week 3 was to complete the proposal. I finalised the information in the system architecture. We also worked towards getting ready to start coding. In this regard, I set up the backend framework with django. We had a big meeting on friday, where we went over the proposal one more time. After discussion, we worked through the API between frontend and backend and I remade the ER diagram based on our revised version.
 
 Week 4
+For the start of wk4, Tom and I worked through our own idea of what the site would look like individually. We then met on Tuesday and created a combined vision. Between then and Friday, I worked on getting the navbar and icons set up. Over the weekend I worked on finishing the nav and starting to get the settings and logins modals/pages up and running.

@@ -1,8 +1,8 @@
 .box,
 .active,
 .brand {
-  width: 5rem;
-  height: 5rem;
+  width:4rem;
+  height:4rem;
   position: relative;
   display: flex;
   align-items: center;
@@ -42,6 +42,9 @@
   background-color: var(--background);
   fill: var(--dark);
 }
+.brand:hover {
+  padding:0.2rem;
+}
 .box:hover .tag,
 .active:hover .tag {
   display: inline-block;
@@ -61,9 +64,10 @@
 }
 .shadowblock {
   background-color:var(--background);
-  height:5rem;
-  width:5rem;
+  height:4rem;
+  width:4rem;
   position:fixed;
   left:10px;
   z-index:-100;
+  box-shadow: 2px 0px 10px #00000044;
 }
