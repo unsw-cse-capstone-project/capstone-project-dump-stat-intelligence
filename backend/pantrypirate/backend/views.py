@@ -14,7 +14,7 @@ def extract_values(x, key):
 
 # Recipe view
 def recipe(request, recipe_id=None):
-    if request.method == 'GET':
+    if request.method == "GET":
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -32,7 +32,7 @@ def recipe(request, recipe_id=None):
 
         return JsonResponse(data)
 
-    if request.method == 'DELETE':
+    if request.method == "DELETE":
         # Try to delete recipe
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -42,36 +42,36 @@ def recipe(request, recipe_id=None):
 
         return HttpResponse()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             recipe = RecipeForm(request.POST)
         except RuntimeError as error:
             raise error
         recipe.is_valid()
         recipe = recipe.save()
-        return JsonResponse({"id" : recipe.id})
+        return JsonResponse({"id": recipe.id})
 
 
 # User profiles
 def user(request, user_id=None):
 
-    if request.method == 'GET':
+    if request.method == "GET":
 
         # Extract user with given id
         try:
             user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             raise Http404("User does not exist")
-        
-        # get info from user profile 
+
+        # get info from user profile
         # vars returns a dictionary of the attributes
         # (pop first element, state info)
-        details = (vars(user))
+        details = vars(user)
         details.pop("_state")
 
         return JsonResponse(details)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             user = UserForm(request.POST)
         except RuntimeError as error:
@@ -79,13 +79,13 @@ def user(request, user_id=None):
 
         user.is_valid()
         user = user.save()
-        return JsonResponse({"id" : user.id})
+        return JsonResponse({"id": user.id})
 
 
 # User pantry
 def pantry(request, user_id=None):
 
-    if request.method == 'GET':
+    if request.method == "GET":
 
         # return nested dictionary, looks like:
         #    pantry_contents = { 'item1': {'category': category, 'expiry': date},
