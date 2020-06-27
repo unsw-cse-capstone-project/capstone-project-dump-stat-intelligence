@@ -27,3 +27,13 @@ Short meeting on Monday to see how proposal was coming along. Prior to the meeti
 tracking which storyboard each user story was shown on. After the meeting, I tidied up the storyboards again and made some final
 formatting changes to the proposal doc so that it is ready for submission. I also worked on familiarising myself with the architecture
 elements we will be using.
+
+Submitted proposal at the end of this week. Worked through Django tutorials in preparation for starting coding.
+
+WEEK 4:
+
+Met on Tuesday to start coding. Initally worked with other backend developers (Michael and Rohan) to set up models, views and urls. Implemented 
+the view for displaying a recipe's details as a group to familiarise ourselves with the process.
+
+Individually, I wrote the view functions for displaying profile details and pantry contents. Working currently on displaying search results 
+filtered by meal categories and dietary requirements.
