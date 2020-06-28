@@ -9,6 +9,8 @@ import User from "../icons/User";
 import NavItem from "./NavItem";
 import NavLogin from "./NavLogin";
 import Login from "../authentication/Login";
+import Logout from "../authentication/Logout";
+import Register from "../authentication/Register";
 
 export default function Nav() {
   //Get all the modal backgrounds to close the modal
@@ -36,7 +38,9 @@ export default function Nav() {
           </ul>
         </div>
       </nav>
-      <Login id="auth-login"/>
+      <Login login="auth-login" register="auth-register"/>
+      <Logout logout="auth-logout"/>
+      <Register login="auth-login" register="auth-register"/>
 
     </>
   );
