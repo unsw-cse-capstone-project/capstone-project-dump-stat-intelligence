@@ -3,6 +3,14 @@ COMP3900 Group Project - Dump Stat Intelligence
 
 ## Getting Started
 
+### Using Make
+
+Ensure you have concurrently installed (`yarn global add concurrently`) and are in the python virtual environment for backend (`pipenv shell` in `/backend/pantrypirate`). You can use these commands to run the project:
+
+- `make backend`: run the backend on port 8000
+- `make frontend`: run the frontend on port 3000
+- `make all`: simultaneously make frontend and backend
+
 ### Frontend
 
 See [The API Spec](API_SPEC.md) for details on what the frontend expects
