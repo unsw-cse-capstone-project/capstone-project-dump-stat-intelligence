@@ -8,15 +8,15 @@
   top: 0;
   left: 0;
   box-shadow: 5px 0px 5px #00000044;
-  display:flex;
-  flex-direction:column;
+  display: flex;
+  flex-direction: column;
 }
 .upperNav,
 .lowerNav {
-  display:flex;
+  display: flex;
   flex-direction: column;
-  flex-grow:1;
-  flex-basis:100%;
+  flex-grow: 1;
+  flex-basis: 100%;
 }
 .upperNav {
   justify-content: start;

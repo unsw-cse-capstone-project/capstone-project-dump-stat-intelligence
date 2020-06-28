@@ -1,0 +1,47 @@
+.pantryButton {
+  width: 3rem;
+  height: 3rem;
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: #7522ff;
+  z-index: 1000;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
+  text-align: center;
+  cursor: pointer;
+
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 16px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  img {
+    width: 2rem;
+    height: 2rem;
+    margin-top: 0.5rem;
+  }
+}
+
+.pantry {
+  width: 20rem;
+  height: 75vh;
+  background-color: white;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  z-index: 1000;
+  position: fixed;
+  right: 2rem;
+  bottom: 7rem;
+  padding: 10px;
+}
+
+.ingredientSection {
+  overflow-y: scroll;
+
+  h4 {
+    font-weight: bold;
+    margin: 10px 0;
+  }
+}

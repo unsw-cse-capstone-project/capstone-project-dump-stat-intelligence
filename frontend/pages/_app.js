@@ -2,6 +2,7 @@ import "../styles/styles.scss";
 
 import Head from "next/head";
 import Nav from "../components/nav/Nav";
+import PantryButton from "../components/Pantry/PantryButton";
 
 export default function PantryPirate({ Component, pageProps }) {
   return (
@@ -16,6 +17,7 @@ export default function PantryPirate({ Component, pageProps }) {
         <div className="container">
           <Component {...pageProps} />
         </div>
+        <PantryButton />
       </main>
     </>
   );
