@@ -124,11 +124,12 @@ def search(request, search_terms):
 
 
 # Ingredient view
-def ingredient(request, ingredient_id=None):
+def ingredients(request, ingredient_name=None):
     if request.method == 'GET':
         # Extract ingredient with id and serialise
         try:
-            ingredient = Ingredient.objects.get(pk=ingredient_id)
+            ingredient = Ingredient.objects.get(pk=ingredient_name)
+            print(ingredient)
         except Ingredient.DoesNotExist:
             raise Http404("Recipe does not exist")
         serializer = IngredientSerializer(instance=ingredient)
@@ -144,7 +145,7 @@ def ingredient(request, ingredient_id=None):
     if request.method == 'DELETE':
         # Try to delete ingredient
         try:
-            ingredient = Ingredient.objects.get(pk=ingredient_id)
+            ingredient = Ingredient.objects.get(name=ingredient_name)
         except Ingredient.DoesNotExist:
             raise Http404("Recipe does not exist")
         ingredient.delete()
@@ -163,6 +164,7 @@ def ingredient(request, ingredient_id=None):
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
         data = serializer.data
+        data['category'] = ingredient.category.name
         data = {"ingredient" : data}
 
         return JsonResponse(data)

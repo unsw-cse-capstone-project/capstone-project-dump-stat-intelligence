@@ -68,3 +68,4 @@ class CategoryForm(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(IngredientCategory, self).__init__(*args, **kwargs)
+

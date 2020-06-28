@@ -132,9 +132,16 @@ class RecipeTestCase(TestCase):
 # Create your tests here.
 class IngredientTestCase(TestCase):
     def setUp(self):
-        ing_cat = IngredientCategory.objects.create
+        ing_cat = IngredientCategory.objects.create(name = "vegetable")
 
-    def test_deets(self):
-        assert(self.user.name == "Bob")
-        assert(self.user.email == "Potato17@gmail.com")
-        assert(self.user.password == "4321")
+    def test_get_post_1(self):
+        ingredient_test = {"ingredient" : {"name" : "pea", "category" :
+            "1"}}
+        c = Client()
+        response = c.post('/ingredients/', json.dumps(ingredient_test),
+                          content_type="application/json")
+        self.assertContains(response, "pea")
+        self.assertContains(response, "vegetable")
+        response = c.get('/ingredients/pea/')
+        self.assertContains(response, "pea")
+        self.assertContains(response, "vegetable")
