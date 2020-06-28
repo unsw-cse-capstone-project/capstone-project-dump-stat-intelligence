@@ -41,7 +41,7 @@ export default function Register(props) {
             </div>
         </form>
         <hr/>
-        <p>Already have an account? <span onClick={() => {toggle(props.register); toggle("auth-logout")}} className={styles.register}>Sign in</span></p>
+        <p>Already have an account? <span onClick={() => {toggle(props.register); toggle(props.login)}} className={styles.register}>Sign in</span></p>
     </>
     return <Modal id={props.register} content={content}/>
 

@@ -1,4 +1,14 @@
+import Link from 'next/link'
+
+
 export default function Home() {
+  let isLoggedIn = true
+  
+  
+  function toggle(id) {
+    document.getElementById(id).classList.toggle("is-active")
+  }
+  
   return (
     <div className="hero is-fullheight">
       <div className="hero-body">
@@ -11,10 +21,16 @@ export default function Home() {
           <h3 className="subtitle is-4">
             Yarrhhhhggg, these 'ere cados 🥑 do be lookin' ripe t' eat
           </h3>
-          <div className="buttons">
-            <button className="button is-primary">Sign Up</button>
-            <button className="button is-secondary">Log In</button>
-          </div>
+          {isLoggedIn ? 
+            <Link href='/explore'>
+              <button className="button is-primary">Start Plundering</button>
+            </Link>      
+          : 
+            <div className="buttons">
+              <button onClick={() => {toggle('auth-register')}} className="button is-primary">Sign Up</button>
+              <button onClick={() => {toggle('auth-login')}} className="button is-secondary">Log In</button>
+            </div>
+          }
         </div>
       </div>
     </div>

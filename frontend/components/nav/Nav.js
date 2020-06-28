@@ -13,11 +13,8 @@ import Logout from "../authentication/Logout";
 import Register from "../authentication/Register";
 
 export default function Nav() {
-  //Get all the modal backgrounds to close the modal
-  /*let modal_bgs = document.getElementsByClassName("modal-background")
-  for (var i = 0; i < modal_bgs.length; i++) {
-    modal_bgs[i].addEventListener('click', () => {modal_bgs[i].parentElement.classList.toggle("is-active")});
-  }*/
+  let isLoggedIn = true;
+  
   return (
     <>
       
@@ -33,7 +30,7 @@ export default function Nav() {
         </div>
         <div className={styles.lowerNav}>
           <ul>
-            <NavLogin icon={<User />} name={"Login / Register"}/>
+            <NavLogin login="auth-login" logout="auth-logout" isLoggedIn={isLoggedIn} icon={<User />} />
             <NavItem icon={<Settings />} name={"Settings"} href="/settings" />
           </ul>
         </div>
