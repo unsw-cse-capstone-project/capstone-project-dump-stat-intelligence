@@ -1,5 +1,6 @@
 from django.http import JsonResponse, HttpResponse, Http404
 from django.db.models import Q
+from django.forms.models import model_to_dict
 from .serializers import *
 from .models import *
 from .forms import *
@@ -32,8 +33,8 @@ def recipe(request, recipe_id=None):
         data["meal_cat"] = extract_values(data["meal_cat"], "name")
         data["diet_req"] = extract_values(data["diet_req"], "name")
         data["favourites"] = extract_values(data["favourites"], "name")
-        data = {"recipe" : data}
 
+        data = {"recipe" : data}
         return JsonResponse(data)
 
     if request.method == "DELETE":
@@ -53,6 +54,19 @@ def recipe(request, recipe_id=None):
             raise error
         recipe.is_valid()
         recipe = recipe.save()
+
+        # For ingredient in list, add to recipe ingredient database
+        try:
+            for ing in json.loads(request.body)['recipe']['ingredients']:
+                try:
+                    recipe_ingredient = RecipeIngredientForm(ing)
+                except RuntimeError as error:
+                    raise error
+                recipe_ingredient.is_valid()
+                recipe_ingredient.save()
+        except KeyError as error:
+            raise error
+
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -62,9 +76,11 @@ def recipe(request, recipe_id=None):
         data["meal_cat"] = extract_values(data["meal_cat"], "name")
         data["diet_req"] = extract_values(data["diet_req"], "name")
         data["favourites"] = extract_values(data["favourites"], "name")
-        data = {"recipe" : data}
 
-        return JsonResponse(data)
+        data = {"recipe" : data}
+        data = json.dumps(data)
+        return JsonResponse(data, safe=False)
+
 
 # Work in progress - currently filters all recipes by meal category and diet reqs
 # Search for recipes
@@ -99,6 +115,7 @@ def search(request, search_terms):
         lst.append(it.name)
 
     return JsonResponse({"Matches": lst})
+
 
 # User profiles
 def user(request, user_id=None):
