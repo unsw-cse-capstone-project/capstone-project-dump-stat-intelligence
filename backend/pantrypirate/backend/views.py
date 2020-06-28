@@ -48,7 +48,7 @@ def recipe(request, recipe_id=None):
 
     if request.method == 'POST':
         try:
-            recipe = RecipeForm(request.POST)
+            recipe = RecipeForm(json.loads(request.body)['recipe'])
         except RuntimeError as error:
             raise error
         recipe.is_valid()
@@ -121,7 +121,7 @@ def user(request, user_id=None):
 
     if request.method == 'POST':
         try:
-            user = UserForm(request.POST)
+            user = UserForm(request.body)
         except RuntimeError as error:
             raise error
 

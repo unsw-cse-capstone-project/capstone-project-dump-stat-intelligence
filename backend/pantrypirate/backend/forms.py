@@ -14,6 +14,7 @@ class RecipeForm(ModelForm):
         self.fields['meal_cat'].required = False
         self.fields['diet_req'].required = False
 
+
 # note - currenty zero security (should fix this)
 class UserForm(ModelForm):
 
@@ -22,4 +23,15 @@ class UserForm(ModelForm):
         fields = ['name', 'email', 'password']
 
     def __init__(self, *args, **kwargs):
-        super(RecipeForm, self).__init__(*args, **kwargs)
+        super(UserForm, self).__init__(*args, **kwargs)
+
+
+# note - currenty zero security (should fix this)
+class IngredientForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['name', 'email', 'password']
+
+    def __init__(self, *args, **kwargs):
+        super(IngredientForm, self).__init__(*args, **kwargs)
