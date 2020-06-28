@@ -1,8 +1,10 @@
 from django.http import JsonResponse, HttpResponse, Http404
+from django.db.models import Q
 from .serializers import *
 from .models import *
 from .forms import *
 import json
+import urllib.parse
 
 # Extract list of dict values
 def extract_values(x, key):
@@ -15,6 +17,7 @@ def extract_values(x, key):
 # Recipe view
 def recipe(request, recipe_id=None):
     if request.method == 'GET':
+
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -63,6 +66,39 @@ def recipe(request, recipe_id=None):
 
         return JsonResponse(data)
 
+# Work in progress - currently filters all recipes by meal category and diet reqs
+# Search for recipes
+def search(request, search_terms):
+    # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21 
+
+    string = urllib.parse.parse_qs(search_terms, keep_blank_values=True)
+    meals = string['meal'][0].split()
+    diets = string['diet'][0].split()
+
+    f = Recipe.objects.all()
+
+    # filter by dietary requirement (AND relationship)
+    if len(diets) != 0:
+        for requirement in diets:
+            f = f.filter(diet_req__pk=requirement)
+
+    # filter by meal category (OR relationship)
+    e = Recipe.objects.none()
+    if len(meals) != 0:
+        for category in meals:
+            e |= f.filter(meal_cat__pk=category)
+
+    else: e = f # if no meal categories specified, return all recipes
+
+    # remove duplicates
+    e = e.distinct()
+    
+    # temporarily returning list of matching recipe names
+    lst = []
+    for it in e:
+        lst.append(it.name)
+
+    return JsonResponse({"Matches": lst})
 
 # User profiles
 def user(request, user_id=None):
