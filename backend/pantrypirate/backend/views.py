@@ -47,6 +47,12 @@ def recipe(request, recipe_id=None):
 
         return HttpResponse()
 
+    if request.method == "GET":
+        recipe = Recipe.objects.get(pk=recipe_id)
+        recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
+        if recipe.isvalid():
+            recipe = recipe.save()
+
     if request.method == "POST":
         try:
             recipe = RecipeForm(json.loads(request.body)['recipe'])
@@ -122,7 +128,7 @@ def ingredient(request, ingredient_id=None):
     if request.method == 'GET':
         # Extract ingredient with id and serialise
         try:
-            recipe = Ingredient.objects.get(pk=ingredient_id)
+            ingredient = Ingredient.objects.get(pk=ingredient_id)
         except Ingredient.DoesNotExist:
             raise Http404("Recipe does not exist")
         serializer = IngredientSerializer(instance=ingredient)
@@ -130,10 +136,7 @@ def ingredient(request, ingredient_id=None):
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
         data = serializer.data
-        data["author"] = ingredient.author.name
-        data["meal_cat"] = extract_values(data["meal_cat"], "name")
-        data["diet_req"] = extract_values(data["diet_req"], "name")
-        data["favourites"] = extract_values(data["favourites"], "name")
+        data["category"] = ingredient.category.name
         data = {"ingredient" : data}
 
         return JsonResponse(data)
@@ -160,10 +163,6 @@ def ingredient(request, ingredient_id=None):
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
         data = serializer.data
-        data["author"] = ingredient.author.name
-        data["meal_cat"] = extract_values(data["meal_cat"], "name")
-        data["diet_req"] = extract_values(data["diet_req"], "name")
-        data["favourites"] = extract_values(data["favourites"], "name")
         data = {"ingredient" : data}
 
         return JsonResponse(data)
