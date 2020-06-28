@@ -32,3 +32,6 @@ and serialisers files. Worked on the views, models, forms, serializers
 and tests for Recipe. Having got a grasp on how they work together 
 combined with Django, will begin to focus on satisfying sprint user 
 stories.
+
+Just before Week 5, implemented ingredients with Recipes for specific 
+GET and POST and the single ingredient GET and POST.
