@@ -15,6 +15,17 @@ class RecipeForm(ModelForm):
         self.fields['diet_req'].required = False
 
 
+class PantryIngredientForm(ModelForm):
+
+    class Meta:
+        model = PantryIngredient
+        fields = ['expiry_date', 'user', 'ingredient']
+
+    def __init__(self, *args, **kwargs):
+        super(PantryIngredientForm, self).__init__(*args, **kwargs)
+        self.fields['expiry_date'].required = False
+
+
 class RecipeIngredientForm(ModelForm):
 
     class Meta:

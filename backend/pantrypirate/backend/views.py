@@ -129,7 +129,6 @@ def ingredients(request, ingredient_name=None):
         # Extract ingredient with id and serialise
         try:
             ingredient = Ingredient.objects.get(pk=ingredient_name)
-            print(ingredient)
         except Ingredient.DoesNotExist:
             raise Http404("Recipe does not exist")
         serializer = IngredientSerializer(instance=ingredient)
@@ -201,7 +200,7 @@ def user(request, user_id=None):
 
 
 # User pantry
-def pantry(request, user_id=None):
+def pantry(request, user_id=None, ingredient_id=None):
 
     if request.method == "GET":
 
@@ -220,3 +219,33 @@ def pantry(request, user_id=None):
             pantry_contents[item.ingredient.name] = new_dict
 
         return JsonResponse(pantry_contents)
+
+    if request.method == 'DELETE':
+        # Try to delete ingredient
+        try:
+            pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
+                                                   pk=ingredient_id)
+        except PantryIngredient.DoesNotExist:
+            raise Http404("Recipe does not exist")
+        pantry_ing.delete()
+
+        return HttpResponse()
+
+    if request.method == 'POST':
+        try:
+            ingredient = PantryIngredientForm(json.loads(request.body)[
+                                           'ingredient'])
+        except RuntimeError as error:
+            raise error
+        ingredient.is_valid()
+        ingredient = ingredient.save()
+        serializer = PantryIngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for category and user
+        data = serializer.data
+        data['category'] = ingredient.category.name
+        data['user'] = ingredient.user.name
+        data = {"ingredient" : data}
+        print(data)
+        print("Data check above")
+        return JsonResponse(data)

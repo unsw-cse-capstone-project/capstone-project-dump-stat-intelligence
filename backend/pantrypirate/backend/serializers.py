@@ -10,6 +10,13 @@ class MealCatSerializer(serializers.ModelSerializer):
         fields = ['name']
 
 
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['name']
+
+
 class DietReqSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -56,3 +63,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ['name', 'cook_time', 'method', 'author', 'meal_cat',
                   'diet_req', 'favourites', 'ingredients']
+
+
+class PantryIngredientSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    ingredient = IngredientSerializer(read_only=True)
+
+    class Meta:
+        model = PantryIngredient
+        fields = ['expiry_date', 'user', 'ingredient']

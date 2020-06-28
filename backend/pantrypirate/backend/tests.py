@@ -145,3 +145,29 @@ class IngredientTestCase(TestCase):
         response = c.get('/ingredients/pea/')
         self.assertContains(response, "pea")
         self.assertContains(response, "vegetable")
+
+
+# Create your tests here.
+class PantryIngredientTestCase(TestCase):
+    def setUp(self):
+        ing_cat = IngredientCategory.objects.create(name = "vegetable")
+        ingredient = IngredientForm({"name" : "potato", "category" :
+        "1"})
+        ingredient.is_valid()
+        ingredient.save()
+        user = User.objects.create(name="Bob", email="Bob@gmail.com",
+                                    password="Bob")
+
+    def test_get_post_1(self):
+        ingredient_test = {"ingredient" : {"ingredient" : "potato",
+                                           "user" : "1"}}
+        c = Client()
+        response = c.post('/1/pantry', json.dumps(ingredient_test),
+                          content_type="application/json")
+        ing = PantryIngredient.objects.get(pk=1)
+        print(ing)
+        # self.assertContains(response, "potato")
+        # self.assertContains(response, "vegetable")
+        response = c.get('/1/pantry/1')
+        # self.assertContains(response, "potato")
+        # self.assertContains(response, "vegetable")
