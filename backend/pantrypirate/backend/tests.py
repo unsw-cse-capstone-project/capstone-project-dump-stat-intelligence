@@ -2,6 +2,7 @@ from django.test import TestCase, Client
 from .models import *
 from .views import *
 from .forms import *
+import json
 
 
 # Create your tests here.
@@ -27,46 +28,65 @@ class RecipeTestCase(TestCase):
                                     password="Bob")
 
     def test_post_1(self):
-        recipe1 = {"name" : "Hot ham water", "cook_time" : "2 hours",
-                   "method" : "Put in water", "author" : "1"}
+        recipe1 = {"recipe": {"name" : "Hot ham water", "cook_time" : "2 hours",
+                   "method" : "Put in water", "author" : "1"}}
         c = Client()
-        response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
+        response = c.post('/recipe/', json.dumps(recipe1),
+                          content_type="application/json")
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['name'])
-        self.assertContains(response, recipe1['cook_time'])
-        self.assertContains(response, recipe1['method'])
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
         self.assertContains(response, 'Bob')
 
     def test_post_2(self):
-        recipe1 = {"name" : "Hot ham water", "cook_time" : "2 hours",
-                   "method" : "Put in water", "author" : "1", "meal_cat" : [
-                "Lunch", "Dinner"]}
+        recipe1 = {"recipe" : {"name" : "Hot ham water", "cook_time" : "2 " \
+                    "hours", "method" : "Put in water",
+                    "author" : "1", "meal_cat" : ["Lunch", "Dinner"]}}
         c = Client()
-        response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
+        response = c.post('/recipe/', json.dumps(recipe1),
+                          content_type="application/json")
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        for item in recipe1['recipe']['meal_cat']:
+            self.assertContains(response, item)
+        self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['name'])
-        self.assertContains(response, recipe1['cook_time'])
-        self.assertContains(response, recipe1['method'])
-        for item in recipe1['meal_cat']:
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        for item in recipe1['recipe']['meal_cat']:
             self.assertContains(response, item)
         self.assertContains(response, 'Bob')
 
     def test_post_3(self):
-        recipe1 = {"name" : "Hot ham water", "cook_time" : "2 hours",
+        recipe1 = { "recipe" : {"name" : "Hot ham water", "cook_time" : "2 " \
+                                                                       "hours",
                    "method" : "Put in water", "author" : "1", "meal_cat" : [
-                "Lunch", "Dinner"], "diet_req" : ["Vegan"]}
+                "Lunch", "Dinner"], "diet_req" : ["Vegan"]}}
         c = Client()
-        response = c.post('/recipe/', recipe1)
-        self.assertEqual(response.json(), {'id' : 1})
-        response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['name'])
-        self.assertContains(response, recipe1['cook_time'])
-        self.assertContains(response, recipe1['method'])
-        for item in recipe1['meal_cat']:
+        response = c.post('/recipe/', json.dumps(recipe1),
+                          content_type="application/json")
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        for item in recipe1['recipe']['meal_cat']:
             self.assertContains(response, item)
-        for item in recipe1['diet_req']:
+        for item in recipe1['recipe']['diet_req']:
+            self.assertContains(response, item)
+        self.assertContains(response, 'Bob')
+        response = c.get('/recipe/1/')
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        for item in recipe1['recipe']['meal_cat']:
+            self.assertContains(response, item)
+        for item in recipe1['recipe']['diet_req']:
             self.assertContains(response, item)
         self.assertContains(response, 'Bob')
 
