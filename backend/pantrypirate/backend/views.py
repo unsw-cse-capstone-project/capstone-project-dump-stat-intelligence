@@ -64,6 +64,58 @@ def recipe(request, recipe_id=None):
         return JsonResponse(data)
 
 
+# Ingredient view
+def ingredient(request, ingredient_id=None):
+    if request.method == 'GET':
+        # Extract ingredient with id and serialise
+        try:
+            recipe = Ingredient.objects.get(pk=ingredient_id)
+        except Ingredient.DoesNotExist:
+            raise Http404("Recipe does not exist")
+        serializer = IngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for meal category and
+        # dietary requirements
+        data = serializer.data
+        data["author"] = ingredient.author.name
+        data["meal_cat"] = extract_values(data["meal_cat"], "name")
+        data["diet_req"] = extract_values(data["diet_req"], "name")
+        data["favourites"] = extract_values(data["favourites"], "name")
+        data = {"ingredient" : data}
+
+        return JsonResponse(data)
+
+    if request.method == 'DELETE':
+        # Try to delete ingredient
+        try:
+            ingredient = Ingredient.objects.get(pk=ingredient_id)
+        except Ingredient.DoesNotExist:
+            raise Http404("Recipe does not exist")
+        ingredient.delete()
+
+        return HttpResponse()
+
+    if request.method == 'POST':
+        try:
+            ingredient = IngredientForm(json.loads(request.body)['ingredient'])
+        except RuntimeError as error:
+            raise error
+        ingredient.is_valid()
+        ingredient = ingredient.save()
+        serializer = IngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for meal category and
+        # dietary requirements
+        data = serializer.data
+        data["author"] = ingredient.author.name
+        data["meal_cat"] = extract_values(data["meal_cat"], "name")
+        data["diet_req"] = extract_values(data["diet_req"], "name")
+        data["favourites"] = extract_values(data["favourites"], "name")
+        data = {"ingredient" : data}
+
+        return JsonResponse(data)
+
+
 # User profiles
 def user(request, user_id=None):
 
