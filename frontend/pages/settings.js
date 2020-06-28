@@ -1,6 +1,6 @@
 import Head from "next/head";
-
-import Hello from "../components/Hello";
+import Details from "../components/settings/Details"
+import Password from "../components/settings/Password"
 
 export default function Home() {
   return (
@@ -10,10 +10,10 @@ export default function Home() {
       </Head>
       <div className="container">
         <div className="columns is-centered">
-          <div className="box column is-6">
-            <h1 className="title">/settings</h1>
-            <p>Probs good idea to read README.md</p>
-            <Hello />
+          <div className="box column is-10">
+            <h1 className="title is-1">Settings</h1>
+            <Details name={"Edna E Mode"}/>
+            <Password/>
           </div>
         </div>
       </div>

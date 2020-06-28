@@ -3,15 +3,22 @@ import Head from "next/head";
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 
 export default function Home() {
-  const recipes = ["Sushi", "Dumplings", "Shepard's Pie Pie Pie"];
+  const recipes = [
+    "Sushi",
+    "Dumplings",
+    "Shepard's Pie",
+    "another one",
+    "Hello world",
+  ];
   return (
-    <div>
+    <>
       <Head>
         <title>Pantry Pirate | Explore</title>
       </Head>
-      <div className="container">
-        <h1 className="title">Explore Recipes</h1>
-        <div className="columns multiline">
+      <div>
+        <br />
+        <h1 className="title is-2">Explore Recipes</h1>
+        <div className="columns is-multiline">
           {recipes.map((recipe, idx) => (
             <div key={idx} className="column is-3">
               <RecipeCard
@@ -24,6 +31,6 @@ export default function Home() {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 }
