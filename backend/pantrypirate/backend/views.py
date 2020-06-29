@@ -190,7 +190,7 @@ def user(request, user_id=None):
 
     if request.method == "POST":
         try:
-            user = UserForm(request.body)
+            user = UserForm(json.loads(request.body)['user'])
         except RuntimeError as error:
             raise error
 
@@ -220,21 +220,21 @@ def pantry(request, user_id=None, ingredient_id=None):
 
         return JsonResponse(pantry_contents)
 
-    if request.method == 'DELETE':
+    if request.method == "DELETE":
         # Try to delete ingredient
         try:
             pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
                                                    pk=ingredient_id)
         except PantryIngredient.DoesNotExist:
-            raise Http404("Recipe does not exist")
+            raise Http404("Ingredient does not exist")
         pantry_ing.delete()
 
         return HttpResponse()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
             ingredient = PantryIngredientForm(json.loads(request.body)[
-                                           'ingredient'])
+                                           'ingredients'])
         except RuntimeError as error:
             raise error
         ingredient.is_valid()
@@ -243,9 +243,7 @@ def pantry(request, user_id=None, ingredient_id=None):
 
         # Take serialise dump and extract out name fields for category and user
         data = serializer.data
-        data['category'] = ingredient.category.name
+        data['ingredient']['category'] = ingredient.ingredient.category.name
         data['user'] = ingredient.user.name
         data = {"ingredient" : data}
-        print(data)
-        print("Data check above")
         return JsonResponse(data)

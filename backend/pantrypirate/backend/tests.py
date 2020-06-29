@@ -72,7 +72,8 @@ class RecipeTestCase(TestCase):
                                   [{"adjective" : "moldy", "unit" : "g",
                                     "amount" : "20", "recipe" : "1",
                                     "ingredient" : "potato"},
-                                   {"adjective": "green", "recipe": "1",
+                                   {"adjective": "green", "unit" : "g",
+                                    "amount" : "20", "recipe": "1",
                                     "ingredient": "pea"}]}}
         c = Client()
         response = c.post('/recipe/', json.dumps(recipe1),
@@ -105,7 +106,8 @@ class RecipeTestCase(TestCase):
                                   [{"adjective" : "moldy", "unit" : "g",
                                     "amount" : "20", "recipe" : "1",
                                     "ingredient" : "potato"},
-                                   {"adjective": "green", "recipe": "1",
+                                   {"unit" : "g",
+                                    "amount" : "20", "recipe": "1",
                                     "ingredient": "pea"}]}}
         c = Client()
         response = c.post('/recipe/', json.dumps(recipe1),
@@ -158,16 +160,13 @@ class PantryIngredientTestCase(TestCase):
         user = User.objects.create(name="Bob", email="Bob@gmail.com",
                                     password="Bob")
 
-    def test_get_post_1(self):
-        ingredient_test = {"ingredient" : {"ingredient" : "potato",
+    def test_get_post(self):
+        ingredient_test = {"ingredients" : {"expiry_date" :
+                                                "2020-06-29",
+                                            "ingredient" : "potato",
                                            "user" : "1"}}
         c = Client()
-        response = c.post('/1/pantry', json.dumps(ingredient_test),
+        response = c.post('/user/1/pantry/', json.dumps(ingredient_test),
                           content_type="application/json")
-        ing = PantryIngredient.objects.get(pk=1)
-        print(ing)
-        # self.assertContains(response, "potato")
-        # self.assertContains(response, "vegetable")
-        response = c.get('/1/pantry/1')
-        # self.assertContains(response, "potato")
-        # self.assertContains(response, "vegetable")
+        self.assertContains(response, "potato")
+        self.assertContains(response, "vegetable")

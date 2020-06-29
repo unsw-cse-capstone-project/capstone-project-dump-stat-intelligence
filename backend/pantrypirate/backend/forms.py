@@ -35,17 +35,6 @@ class RecipeIngredientForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecipeIngredientForm, self).__init__(*args, **kwargs)
         self.fields['adjective'].required = False
-        self.fields['unit'].required = False
-        self.fields['amount'].required = False
-
-    def clean(self):
-        cleaned_data = super(RecipeIngredientForm, self).clean()
-        unit = cleaned_data.get('unit')
-        amount = cleaned_data.get('amount')
-
-        if (not unit and amount) or (not amount and unit):
-            raise forms.ValidationError("Please fill both unit and amount or "
-                                        "neither")
 
 
 # note - currenty zero security (should fix this)
