@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse, Http404
+from django.http import JsonResponse, HttpResponse, Http404, Http500
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from .serializers import *
@@ -22,8 +22,8 @@ def recipe(request, recipe_id=None):
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except Recipe.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -41,24 +41,27 @@ def recipe(request, recipe_id=None):
         # Try to delete recipe
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except Recipe.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         recipe.delete()
 
         return HttpResponse()
 
     if request.method == "GET":
-        recipe = Recipe.objects.get(pk=recipe_id)
-        recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
-        if recipe.isvalid():
-            recipe = recipe.save()
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+            recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
+            if recipe.isvalid():
+                recipe = recipe.save()
+        except RuntimeError as Http500:
+            raise Http500
 
     if request.method == "POST":
         try:
             recipe = RecipeForm(json.loads(request.body)['recipe'])
-        except RuntimeError as error:
-            raise error
-        recipe.is_valid()
+            recipe.is_valid()
+        except RuntimeError as Http500:
+            raise Http500
         recipe = recipe.save()
 
         # For ingredient in list, add to recipe ingredient database
@@ -66,12 +69,12 @@ def recipe(request, recipe_id=None):
             for ing in json.loads(request.body)['recipe']['ingredients']:
                 try:
                     recipe_ingredient = RecipeIngredientForm(ing)
-                except RuntimeError as error:
-                    raise error
+                except RuntimeError as Http500:
+                    raise Http500
                 recipe_ingredient.is_valid()
                 recipe_ingredient.save()
-        except KeyError as error:
-            raise error
+        except RuntimeError as Http500:
+            raise Http500
 
         serializer = RecipeSerializer(instance=recipe)
 
@@ -129,8 +132,8 @@ def ingredients(request, ingredient_name=None):
         # Extract ingredient with id and serialise
         try:
             ingredient = Ingredient.objects.get(pk=ingredient_name)
-        except Ingredient.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         serializer = IngredientSerializer(instance=ingredient)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -145,8 +148,8 @@ def ingredients(request, ingredient_name=None):
         # Try to delete ingredient
         try:
             ingredient = Ingredient.objects.get(name=ingredient_name)
-        except Ingredient.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         ingredient.delete()
 
         return HttpResponse()
@@ -154,10 +157,10 @@ def ingredients(request, ingredient_name=None):
     if request.method == 'POST':
         try:
             ingredient = IngredientForm(json.loads(request.body)['ingredient'])
-        except RuntimeError as error:
-            raise error
-        ingredient.is_valid()
-        ingredient = ingredient.save()
+            ingredient.is_valid()
+            ingredient = ingredient.save()
+        except RuntimeError as Http500:
+            raise Http500
         serializer = IngredientSerializer(instance=ingredient)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -177,8 +180,8 @@ def user(request, user_id=None):
         # Extract user with given id
         try:
             user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
+        except RuntimeError as Http500:
+            raise Http500
 
         # get info from user profile
         # vars returns a dictionary of the attributes
@@ -191,8 +194,8 @@ def user(request, user_id=None):
     if request.method == "POST":
         try:
             user = UserForm(json.loads(request.body)['user'])
-        except RuntimeError as error:
-            raise error
+        except RuntimeError as Http500:
+            raise Http500
 
         user.is_valid()
         user = user.save()
@@ -225,8 +228,8 @@ def pantry(request, user_id=None, ingredient_id=None):
         try:
             pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
                                                    pk=ingredient_id)
-        except PantryIngredient.DoesNotExist:
-            raise Http404("Ingredient does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         pantry_ing.delete()
 
         return HttpResponse()
@@ -235,8 +238,8 @@ def pantry(request, user_id=None, ingredient_id=None):
         try:
             ingredient = PantryIngredientForm(json.loads(request.body)[
                                            'ingredients'])
-        except RuntimeError as error:
-            raise error
+        except RuntimeError as Http500:
+            raise Http500
         ingredient.is_valid()
         ingredient = ingredient.save()
         serializer = PantryIngredientSerializer(instance=ingredient)
