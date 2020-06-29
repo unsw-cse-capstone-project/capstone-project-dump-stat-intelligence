@@ -1,14 +1,10 @@
 import style from "./Details.module.scss"
 
 import EditDetails from "./EditDetails" 
+import { useSelector } from 'react-redux';
 
 export default function Details(props) {
-    let deets = {
-        "first" : "ME",
-        "last"  : "HOMIE",
-        "email" : "ME@ME",
-        "phone" : ""
-    }
+    let deets = useSelector(state => state.auth.userInfo)
     
     
     return <div className={style.currDeets}>
@@ -19,7 +15,7 @@ export default function Details(props) {
         <span className={style.category}>Phone: </span> {deets.phone} <br/>
         <br/>
         <button className="button" onClick={() => {document.getElementById("edit-deets").classList.toggle("is-active")}}>Edit details</button>
-        <EditDetails deets={deets} id="edit-deets"/>
+        <EditDetails id="edit-deets"/>
         
     </div>
 }

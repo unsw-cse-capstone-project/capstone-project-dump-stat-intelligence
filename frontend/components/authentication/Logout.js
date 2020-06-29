@@ -1,22 +1,30 @@
 import styles from "./Auth.module.scss";
 
 import Modal from "../modal/Modal";
-
+import { useDispatch } from 'react-redux';
+import { logout } from "../../lib/redux/actions/authAction";
+import Router from 'next/router';
 
 
 export default function Logout(props) {
+    const dispatch = useDispatch();
     function toggle(id) {
         document.getElementById(id).classList.toggle("is-active");
+    }
+    function out() {
+        toggle(props.logout);
+        dispatch(logout());
+        Router.push('/');
     }
     let content = <div className="form">
         <h3 className="title is-3">Are you sure you want to sign out?</h3>
         <hr/>
-        <div class="field is-grouped">
-            <div class="control">
-                <button class="button is-link">Sign out</button>
+        <div className="field is-grouped">
+            <div className="control">
+                <button onClick={out} className="button is-link">Sign out</button>
             </div>
-            <div class="control">
-                <button onClick={() => {toggle(props.logout)}} class="button">Cancel</button>
+            <div className="control">
+                <button onClick={() => {toggle(props.logout)}} className="button">Cancel</button>
             </div>
         </div>
     </div>

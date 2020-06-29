@@ -5,3 +5,12 @@
     color:var(--primary-fade);
     cursor: pointer;
 }
+
+.alert {
+    border-radius:1rem;
+    display:none;
+}
+
+.show {
+    display:block !important;
+}
