@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse, Http404, Http500
+from django.http import JsonResponse, HttpResponse, Http404
 from django.db.models import Q
 from django.forms.models import model_to_dict
 from .serializers import *
