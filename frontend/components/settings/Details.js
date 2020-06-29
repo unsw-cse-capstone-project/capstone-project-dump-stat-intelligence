@@ -15,7 +15,7 @@ export default function Details(props) {
         <span className={style.category}>Phone: </span> {deets.phone} <br/>
         <br/>
         <button className="button" onClick={() => {document.getElementById("edit-deets").classList.toggle("is-active")}}>Edit details</button>
-        <EditDetails deets={deets} id="edit-deets"/>
+        <EditDetails id="edit-deets"/>
         
     </div>
 }
