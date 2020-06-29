@@ -1,6 +1,5 @@
 from django.http import JsonResponse, HttpResponse, Http404
-from django.db.models import Q
-from django.forms.models import model_to_dict
+from rest_framework.views import APIView, permissions
 from .serializers import *
 from .models import *
 from .forms import *
@@ -16,7 +15,8 @@ def extract_values(x, key):
 
 
 # Recipe view
-def recipe(request, recipe_id=None):
+def recipe(APIView):
+    permission_classes = (permissions.ISAuthenticated)
     if request.method == 'GET':
 
         # Extract recipe with id and serialise
@@ -47,7 +47,7 @@ def recipe(request, recipe_id=None):
 
         return HttpResponse()
 
-    if request.method == "GET":
+    if request.method == "PUT":
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
             recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
