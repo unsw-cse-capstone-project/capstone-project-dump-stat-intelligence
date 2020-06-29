@@ -1,14 +1,10 @@
 import style from "./Details.module.scss"
 
 import EditDetails from "./EditDetails" 
+import { useSelector } from 'react-redux';
 
 export default function Details(props) {
-    let deets = {
-        "first" : "ME",
-        "last"  : "HOMIE",
-        "email" : "ME@ME",
-        "phone" : ""
-    }
+    let deets = useSelector(state => state.auth.userInfo)
     
     
     return <div className={style.currDeets}>

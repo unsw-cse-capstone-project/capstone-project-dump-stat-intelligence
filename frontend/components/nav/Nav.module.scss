@@ -14,13 +14,13 @@
 .upperNav,
 .lowerNav {
   display: flex;
-  flex-direction: column;
   flex-grow: 1;
   flex-basis: 100%;
 }
 .upperNav {
   justify-content: start;
+  flex-direction: column;
 }
 .lowerNav {
-  justify-content: end;
+  flex-direction: column-reverse;
 }

@@ -12,8 +12,10 @@ import Login from "../authentication/Login";
 import Logout from "../authentication/Logout";
 import Register from "../authentication/Register";
 
+import { useSelector } from 'react-redux';
+
 export default function Nav() {
-  let isLoggedIn = true;
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
   
   return (
     <>
@@ -24,14 +26,14 @@ export default function Nav() {
             <NavItem icon={<Brand />} brand={true} href="/" />
             <NavItem icon={<Explore />} name={"Explore"} href="/explore" />
             <NavItem icon={<Pantry />} name={"Pantry"} href="/pantry" />
-            <NavItem icon={<Cookbook />} name={"Cookbook"} href="/cookbook" />
-            <NavItem icon={<Create />} name={"Create"} href="/recipe/create" />
+            <NavItem restricted={true} icon={<Cookbook />} name={"Cookbook"} href="/cookbook" />
+            <NavItem restricted={true} icon={<Create />} name={"Create"} href="/recipe/create" />
           </ul>
         </div>
         <div className={styles.lowerNav}>
           <ul>
             <NavLogin login="auth-login" logout="auth-logout" isLoggedIn={isLoggedIn} icon={<User />} />
-            <NavItem icon={<Settings />} name={"Settings"} href="/settings" />
+            <NavItem restricted={true} icon={<Settings />} name={"Settings"} href="/settings" />
           </ul>
         </div>
       </nav>

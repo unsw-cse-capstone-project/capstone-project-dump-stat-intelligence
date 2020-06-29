@@ -1,9 +1,9 @@
 import Link from 'next/link'
+import { useSelector } from 'react-redux';
 
 
 export default function Home() {
-  let isLoggedIn = true
-  
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
   
   function toggle(id) {
     document.getElementById(id).classList.toggle("is-active")
