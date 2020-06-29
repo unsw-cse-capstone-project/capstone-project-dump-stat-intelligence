@@ -12,7 +12,7 @@ export default function Home() {
         <div className="columns is-centered">
           <div className="box column is-10">
             <h1 className="title is-1">Settings</h1>
-            <Details name={"Edna E Mode"}/>
+            <Details/>
             <Password/>
           </div>
         </div>
