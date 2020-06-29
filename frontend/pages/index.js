@@ -27,8 +27,8 @@ export default function Home() {
             </Link>      
           : 
             <div className="buttons">
-              <button onClick={() => {toggle('auth-register')}} className="button is-primary">Sign Up</button>
-              <button onClick={() => {toggle('auth-login')}} className="button is-secondary">Log In</button>
+              <button onClick={() => {toggle('auth-login')}} className="button is-primary">Log In</button>
+              <button onClick={() => {toggle('auth-register')}} className="button is-secondary">Sign Up</button>
             </div>
           }
         </div>

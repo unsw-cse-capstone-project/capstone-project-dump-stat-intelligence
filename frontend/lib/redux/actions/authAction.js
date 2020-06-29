@@ -1,5 +1,10 @@
 import * as types from '../types';
 
+export const update_password = (old, pwd) => async dispatch => {
+    //actually check that the password is valid
+    
+    //Don't need to dispatch anything cause state hasn't changed?? 
+}
 
 export const update_details = (first, last, email, phone) => async dispatch => {
     //Do the actual account rego stuff... 
@@ -35,10 +40,8 @@ export const register = (first, last, email, phone, pwd) => async dispatch => {
 export const login = (email, pwd) => async dispatch => {
     //DO THE AUTHENTICATION STUFF TO LOGIN
     let userInfo = {
-        first : "ronald",
-        last  : "mcdonald",
         email : email,
-        phone : null,
+        phone : null
 
     }
     dispatch({

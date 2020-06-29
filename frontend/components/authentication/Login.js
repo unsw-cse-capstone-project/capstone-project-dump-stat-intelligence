@@ -37,11 +37,11 @@ export default function Login(props) {
             <hr/>
             <label className="label">Email</label>
             <div className="field control">
-                <input name="email" className="input" type="text" placeholder="Email"/>
+                <input required={true} name="email" className="input" type="text" placeholder="Email"/>
             </div>
             <label className="label">Password</label>
             <div className="field control">
-                <input name="password" className="input" type="password" placeholder="Password"/>
+                <input required={true} name="password" className="input" type="password" placeholder="Password"/>
             </div>
             <hr/>
             <div className="field control">
