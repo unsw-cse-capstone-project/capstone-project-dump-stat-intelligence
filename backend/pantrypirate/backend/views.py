@@ -1,5 +1,4 @@
 from django.http import JsonResponse, HttpResponse, Http404
-from rest_framework.views import APIView, permissions
 from .serializers import *
 from .models import *
 from .forms import *
@@ -15,8 +14,7 @@ def extract_values(x, key):
 
 
 # Recipe view
-def recipe(APIView):
-    permission_classes = (permissions.ISAuthenticated)
+def recipe(request, recipe_id=None):
     if request.method == 'GET':
 
         # Extract recipe with id and serialise
