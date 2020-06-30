@@ -57,6 +57,7 @@ class RecipeTestCase(TestCase):
             'ingredient'])
         self.assertContains(response, 'Bob')
         response = c.get('/recipe/1/')
+        print(response.content)
         self.assertContains(response, recipe1['recipe']['name'])
         self.assertContains(response, recipe1['recipe']['cook_time'])
         self.assertContains(response, recipe1['recipe']['method'])
