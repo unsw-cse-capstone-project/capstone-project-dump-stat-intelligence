@@ -1,6 +1,6 @@
-from django.http import JsonResponse, HttpResponse, Http404
-from django.db.models import Q
-from django.forms.models import model_to_dict
+from django.http import JsonResponse, HttpResponse, HttpResponseServerError
+from rest_framework.views import APIView
+from rest_framework import generics
 from .serializers import *
 from .models import *
 from .forms import *
@@ -16,52 +16,47 @@ def extract_values(x, key):
 
 
 # Recipe view
-def recipe(request, recipe_id=None):
-    if request.method == 'GET':
+class recipe(APIView):
 
+    def get(self, request, recipe_id=None):
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
-        data = serializer.data
-        data["author"] = recipe.author.name
-        data["meal_cat"] = extract_values(data["meal_cat"], "name")
-        data["diet_req"] = extract_values(data["diet_req"], "name")
-        data["favourites"] = extract_values(data["favourites"], "name")
+        return JsonResponse({"recipe" : serializer.data})
 
-        data = {"recipe" : data}
-        return JsonResponse(data)
-
-    if request.method == "DELETE":
+    def delete(self, request, recipe_id=None):
         # Try to delete recipe
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         recipe.delete()
 
         return HttpResponse()
 
-    if request.method == "GET":
+    def put(self, request, recipe_id=None):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
             recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
-            if recipe.isvalid():
+            if recipe.is_valid():
                 recipe = recipe.save()
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
+        serializer = RecipeSerializer(instance=recipe)
+        return JsonResponse({"recipe" : serializer.data})
 
-    if request.method == "POST":
+    def post(self, request):
         try:
             recipe = RecipeForm(json.loads(request.body)['recipe'])
             recipe.is_valid()
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         recipe = recipe.save()
 
         # For ingredient in list, add to recipe ingredient database
@@ -73,22 +68,14 @@ def recipe(request, recipe_id=None):
                     raise Http500
                 recipe_ingredient.is_valid()
                 recipe_ingredient.save()
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
 
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
-        data = serializer.data
-        data["author"] = recipe.author.name
-        data["meal_cat"] = extract_values(data["meal_cat"], "name")
-        data["diet_req"] = extract_values(data["diet_req"], "name")
-        data["favourites"] = extract_values(data["favourites"], "name")
-
-        data = {"recipe" : data}
-        data = json.dumps(data)
-        return JsonResponse(data, safe=False)
+        return JsonResponse({"recipe" : serializer.data}, safe=False)
 
 
 # Work in progress - currently filters all recipes by meal category and diet reqs

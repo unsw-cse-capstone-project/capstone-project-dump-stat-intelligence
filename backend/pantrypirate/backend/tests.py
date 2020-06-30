@@ -27,10 +27,11 @@ class RecipeTestCase(TestCase):
         user = User.objects.create(name="Bob", email="Bob@gmail.com",
                                     password="Bob")
         ingredient_cat = IngredientCategory.objects.create(name="vegetable")
-        ingredient = IngredientForm({"name" : "potato", "category" : "1"})
+        ingredient = IngredientForm({"name" : "potato", "category" :
+            "vegetable"})
         ingredient.is_valid()
         ingredient.save()
-        ingredient = IngredientForm({"name" : "pea", "category" : "1"})
+        ingredient = IngredientForm({"name" : "pea", "category" : "vegetable"})
         ingredient.is_valid()
         ingredient.save()
 
@@ -97,6 +98,27 @@ class RecipeTestCase(TestCase):
         self.assertContains(response, recipe1['recipe']['ingredients'][1][
             'ingredient'])
         self.assertContains(response, 'Bob')
+        recipe1 = {"recipe": {"name" : "Cold ham water", "cook_time" : "2 "
+                                                                       "hours",
+                   "method" : "Put in water", "author" : "1", "ingredients" :
+                                  [{"adjective" : "moldy", "unit" : "g",
+                                    "amount" : "20", "recipe" : "1",
+                                    "ingredient" : "potato"},
+                                   {"adjective": "green", "unit" : "g",
+                                    "amount" : "20", "recipe": "1",
+                                    "ingredient": "pea"}]}}
+        response = c.put('/recipe/1/', json.dumps(recipe1),
+                         content_type="application/json")
+        self.assertContains(response, recipe1['recipe']['name'])
+        self.assertContains(response, recipe1['recipe']['cook_time'])
+        self.assertContains(response, recipe1['recipe']['method'])
+        self.assertContains(response, recipe1['recipe']['ingredients'][0][
+            'adjective'])
+        self.assertContains(response, recipe1['recipe']['ingredients'][0]['ingredient'])
+        self.assertContains(response, recipe1['recipe']['ingredients'][1][
+            'ingredient'])
+        self.assertContains(response, 'Bob')
+        response = c.delete('/recipe/1/')
 
     def test_post_3(self):
         recipe1 = { "recipe" : {"name" : "Hot ham water", "cook_time" : "2 " \
@@ -138,7 +160,7 @@ class IngredientTestCase(TestCase):
 
     def test_get_post_1(self):
         ingredient_test = {"ingredient" : {"name" : "pea", "category" :
-            "1"}}
+            "vegetable"}}
         c = Client()
         response = c.post('/ingredients/', json.dumps(ingredient_test),
                           content_type="application/json")
@@ -154,7 +176,7 @@ class PantryIngredientTestCase(TestCase):
     def setUp(self):
         ing_cat = IngredientCategory.objects.create(name = "vegetable")
         ingredient = IngredientForm({"name" : "potato", "category" :
-        "1"})
+        "vegetable"})
         ingredient.is_valid()
         ingredient.save()
         user = User.objects.create(name="Bob", email="Bob@gmail.com",

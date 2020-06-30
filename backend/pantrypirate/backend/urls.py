@@ -1,18 +1,19 @@
 from django.urls import path
-from . import views
+from .views import *
 
 urlpatterns = [
     #path('', views.login, name='login'),
-    path('user/<int:user_id>/', views.user, name = 'user'),
+    path('user/<int:user_id>/', user, name = 'user'),
     #path('/user/{user_id}/cookbook', views.cookbook, name = 'cookbook'),
-    path('ingredients/<str:ingredient_name>/', views.ingredients, name =
+    path('ingredients/<str:ingredient_name>/', ingredients, name =
     'get_ingredient'),
-    path('ingredients/', views.ingredients, name = 'set_get_ingredients'),
-    path('user/<int:user_id>/pantry/', views.pantry, name = 'pantry'),
-    path('user/<int:user_id>/pantry/<int:ingredient_id>', views.pantry, name =
+    path('ingredients/', ingredients, name = 'set_get_ingredients'),
+    path('user/<int:user_id>/pantry/', pantry, name = 'pantry'),
+    path('user/<int:user_id>/pantry/<int:ingredient_id>', pantry, name =
     'delete_ingredient'),
     #path('/user/{user_id}/pantry/{ingredientId}', views.pantry, name = 'add_ingredient'),
-    path('recipe/<int:recipe_id>/', views.recipe, name = 'view_recipe'),
-    path('recipe/', views.recipe, name = 'make_recipe'),
-    path('recipe/<str:search_terms>/', views.search, name = 'search'),
+    path('recipe/<int:recipe_id>/', recipe.as_view(), name =
+    'view_recipe'),
+    path('recipe/', recipe.as_view(), name = 'make_recipe'),
+    path('recipe/<str:search_terms>/', search, name = 'search'),
 ]

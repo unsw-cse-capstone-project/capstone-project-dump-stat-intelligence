@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['name']
+        fields = ['id', 'name']
 
 
 class DietReqSerializer(serializers.ModelSerializer):
@@ -58,11 +58,13 @@ class RecipeSerializer(serializers.ModelSerializer):
     favourites = FavouritesSerializer(many=True, read_only=True)
     ingredients = RecipeIngredientSerializer(source="recipeingredient_set",
                                              many=True, read_only=True)
+    author = UserSerializer(read_only=True)
 
     class Meta:
         model = Recipe
         fields = ['name', 'cook_time', 'method', 'author', 'meal_cat',
                   'diet_req', 'favourites', 'ingredients']
+        depth=1
 
 
 class PantryIngredientSerializer(serializers.ModelSerializer):
