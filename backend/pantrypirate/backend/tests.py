@@ -145,10 +145,10 @@ class Ingredient(TestCase):
 # Create your tests here.
 class Recipe(TestCase):
     def setUp(self) -> None:
-        meal_cat = MealCategory.objects.create(name="Lunch")
-        meal_cat2 = MealCategory.objects.create(name="Dinner")
-        diet_req = DietaryRequirement.objects.create(name="Vegan")
-        diet_req = DietaryRequirement.objects.create(name="Vegetarian")
+        meal_cat = MealCategory.objects.create(name="lunch")
+        meal_cat2 = MealCategory.objects.create(name="dinner")
+        diet_req = DietaryRequirement.objects.create(name="vegan")
+        diet_req = DietaryRequirement.objects.create(name="vegetarian")
         user = User.objects.create(username="Bob", email="Bob@gmail.com",
                                     password="Bob")
         ingredient_cat = IngredientCategory.objects.create(name="vegetable")
@@ -165,8 +165,12 @@ class Recipe(TestCase):
         c = Client()
         recipe_data = {"name" : "Hot ham water", "cook_time" : "2 hours",
                    "method" : "Put in water", "author" : "1", "ingredients" :
-                                  [], 'favourites' : [],
-                       'meal_cat' : [{"name" : "dinner"}], 'diet_req' : []}
+                                  [{"adjective" : "moldy", "unit" : "g",
+                                    "amount" : "20", "ingredient" : "potato"}],
+                       'favourites' :
+                           [],
+                       'meal_cat' : [{"name" : "dinner"}], 'diet_req' : [{
+                "name" : "vegan"}]}
         ing = c.post('/recipes/', json.dumps(recipe_data),
                       content_type='application/json')
         print(ing.content)

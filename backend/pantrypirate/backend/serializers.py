@@ -16,12 +16,22 @@ class MealCatSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealCategory
         fields = ['name']
+        extra_kwargs = {
+            'name' : {
+                'validators': [UnicodeUsernameValidator()],
+            }
+        }
 
 
 class DietReqSerializer(serializers.ModelSerializer):
     class Meta:
         model = DietaryRequirement
         fields = ['name']
+        extra_kwargs = {
+            'name' : {
+                'validators': [UnicodeUsernameValidator()],
+            }
+        }
 
 
 class FavouritesSerializer(serializers.ModelSerializer):
@@ -48,6 +58,11 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ['name', 'category']
+        extra_kwargs = {
+            'name' : {
+                'validators': [UnicodeUsernameValidator()],
+            }
+        }
 
     def create(self, validated_data):
         cat_data = validated_data.pop('category')
@@ -77,7 +92,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     meal_cat = MealCatSerializer(many=True)
     diet_req = DietReqSerializer(many=True)
     favourites = FavouritesSerializer(many=True)
-    ingredients = RecipeIngredientSerializer(many=True)
 
     class Meta:
         model = Recipe
@@ -88,15 +102,24 @@ class RecipeSerializer(serializers.ModelSerializer):
                         'diet_req' : {'required' : False}}
 
     def create(self, validated_data):
-        print(validated_data)
-        recipe_ing_data = validated_data.pop('ingredients')
+        recipe_ing_data = validated_data.pop('ingredients', [])
         fav = validated_data.pop('favourites')
-        diet_req = validated_data.pop('diet_req')
-        meal_cat = validated_data.pop('meal_cat')
-        print(meal_cat)
+        diet_req = validated_data.pop('diet_req', [])
+        meal_cat = validated_data.pop('meal_cat', [])
         recipe = Recipe.objects.create(**validated_data)
-        for cat in meal_cat:
-            recipe.meal_cat.set(cat['name'])
+        for diet_data in diet_req:
+            cat = DietaryRequirement.objects.get(name=diet_data.get('name'))
+            recipe.diet_req.add(cat)
+        for cat_data in meal_cat:
+            cat = MealCategory.objects.get(name=cat_data.get('name'))
+            recipe.meal_cat.add(cat)
+        for ing_data in recipe_ing_data:
+            ing_data["recipe"] = recipe.id
+            ing_data["ingredient"] = Ingredient.objects.get(
+                name=ing_data.get('ingredient'))
+            print(ing_data)
+            ing = RecipeIngredient.objects.create(**ing_data)
+            recipe.ingredients.add(ing)
 
         return recipe
 
