@@ -64,8 +64,8 @@ class recipe(APIView):
             for ing in json.loads(request.body)['recipe']['ingredients']:
                 try:
                     recipe_ingredient = RecipeIngredientForm(ing)
-                except RuntimeError as Http500:
-                    raise Http500
+                except RuntimeError:
+                    raise HttpResponseServerError
                 recipe_ingredient.is_valid()
                 recipe_ingredient.save()
         except RuntimeError:
@@ -135,8 +135,8 @@ def ingredients(request, ingredient_name=None):
         # Try to delete ingredient
         try:
             ingredient = Ingredient.objects.get(name=ingredient_name)
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         ingredient.delete()
 
         return HttpResponse()
@@ -146,8 +146,8 @@ def ingredients(request, ingredient_name=None):
             ingredient = IngredientForm(json.loads(request.body)['ingredient'])
             ingredient.is_valid()
             ingredient = ingredient.save()
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         serializer = IngredientSerializer(instance=ingredient)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -167,8 +167,8 @@ def user(request, user_id=None):
         # Extract user with given id
         try:
             user = User.objects.get(pk=user_id)
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
 
         # get info from user profile
         # vars returns a dictionary of the attributes
@@ -181,8 +181,8 @@ def user(request, user_id=None):
     if request.method == "POST":
         try:
             user = UserForm(json.loads(request.body)['user'])
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
 
         user.is_valid()
         user = user.save()
@@ -215,8 +215,8 @@ def pantry(request, user_id=None, ingredient_id=None):
         try:
             pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
                                                    pk=ingredient_id)
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         pantry_ing.delete()
 
         return HttpResponse()
@@ -225,8 +225,8 @@ def pantry(request, user_id=None, ingredient_id=None):
         try:
             ingredient = PantryIngredientForm(json.loads(request.body)[
                                            'ingredients'])
-        except RuntimeError as Http500:
-            raise Http500
+        except RuntimeError:
+            raise HttpResponseServerError
         ingredient.is_valid()
         ingredient = ingredient.save()
         serializer = PantryIngredientSerializer(instance=ingredient)
