@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse, HttpResponseServerError
 from rest_framework.views import APIView
-from rest_framework import generics
+from rest_framework.response import Response
+from rest_framework import generics, status, mixins
 from .serializers import *
 from .models import *
 from .forms import *
@@ -17,8 +18,10 @@ def extract_values(x, key):
 
 # Recipe view
 class recipe(APIView):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
 
-    def get(self, request, recipe_id=None):
+    def get(self, request, recipe_id=None, format=None):
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -28,9 +31,9 @@ class recipe(APIView):
 
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
-        return JsonResponse({"recipe" : serializer.data})
+        return Response({"recipe": serializer.data})
 
-    def delete(self, request, recipe_id=None):
+    def delete(self, request, recipe_id=None, format=None):
         # Try to delete recipe
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
@@ -38,54 +41,63 @@ class recipe(APIView):
             raise HttpResponseServerError
         recipe.delete()
 
-        return HttpResponse()
+        return Response()
 
-    def put(self, request, recipe_id=None):
+    def put(self, request, recipe_id=None, format=None):
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-            recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
+            recipe = RecipeForm(json.loads(request.body)["recipe"], instance=recipe)
             if recipe.is_valid():
                 recipe = recipe.save()
         except RuntimeError:
             raise HttpResponseServerError
         serializer = RecipeSerializer(instance=recipe)
-        return JsonResponse({"recipe" : serializer.data})
+        return Response({"recipe": serializer.data})
 
-    def post(self, request):
-        try:
-            recipe = RecipeForm(json.loads(request.body)['recipe'])
-            recipe.is_valid()
-        except RuntimeError:
-            raise HttpResponseServerError
-        recipe = recipe.save()
+        # def post(self, request, format=None):
+        #     try:
+        #         recipe = RecipeForm(json.loads(request.body)["recipe"])
+        #         recipe.is_valid()
+        #     except RuntimeError:
+        #         raise HttpResponseServerError
+        #     recipe = recipe.save()
 
-        # For ingredient in list, add to recipe ingredient database
-        try:
-            for ing in json.loads(request.body)['recipe']['ingredients']:
-                try:
-                    recipe_ingredient = RecipeIngredientForm(ing)
-                except RuntimeError:
-                    raise HttpResponseServerError
-                recipe_ingredient.is_valid()
-                recipe_ingredient.save()
-        except RuntimeError:
-            raise HttpResponseServerError
+        #     # For ingredient in list, add to recipe ingredient database
+        #     try:
+        #         for ing in json.loads(request.body)["recipe"]["ingredients"]:
+        #             try:
+        #                 recipe_ingredient = RecipeIngredientForm(ing)
+        #             except RuntimeError:
+        #                 raise HttpResponseServerError
+        #             recipe_ingredient.is_valid()
+        #             recipe_ingredient.save()
+        #     except RuntimeError:
+        #         raise HttpResponseServerError
 
-        serializer = RecipeSerializer(instance=recipe)
+        #     serializer = RecipeSerializer(instance=recipe)
 
-        # Take serialise dump and extract out name fields for meal category and
-        # dietary requirements
-        return JsonResponse({"recipe" : serializer.data}, safe=False)
+        #     # Take serialise dump and extract out name fields for meal category and
+        #     # dietary requirements
+        #     return Response({"recipe": serializer.data}, safe=False)
+
+        # Look at this tutorial: https://www.django-rest-framework.org/tutorial/quickstart/
+        # to see how mixins and serialized fields work with rest_api
+        def post(self, request, format=None):
+            serializer = RecipeSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 # Work in progress - currently filters all recipes by meal category and diet reqs
 # Search for recipes
 def search(request, search_terms):
-    # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21 
+    # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
 
     string = urllib.parse.parse_qs(search_terms, keep_blank_values=True)
-    meals = string['meal'][0].split()
-    diets = string['diet'][0].split()
+    meals = string["meal"][0].split()
+    diets = string["diet"][0].split()
 
     f = Recipe.objects.all()
 
@@ -100,11 +112,12 @@ def search(request, search_terms):
         for category in meals:
             e |= f.filter(meal_cat__pk=category)
 
-    else: e = f # if no meal categories specified, return all recipes
+    else:
+        e = f  # if no meal categories specified, return all recipes
 
     # remove duplicates
     e = e.distinct()
-    
+
     # temporarily returning list of matching recipe names
     lst = []
     for it in e:
@@ -115,7 +128,7 @@ def search(request, search_terms):
 
 # Ingredient view
 def ingredients(request, ingredient_name=None):
-    if request.method == 'GET':
+    if request.method == "GET":
         # Extract ingredient with id and serialise
         try:
             ingredient = Ingredient.objects.get(pk=ingredient_name)
@@ -127,11 +140,11 @@ def ingredients(request, ingredient_name=None):
         # dietary requirements
         data = serializer.data
         data["category"] = ingredient.category.name
-        data = {"ingredient" : data}
+        data = {"ingredient": data}
 
         return JsonResponse(data)
 
-    if request.method == 'DELETE':
+    if request.method == "DELETE":
         # Try to delete ingredient
         try:
             ingredient = Ingredient.objects.get(name=ingredient_name)
@@ -141,9 +154,9 @@ def ingredients(request, ingredient_name=None):
 
         return HttpResponse()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
-            ingredient = IngredientForm(json.loads(request.body)['ingredient'])
+            ingredient = IngredientForm(json.loads(request.body)["ingredient"])
             ingredient.is_valid()
             ingredient = ingredient.save()
         except RuntimeError:
@@ -153,8 +166,8 @@ def ingredients(request, ingredient_name=None):
         # Take serialise dump and extract out name fields for meal category and
         # dietary requirements
         data = serializer.data
-        data['category'] = ingredient.category.name
-        data = {"ingredient" : data}
+        data["category"] = ingredient.category.name
+        data = {"ingredient": data}
 
         return JsonResponse(data)
 
@@ -180,7 +193,7 @@ def user(request, user_id=None):
 
     if request.method == "POST":
         try:
-            user = UserForm(json.loads(request.body)['user'])
+            user = UserForm(json.loads(request.body)["user"])
         except RuntimeError:
             raise HttpResponseServerError
 
@@ -213,8 +226,9 @@ def pantry(request, user_id=None, ingredient_id=None):
     if request.method == "DELETE":
         # Try to delete ingredient
         try:
-            pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
-                                                   pk=ingredient_id)
+            pantry_ing = PantryIngredient.objects.get(
+                user__pk=user_id, pk=ingredient_id
+            )
         except RuntimeError:
             raise HttpResponseServerError
         pantry_ing.delete()
@@ -223,8 +237,7 @@ def pantry(request, user_id=None, ingredient_id=None):
 
     if request.method == "POST":
         try:
-            ingredient = PantryIngredientForm(json.loads(request.body)[
-                                           'ingredients'])
+            ingredient = PantryIngredientForm(json.loads(request.body)["ingredients"])
         except RuntimeError:
             raise HttpResponseServerError
         ingredient.is_valid()
@@ -233,7 +246,7 @@ def pantry(request, user_id=None, ingredient_id=None):
 
         # Take serialise dump and extract out name fields for category and user
         data = serializer.data
-        data['ingredient']['category'] = ingredient.ingredient.category.name
-        data['user'] = ingredient.user.name
-        data = {"ingredient" : data}
+        data["ingredient"]["category"] = ingredient.ingredient.category.name
+        data["user"] = ingredient.user.name
+        data = {"ingredient": data}
         return JsonResponse(data)
