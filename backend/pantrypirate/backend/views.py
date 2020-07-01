@@ -19,6 +19,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    queryset = PantryIngredient.objects.all().order_by('name')
+    queryset = PantryIngredient.objects.all().order_by('ingredient')
     serializer_class = PantryIngredientSerializer
 
