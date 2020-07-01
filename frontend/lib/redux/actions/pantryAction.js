@@ -3,16 +3,16 @@ import store from '../store';
 
 
 
-export const add = (ingredient, category, expiry) => async dispatch => {
+export const add = (ingredient) => async dispatch => {
     //DO INTERACTON WITH BACKEND
 
     let uid = store.getState().auth.uid;
 
 
     let newIngredient = {
-        category : category,
-        name : ingredient,
-        expiry : expiry
+        category : ingredient.category,
+        name : ingredient.ingredient,
+        expiry : ingredient.expiry
     }
     dispatch({
         type : types.PANTRY_ADD,
@@ -20,14 +20,14 @@ export const add = (ingredient, category, expiry) => async dispatch => {
     })
 } 
 
-export const remove = (ingredient, category) => async dispatch => {
+export const remove = (ingredient) => async dispatch => {
     //DO INTERACTION WITH BACKEND
 
     let uid = store.getState().auth.uid;
 
     let toRemove = {
-        category : category,
-        ingredient : ingredient
+        category : ingredient.category,
+        ingredient : ingredient.ingredient
     }
     dispatch({
         type : types.PANTRY_REMOVE,

@@ -2,6 +2,7 @@ import * as types from "../types";
 
 const initialState = {
     queryString : "",
+    //each one is an object with name and category
     results : []
 }
 

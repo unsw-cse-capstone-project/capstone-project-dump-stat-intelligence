@@ -3,6 +3,10 @@ export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const UPDATE_DEETS = 'UPDATE_DEETS';
 
+//Recipes
+export const RECIPES_CLEAR = 'RECIPES_CLEAR';
+export const RECIPES_UPDATE = 'RECIPES_UPDATE';
+
 //Explore
 export const EXPLORE_CLEAR = 'EXPLORE_CLEAR';
 export const EXPLORE_ADD = 'EXPLORE_ADD';

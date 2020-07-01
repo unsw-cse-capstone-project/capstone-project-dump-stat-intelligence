@@ -1,15 +1,10 @@
 import Head from "next/head";
 
+import { useSelector } from 'react-redux'; 
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 
 export default function Home() {
-  const recipes = [
-    "Sushi",
-    "Dumplings",
-    "Shepard's Pie",
-    "another one",
-    "Hello world",
-  ];
+  const recipes = useSelector(state => state.recipes.recipes);
   return (
     <>
       <Head>
