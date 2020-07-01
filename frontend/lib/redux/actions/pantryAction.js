@@ -15,7 +15,7 @@ export const add = (ingredient, category, expiry) => async dispatch => {
         expiry : expiry
     }
     dispatch({
-        type : types.ADD,
+        type : types.PANTRY_ADD,
         newIngredient : newIngredient
     })
 } 
@@ -30,7 +30,7 @@ export const remove = (ingredient, category) => async dispatch => {
         ingredient : ingredient
     }
     dispatch({
-        type : types.REMOVE,
+        type : types.PANTRY_REMOVE,
         toRemove : toRemove
     })
 }
@@ -48,7 +48,7 @@ export const create_pantry = () => async dispatch => {
         moreVEG : [{name : 'beans'}]
     }
     dispatch({
-        type : types.CREATE,
+        type : types.PANTRY_CREATE,
         pantry : newPantry
     })
 

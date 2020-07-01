@@ -7,11 +7,11 @@ const initialState = {
 
 export const pantryReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.CREATE:
+        case types.PANTRY_CREATE:
             return {
                 ...action.pantry
             }
-        case types.ADD:
+        case types.PANTRY_ADD:
             let currCat = {}
             //IF CATEGORY ALREADY IN PANTRY, USE CURRENT PANTRY
             if (action.newIngredient.category in state) {
@@ -26,7 +26,7 @@ export const pantryReducer = (state = initialState, action) => {
             return {
                 ...newState,
             }
-        case types.REMOVE:
+        case types.PANTRY_REMOVE:
             //CASE already removed
             if (!(action.toRemove.category in state)) {
                 return state
