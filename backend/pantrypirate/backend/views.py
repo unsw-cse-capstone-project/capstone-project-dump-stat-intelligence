@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
+from rest_framework.authentication import TokenAuthentication, \
+    SessionAuthentication, BaseAuthentication
+from rest_framework.permissions import IsAuthenticated
 from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
@@ -21,16 +23,15 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication, SessionAuthentication,
+                              BaseAuthentication]
+    permission_classes = [IsAuthenticated]
     queryset = PantryIngredient.objects.all().order_by('ingredient')
     serializer_class = PantryIngredientSerializer
 
     def list(self, request, *args, **kwargs):
-        if request.user:
-            queryset = PantryIngredient.objects.filter(
-                user=request.user).order_by('ingredient')
-            serializer = self.get_serializer(queryset, many=True)
-            return Response(json.dumps(serializer.data))
-        else:
-            Response(status=Http404)
+        queryset = PantryIngredient.objects.filter(
+            user=request.user).order_by('ingredient')
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 

@@ -541,8 +541,7 @@ class PantryIngredientTest(TestCase):
         api_client = APIClient()
         api_client.force_authenticate(user=self.user2)
         response = api_client.get('/user/pantry/')
-        self.assertGreaterEqual(json.loads(response.data),
-            [])
+        self.assertGreaterEqual(json.loads(response.data), [])
 
     def test_delete_pantry_ingredient(self):
         c = Client()
