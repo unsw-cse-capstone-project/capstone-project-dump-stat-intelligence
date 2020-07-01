@@ -2,7 +2,7 @@ from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication
 from .serializers import *
 from .models import *
-from rest_framework.views import Response
+from rest_framework.views import Response, Http404
 import json
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,8 +26,11 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
     serializer_class = PantryIngredientSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = PantryIngredient.objects.filter(
-            user=request.user).order_by('ingredient')
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(json.dumps(serializer.data))
+        if request.user:
+            queryset = PantryIngredient.objects.filter(
+                user=request.user).order_by('ingredient')
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(json.dumps(serializer.data))
+        else:
+            Response(status=Http404)
 

@@ -479,7 +479,7 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
-    def test_get_pantry_ingredient(self):
+    def test_get_pantry_ingredient1(self):
         c = Client()
         ingredient_data = {'user': "1", "ingredient": "potato"}
         ing = c.post('/user/pantry/', json.dumps(ingredient_data),
@@ -494,7 +494,7 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
-    def test_get_pantry_ingredients(self):
+    def test_get_pantry_ingredients1(self):
         c = Client()
         ingredient_data1 = {'user': "1", "ingredient": "potato"}
         ingredient_data2 = {'user': "1", "ingredient": "pea"}
@@ -505,7 +505,7 @@ class PantryIngredientTest(TestCase):
         api_client = APIClient()
         api_client.force_authenticate(user=self.user1)
         response = api_client.get('/user/pantry/')
-        self.assertGreaterEqual(json.loads(response.data),
+        self.assertEqual(json.loads(response.data),
             [{"expiry_date":
                   None,
               "user": {"id": 1,
@@ -529,6 +529,20 @@ class PantryIngredientTest(TestCase):
                      "name": "potato",
                      "category": {
                          "name": "vegetable"}}}])
+
+    def test_get_pantry_ingredients2(self):
+        c = Client()
+        ingredient_data1 = {'user': "1", "ingredient": "potato"}
+        ingredient_data2 = {'user': "1", "ingredient": "pea"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data1),
+                     content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data2),
+                     content_type='application/json')
+        api_client = APIClient()
+        api_client.force_authenticate(user=self.user2)
+        response = api_client.get('/user/pantry/')
+        self.assertGreaterEqual(json.loads(response.data),
+            [])
 
     def test_delete_pantry_ingredient(self):
         c = Client()
