@@ -179,43 +179,43 @@ class Recipe(TestCase):
         ing = c.post('/recipes/', json.dumps(recipe_data),
                      content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
-                                {"id": 1,
-                                 "name": "Hot "
-                                         "ham "
-                                         "water",
-                                 "cook_time": "2 hours",
-                                 "method": "Put in water",
-                                 "author":
-                                     {"id": 1,
-                                      "username": "Bob",
-                                      "password": "Bob",
-                                      "email": "Bob@gmail.com",
-                                      "favourites": []},
-                                 "meal_cat": [{
-                                     "name": "dinner"}],
-                                 "diet_req":
-                                     [{
-                                         "name": "vegan"}],
-                                 "favourites": [],
-                                 "ingredients":
-                                     [{
-                                         "adjective": "moldy",
-                                         "unit": "g",
-                                         "amount": "20",
-                                         "recipe": 1,
-                                         "ingredient": {
-                                             "name": "potato",
-                                             "category": {
-                                                 "name": "vegetable"}}},
-                                         {
-                                             "adjective": "moldy",
-                                             "unit": "g",
-                                             "amount": "20",
-                                             "recipe": 1,
-                                             "ingredient": {
-                                                 "name": "pea",
-                                                 "category": {
-                                                     "name": "vegetable"}}}]}.items())
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
 
     def test_get_recipe(self):
         c = Client()
@@ -235,43 +235,43 @@ class Recipe(TestCase):
                      content_type='application/json')
         ing = c.get('/recipes/1/')
         self.assertGreaterEqual(json.loads(ing.content).items(),
-                                {"id": 1,
-                                 "name": "Hot "
-                                         "ham "
-                                         "water",
-                                 "cook_time": "2 hours",
-                                 "method": "Put in water",
-                                 "author":
-                                     {"id": 1,
-                                      "username": "Bob",
-                                      "password": "Bob",
-                                      "email": "Bob@gmail.com",
-                                      "favourites": []},
-                                 "meal_cat": [{
-                                     "name": "dinner"}],
-                                 "diet_req":
-                                     [{
-                                         "name": "vegan"}],
-                                 "favourites": [],
-                                 "ingredients":
-                                     [{
-                                         "adjective": "moldy",
-                                         "unit": "g",
-                                         "amount": "20",
-                                         "recipe": 1,
-                                         "ingredient": {
-                                             "name": "potato",
-                                             "category": {
-                                                 "name": "vegetable"}}},
-                                         {
-                                             "adjective": "moldy",
-                                             "unit": "g",
-                                             "amount": "20",
-                                             "recipe": 1,
-                                             "ingredient": {
-                                                 "name": "pea",
-                                                 "category": {
-                                                     "name": "vegetable"}}}]}.items())
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
 
     def test_get_recipes(self):
         c = Client()
@@ -303,72 +303,72 @@ class Recipe(TestCase):
                content_type='application/json')
         ing = c.get('/recipes/')
         self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
-                                {"id": 1,
-                                 "name": "Hot "
-                                         "ham "
-                                         "water",
-                                 "cook_time": "2 hours",
-                                 "method": "Put in water",
-                                 "author":
-                                     {"id": 1,
-                                      "username": "Bob",
-                                      "password": "Bob",
-                                      "email": "Bob@gmail.com",
-                                      "favourites": []},
-                                 "meal_cat": [{
-                                     "name": "dinner"}],
-                                 "diet_req":
-                                     [{
-                                         "name": "vegan"}],
-                                 "favourites": [],
-                                 "ingredients":
-                                     [{
-                                         "adjective": "moldy",
-                                         "unit": "g",
-                                         "amount": "20",
-                                         "recipe": 1,
-                                         "ingredient": {
-                                             "name": "potato",
-                                             "category": {
-                                                 "name": "vegetable"}}},
-                                         {
-                                             "adjective": "moldy",
-                                             "unit": "g",
-                                             "amount": "20",
-                                             "recipe": 1,
-                                             "ingredient": {
-                                                 "name": "pea",
-                                                 "category": {
-                                                     "name": "vegetable"}}}]}.items())
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
         self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
-                                {"id": 2,
-                                 "name": "Cold "
-                                         "ham "
-                                         "water",
-                                 "cook_time": "2 hours",
-                                 "method": "Put in cold water",
-                                 "author":
-                                     {"id": 1,
-                                      "username": "Bob",
-                                      "password": "Bob",
-                                      "email": "Bob@gmail.com",
-                                      "favourites": []},
-                                 "meal_cat": [{
-                                     "name": "dinner"}],
-                                 "diet_req":
-                                     [{
-                                         "name": "vegan"}],
-                                 "favourites": [],
-                                 "ingredients":
-                                     [{
-                                         "adjective": "moldy",
-                                         "unit": "g",
-                                         "amount": "20",
-                                         "recipe": 2,
-                                         "ingredient": {
-                                             "name": "potato",
-                                             "category": {
-                                                 "name": "vegetable"}}}]}.items())
+            {"id": 2,
+             "name": "Cold "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in cold water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 2,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}}]}.items())
 
     def test_delete_recipe(self):
         c = Client()
