@@ -41,10 +41,10 @@ export default function EditDetails(props) {
             <label className="label">Name</label>
             <div className="field-body field control">
                 <div className="field control">
-                    <input name="first" class="input" type="text" placeholder="First Name" defaultValue={deets.first}/>
+                    <input name="first" className="input" type="text" placeholder="First Name" defaultValue={deets.first}/>
                 </div>
                 <div className="field control">
-                    <input name="last" class="input" type="text" placeholder="Last Name" defaultValue={deets.last}/>
+                    <input name="last" className="input" type="text" placeholder="Last Name" defaultValue={deets.last}/>
                 </div>
             </div>
             <label className="label">Email</label>

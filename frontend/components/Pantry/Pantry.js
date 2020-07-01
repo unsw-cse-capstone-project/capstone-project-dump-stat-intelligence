@@ -4,13 +4,19 @@ import React from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import PantryIngredient from './PantryIngredient';
 import { remove } from "../../lib/redux/actions/pantryAction";
-import { explore_remove, explore_add } from "../../lib/redux/actions/exploreAction";
+import { explore_remove, explore_add, explore_clear } from "../../lib/redux/actions/exploreAction";
 
 export default function Indicator() {
   const dispatch = useDispatch();
   function add(event) {
+    console.log("YEET");
     event.preventDefault();
     dispatch(explore_add(event.target.elements.choice.value));
+  }
+  function clear(event) {
+    
+    event.preventDefault();
+    dispatch(explore_clear());
   }
   let pantry = useSelector(state => state.pantry)
   let chosen = useSelector(state => state.explore)
@@ -45,13 +51,18 @@ export default function Indicator() {
               {Object.keys(pantry).map((category, i) => {
                 return <>
                   {pantry[category].map((ingredient,j) => (
-                    <option key={j}>{ingredient.name}</option>
+                    ( chosen.indexOf(ingredient.name) === -1 ?
+                      <option key={j}>{ingredient.name}</option>
+                      : ""
+                    )
+                    
                   ))}
                 </> 
               })}
             </select>
           </div>
           <button type="submit" className="button">Add</button>
+          <button onClick={clear} className="button">Clear</button>
         </div>
       </form>
       <div className={styles.ingredientSection}>
