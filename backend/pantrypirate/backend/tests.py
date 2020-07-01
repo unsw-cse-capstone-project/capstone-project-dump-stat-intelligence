@@ -569,3 +569,96 @@ class PantryIngredientTest(TestCase):
                                           "favourites": []},
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
+
+
+
+
+# Testing searching
+class SearchTestCase(TestCase):
+    def setUp(self):
+
+        # set up meal categories and dietary requirements
+        breakfast = MealCategory.objects.create(name="breakfast")
+        lunch = MealCategory.objects.create(name="lunch")
+        dessert = MealCategory.objects.create(name="dessert")
+        vegan = DietaryRequirement.objects.create(name="vegan")
+        dairy_free = DietaryRequirement.objects.create(name="dairy-free")
+
+        # set up user
+        jess = User.objects.create(name="Jess", email="jess@gmail.com", password="1234")
+
+        # set up recipes
+        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=jess)
+        fruit_salad.save()
+        fruit_salad.meal_cat.add(breakfast)
+        fruit_salad.diet_req.add(vegan)
+        fruit_salad.diet_req.add(dairy_free)
+
+        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", method="Crunch crunch", author=jess)
+        garden_salad.save()
+        garden_salad.meal_cat.add(lunch)
+        garden_salad.diet_req.add(vegan)
+        garden_salad.diet_req.add(dairy_free)
+
+        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", method="Yummy crunch?", author=jess)
+        mixed_salad.save()
+        mixed_salad.meal_cat.add(lunch)
+        mixed_salad.diet_req.add(vegan)
+        mixed_salad.diet_req.add(dairy_free)
+
+        # set up recipe ingredients
+        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit.save()
+        apple = Ingredient(name="apple", category=fruit)
+        apple.save()
+        pear = Ingredient(name="pear", category=fruit)
+        pear.save()
+
+        vegetable = IngredientCategory.objects.create(name="vegetable")
+        vegetable.save()
+        tomato = Ingredient(name="tomato", category=vegetable)
+        tomato.save()
+        carrot = Ingredient(name="carrot", category=vegetable)
+        carrot.save()
+
+        r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=fruit_salad)
+        r_apple.save()
+        r_pear = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=pear, recipe=fruit_salad)
+        r_pear.save()
+
+        r_tomato = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=tomato, recipe=garden_salad)
+        r_tomato.save()
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=carrot, recipe=garden_salad)
+        r_carrot.save()
+
+        r_mixed_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=mixed_salad)
+        r_mixed_apple.save()
+        r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=carrot, recipe=mixed_salad)
+        r_mixed_carrot.save()
+
+        # make pantry ingredients
+        p_apple = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=apple)
+        p_apple.save()
+        p_pear = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=pear)
+        p_pear.save()
+        p_carrot = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=carrot)
+        p_carrot.save()
+        p_tomato = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=tomato) # WON'T add tomato to running list
+        p_tomato.save()
+
+    def test_search(self):
+        c = Client()
+
+        # extract pantry items
+        p_apple = PantryIngredient.objects.get(pk=1)
+        p_pear = PantryIngredient.objects.get(pk=2)
+        p_carrot = PantryIngredient.objects.get(pk=3)
+
+        running_list = {p_apple.ingredient.name : p_apple.pk, p_pear.ingredient.name : p_pear.pk, p_carrot.ingredient.name : p_carrot.pk}
+
+        response = c.post('/recipe/?meal={dinner,lunch}&diet={vegan}&limit=10&offset=21',
+                          json.dumps(running_list), content_type="application/json")
+
+        search_test = search(running_list, "meal=dinner+lunch&diet=vegan&limit=10&offset=21")
+
+        print(search_test)

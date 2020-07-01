@@ -21,7 +21,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
-        
+        print(request.url)
+
         string = urllib.parse.parse_qs(search_terms, keep_blank_values=True)
         meals = string['meal'][0].split()
         diets = string['diet'][0].split()
@@ -61,9 +62,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for it in e:
             lst.append(it.name)
 
-        print(lst)
-
-        return JsonResponse({"Matches": lst})
+        return Response(serializer.data)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
