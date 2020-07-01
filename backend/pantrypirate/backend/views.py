@@ -1,5 +1,4 @@
 from django.http import JsonResponse, HttpResponse, Http404
-from django.db.models import Q
 from .serializers import *
 from .models import *
 from .forms import *
@@ -21,8 +20,8 @@ def recipe(request, recipe_id=None):
         # Extract recipe with id and serialise
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except Recipe.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -32,27 +31,49 @@ def recipe(request, recipe_id=None):
         data["meal_cat"] = extract_values(data["meal_cat"], "name")
         data["diet_req"] = extract_values(data["diet_req"], "name")
         data["favourites"] = extract_values(data["favourites"], "name")
-        data = {"recipe" : data}
 
+        data = {"recipe" : data}
         return JsonResponse(data)
 
     if request.method == "DELETE":
         # Try to delete recipe
         try:
             recipe = Recipe.objects.get(pk=recipe_id)
-        except Recipe.DoesNotExist:
-            raise Http404("Recipe does not exist")
+        except RuntimeError as Http500:
+            raise Http500
         recipe.delete()
 
         return HttpResponse()
 
+    if request.method == "PUT":
+        try:
+            recipe = Recipe.objects.get(pk=recipe_id)
+            recipe = RecipeForm(json.loads(request.body)['recipe'], instance=recipe)
+            if recipe.isvalid():
+                recipe = recipe.save()
+        except RuntimeError as Http500:
+            raise Http500
+
     if request.method == "POST":
         try:
             recipe = RecipeForm(json.loads(request.body)['recipe'])
-        except RuntimeError as error:
-            raise error
-        recipe.is_valid()
+            recipe.is_valid()
+        except RuntimeError as Http500:
+            raise Http500
         recipe = recipe.save()
+
+        # For ingredient in list, add to recipe ingredient database
+        try:
+            for ing in json.loads(request.body)['recipe']['ingredients']:
+                try:
+                    recipe_ingredient = RecipeIngredientForm(ing)
+                except RuntimeError as Http500:
+                    raise Http500
+                recipe_ingredient.is_valid()
+                recipe_ingredient.save()
+        except RuntimeError as Http500:
+            raise Http500
+
         serializer = RecipeSerializer(instance=recipe)
 
         # Take serialise dump and extract out name fields for meal category and
@@ -62,9 +83,11 @@ def recipe(request, recipe_id=None):
         data["meal_cat"] = extract_values(data["meal_cat"], "name")
         data["diet_req"] = extract_values(data["diet_req"], "name")
         data["favourites"] = extract_values(data["favourites"], "name")
-        data = {"recipe" : data}
 
-        return JsonResponse(data)
+        data = {"recipe" : data}
+        data = json.dumps(data)
+        return JsonResponse(data, safe=False)
+
 
 # Work in progress - currently filters all recipes by meal category and diet reqs
 # Search for recipes
@@ -100,6 +123,53 @@ def search(request, search_terms):
 
     return JsonResponse({"Matches": lst})
 
+
+# Ingredient view
+def ingredients(request, ingredient_name=None):
+    if request.method == 'GET':
+        # Extract ingredient with id and serialise
+        try:
+            ingredient = Ingredient.objects.get(pk=ingredient_name)
+        except RuntimeError as Http500:
+            raise Http500
+        serializer = IngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for meal category and
+        # dietary requirements
+        data = serializer.data
+        data["category"] = ingredient.category.name
+        data = {"ingredient" : data}
+
+        return JsonResponse(data)
+
+    if request.method == 'DELETE':
+        # Try to delete ingredient
+        try:
+            ingredient = Ingredient.objects.get(name=ingredient_name)
+        except RuntimeError as Http500:
+            raise Http500
+        ingredient.delete()
+
+        return HttpResponse()
+
+    if request.method == 'POST':
+        try:
+            ingredient = IngredientForm(json.loads(request.body)['ingredient'])
+            ingredient.is_valid()
+            ingredient = ingredient.save()
+        except RuntimeError as Http500:
+            raise Http500
+        serializer = IngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for meal category and
+        # dietary requirements
+        data = serializer.data
+        data['category'] = ingredient.category.name
+        data = {"ingredient" : data}
+
+        return JsonResponse(data)
+
+
 # User profiles
 def user(request, user_id=None):
 
@@ -108,8 +178,8 @@ def user(request, user_id=None):
         # Extract user with given id
         try:
             user = User.objects.get(pk=user_id)
-        except User.DoesNotExist:
-            raise Http404("User does not exist")
+        except RuntimeError as Http500:
+            raise Http500
 
         # get info from user profile
         # vars returns a dictionary of the attributes
@@ -121,9 +191,9 @@ def user(request, user_id=None):
 
     if request.method == "POST":
         try:
-            user = UserForm(request.body)
-        except RuntimeError as error:
-            raise error
+            user = UserForm(json.loads(request.body)['user'])
+        except RuntimeError as Http500:
+            raise Http500
 
         user.is_valid()
         user = user.save()
@@ -131,7 +201,7 @@ def user(request, user_id=None):
 
 
 # User pantry
-def pantry(request, user_id=None):
+def pantry(request, user_id=None, ingredient_id=None):
 
     if request.method == "GET":
 
@@ -150,3 +220,31 @@ def pantry(request, user_id=None):
             pantry_contents[item.ingredient.name] = new_dict
 
         return JsonResponse(pantry_contents)
+
+    if request.method == "DELETE":
+        # Try to delete ingredient
+        try:
+            pantry_ing = PantryIngredient.objects.get(user__pk=user_id,
+                                                   pk=ingredient_id)
+        except RuntimeError as Http500:
+            raise Http500
+        pantry_ing.delete()
+
+        return HttpResponse()
+
+    if request.method == "POST":
+        try:
+            ingredient = PantryIngredientForm(json.loads(request.body)[
+                                           'ingredients'])
+        except RuntimeError as Http500:
+            raise Http500
+        ingredient.is_valid()
+        ingredient = ingredient.save()
+        serializer = PantryIngredientSerializer(instance=ingredient)
+
+        # Take serialise dump and extract out name fields for category and user
+        data = serializer.data
+        data['ingredient']['category'] = ingredient.ingredient.category.name
+        data['user'] = ingredient.user.name
+        data = {"ingredient" : data}
+        return JsonResponse(data)
