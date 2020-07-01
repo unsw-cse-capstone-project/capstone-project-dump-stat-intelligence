@@ -1,13 +1,16 @@
-from rest_framework import viewsets, views
+from rest_framework import viewsets
 from rest_framework.authentication import (
     TokenAuthentication,
     SessionAuthentication,
     BaseAuthentication,
 )
-from rest_framework.permissions import IsAuthenticated
+from django.db.models import Prefetch
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .serializers import *
 from .models import *
-from rest_framework.views import Response
+from rest_framework.views import Response, Http404
+import urllib.parse
+import json
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -21,16 +24,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
-        print(request.url)
+        # print(request.GET.get('meal'))
 
-        string = urllib.parse.parse_qs(search_terms, keep_blank_values=True)
+        string = urllib.parse.parse_qs(request.META['QUERY_STRING'],
+                                       keep_blank_values=True)
+        # print(string)
+        if not string:
+            queryset = Recipe.objects.all().order_by('name')
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+
         meals = string['meal'][0].split()
         diets = string['diet'][0].split()
 
-        running_list = request
+        running_list = json.loads(request.META['header'])
+        # print(running_list)
 
         recipes = Recipe.objects.none()
         for item in running_list.values():
+            # print(item)
             pIngredient = PantryIngredient.objects.get(pk=item)
             ingredient = pIngredient.ingredient
             for rec_ingredient in RecipeIngredient.objects.filter(
@@ -62,7 +74,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for it in e:
             lst.append(it.name)
 
-        return Response(serializer.data)
+        return Response(lst)
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
@@ -71,16 +83,17 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication, SessionAuthentication,
-                              BaseAuthentication]
-    permission_classes = [IsAuthenticated]
-    queryset = PantryIngredient.objects.all().order_by('ingredient')
+    authentication_classes = [TokenAuthentication]
+    queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
 
     def list(self, request, *args, **kwargs):
-        queryset = PantryIngredient.objects.filter(
-            user=request.user).order_by('ingredient')
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
-class SearchView(views.APIView)
+        if request.user.is_authenticated:
+            queryset = PantryIngredient.objects.filter(
+                user=request.user).order_by('ingredient__category__name',
+                'ingredient__name')
+            # print(queryset)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Http404

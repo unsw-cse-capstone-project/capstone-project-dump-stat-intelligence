@@ -74,7 +74,7 @@ class UserTestCase(TestCase):
 
 
 # Create your tests here.
-class Ingredient(TestCase):
+class IngredientTest(TestCase):
     def setUp(self) -> None:
         cat = IngredientCategory.objects.create(name='grain')
         cat = IngredientCategory.objects.create(name='vegetable')
@@ -142,7 +142,7 @@ class Ingredient(TestCase):
 
 
 # Create your tests here.
-class Recipe(TestCase):
+class RecipeTest(TestCase):
     def setUp(self) -> None:
         meal_cat = MealCategory.objects.create(name="lunch")
         meal_cat2 = MealCategory.objects.create(name="dinner")
@@ -302,7 +302,7 @@ class Recipe(TestCase):
         c.post('/recipes/', json.dumps(recipe_data2),
                content_type='application/json')
         ing = c.get('/recipes/')
-        self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
+        self.assertGreaterEqual(json.loads(ing.content)[1].items(),
             {"id": 1,
              "name": "Hot "
                      "ham "
@@ -340,7 +340,7 @@ class Recipe(TestCase):
                              "name": "pea",
                              "category": {
                                  "name": "vegetable"}}}]}.items())
-        self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
+        self.assertGreaterEqual(json.loads(ing.content)[0].items(),
             {"id": 2,
              "name": "Cold "
                      "ham "
@@ -437,12 +437,26 @@ class PantryIngredientTest(TestCase):
     def setUp(self) -> None:
         cat = IngredientCategory.objects.create(name='grain')
         cat = IngredientCategory.objects.create(name='vegetable')
+        cat = IngredientCategory.objects.create(name='alpha')
+        cat = IngredientCategory.objects.create(name='zeta')
         ingredient = IngredientSerializer(data={"name": "potato", "category":
             {"name": "vegetable"}})
         ingredient.is_valid()
         ingredient.save()
         ingredient = IngredientSerializer(data={"name": "pea", "category":
             {"name": "vegetable"}})
+        ingredient.is_valid()
+        ingredient.save()
+        ingredient = IngredientSerializer(data={"name": "chick", "category":
+            {"name": "grain"}})
+        ingredient.is_valid()
+        ingredient.save()
+        ingredient = IngredientSerializer(data={"name": "x", "category":
+            {"name": "zeta"}})
+        ingredient.is_valid()
+        ingredient.save()
+        ingredient = IngredientSerializer(data={"name": "z", "category":
+            {"name": "alpha"}})
         ingredient.is_valid()
         ingredient.save()
         self.user1 = User.objects.create(username="Bob", email="Bob@gmail.com",
@@ -479,7 +493,7 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
-    def test_get_pantry_ingredient1(self):
+    def test_get_pantry_ingredient(self):
         c = Client()
         ingredient_data = {'user': "1", "ingredient": "potato"}
         ing = c.post('/user/pantry/', json.dumps(ingredient_data),
@@ -498,25 +512,60 @@ class PantryIngredientTest(TestCase):
         c = Client()
         ingredient_data1 = {'user': "1", "ingredient": "potato"}
         ingredient_data2 = {'user': "1", "ingredient": "pea"}
+        ingredient_data3 = {'user': "1", "ingredient": "chick"}
+        ingredient_data4 = {'user': "1", "ingredient": "x"}
+        ingredient_data5 = {'user': "1", "ingredient": "z"}
         ing = c.post('/user/pantry/', json.dumps(ingredient_data1),
                      content_type='application/json')
         ing = c.post('/user/pantry/', json.dumps(ingredient_data2),
                      content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data3),
+                     content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data4),
+                     content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data5),
+                     content_type='application/json')
         api_client = APIClient()
         api_client.force_authenticate(user=self.user1)
         response = api_client.get('/user/pantry/')
-        self.assertEqual(json.loads(response.data),
-            [{"expiry_date":
-                  None,
-              "user": {"id": 1,
-                       "username": "Bob",
-                       "password": "Bob",
-                       "email": "Bob@gmail.com",
-                       "favourites": []},
-              "ingredient": {
-                  "name": "pea",
-                  "category": {
-                      "name": "vegetable"}}},
+        self.assertEqual(response.data,
+            [
+             {
+                 "expiry_date": None,
+                 "user": {
+                     "id": 1,
+                     "username": "Bob",
+                     "password": "Bob",
+                     "email": "Bob@gmail.com",
+                     "favourites": []},
+                 "ingredient": {
+                     "name": "z",
+                     "category": {
+                         "name": "alpha"}}},
+             {
+             "expiry_date": None,
+             "user": {
+                 "id": 1,
+                 "username": "Bob",
+                 "password": "Bob",
+                 "email": "Bob@gmail.com",
+                 "favourites": []},
+             "ingredient": {
+                 "name": "chick",
+                 "category": {
+                     "name": "grain"}}},
+             {
+                 "expiry_date":
+                     None,
+                 "user": {"id": 1,
+                          "username": "Bob",
+                          "password": "Bob",
+                          "email": "Bob@gmail.com",
+                          "favourites": []},
+                 "ingredient": {
+                     "name": "pea",
+                     "category": {
+                         "name": "vegetable"}}},
              {
                  "expiry_date": None,
                  "user": {
@@ -528,7 +577,19 @@ class PantryIngredientTest(TestCase):
                  "ingredient": {
                      "name": "potato",
                      "category": {
-                         "name": "vegetable"}}}])
+                         "name": "vegetable"}}},
+             {
+                 "expiry_date": None,
+                 "user": {
+                     "id": 1,
+                     "username": "Bob",
+                     "password": "Bob",
+                     "email": "Bob@gmail.com",
+                     "favourites": []},
+                 "ingredient": {
+                     "name": "x",
+                     "category": {
+                         "name": "zeta"}}}])
 
     def test_get_pantry_ingredients2(self):
         c = Client()
@@ -541,7 +602,7 @@ class PantryIngredientTest(TestCase):
         api_client = APIClient()
         api_client.force_authenticate(user=self.user2)
         response = api_client.get('/user/pantry/')
-        self.assertGreaterEqual(json.loads(response.data), [])
+        self.assertGreaterEqual(response.data, [])
 
     def test_delete_pantry_ingredient(self):
         c = Client()
@@ -552,7 +613,7 @@ class PantryIngredientTest(TestCase):
         ing = c.get('/user/pantry/1/')
         self.assertContains(ing, "Not found", status_code=404)
 
-    def test_put_ingredient(self):
+    def test_put_pantry_ingredient(self):
         c = Client()
         ingredient_data = {'user': "1", "ingredient": "potato"}
         c.post('/user/pantry/', json.dumps(ingredient_data),
@@ -571,8 +632,6 @@ class PantryIngredientTest(TestCase):
                                      "name": "vegetable"}}}.items())
 
 
-
-
 # Testing searching
 class SearchTestCase(TestCase):
     def setUp(self):
@@ -585,7 +644,8 @@ class SearchTestCase(TestCase):
         dairy_free = DietaryRequirement.objects.create(name="dairy-free")
 
         # set up user
-        jess = User.objects.create(name="Jess", email="jess@gmail.com", password="1234")
+        jess = User.objects.create(username="Jess", email="jess@gmail.com",
+                                   password="1234")
 
         # set up recipes
         fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=jess)
@@ -656,9 +716,9 @@ class SearchTestCase(TestCase):
 
         running_list = {p_apple.ingredient.name : p_apple.pk, p_pear.ingredient.name : p_pear.pk, p_carrot.ingredient.name : p_carrot.pk}
 
-        response = c.post('/recipe/?meal={dinner,lunch}&diet={vegan}&limit=10&offset=21',
-                          json.dumps(running_list), content_type="application/json")
-
-        search_test = search(running_list, "meal=dinner+lunch&diet=vegan&limit=10&offset=21")
-
-        print(search_test)
+        response = c.get('/recipes/?meal=dinner+lunch&diet='
+                          'vegan&limit=10&offset=21/',
+                         header=json.dumps(running_list),
+                         content_type="application/json")
+        expected_response = ['Garden salad', 'Mixed salad']
+        self.assertEqual(json.loads(response.content), expected_response)
