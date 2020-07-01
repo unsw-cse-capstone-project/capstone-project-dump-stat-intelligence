@@ -42,7 +42,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
                 "ingredient"
             )
             serializer = self.get_serializer(queryset, many=True)
-            return Response(json.dumps(serializer.data))
+            return Response(serializer.data)
         else:
             Response(status=Http404)
 
