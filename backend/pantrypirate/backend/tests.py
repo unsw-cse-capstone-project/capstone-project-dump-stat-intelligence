@@ -1,172 +1,572 @@
 from django.test import TestCase, Client
+from rest_framework.test import force_authenticate, APIClient
 from .models import *
 from .views import *
-from .forms import *
 import json
 
 
 # Create your tests here.
 class UserTestCase(TestCase):
-    def setUp(self):
-        self.user = User.objects.create(name="Bob",
-                                         email="Potato17@gmail.com",
-                                         password="4321")
 
-    def test_deets(self):
-        assert(self.user.name == "Bob")
-        assert(self.user.email == "Potato17@gmail.com")
-        assert(self.user.password == "4321")
+    def test_create_user(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        user_data2 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        user = c.post('/user/', json.dumps(user_data1),
+                      content_type='application/json')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                user_data1.items())
+        user = c.post('/user/', json.dumps(user_data2),
+                      content_type='application/json')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                user_data2.items())
+
+    def test_get_user(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        c.post('/user/', json.dumps(user_data1),
+               content_type='application/json')
+        user = c.get('/user/1/')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                user_data1.items())
+
+    def test_get_users(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        user_data2 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        c.post('/user/', json.dumps(user_data1),
+               content_type='application/json')
+        c.post('/user/', json.dumps(user_data2),
+               content_type='application/json')
+        users = c.get('/user/')
+        self.assertGreaterEqual(json.loads(users.content)['results'][1].items(),
+                                user_data1.items())
+        self.assertGreaterEqual(json.loads(users.content)['results'][0].items(),
+                                user_data2.items())
+
+    def test_delete_user(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        c.post('/user/', json.dumps(user_data1),
+               content_type='application/json')
+        c.delete('/user/1/')
+        user = c.get('/user/1/')
+        self.assertContains(user, "Not found", status_code=404)
+
+    def test_put_user(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        c.post('/user/', json.dumps(user_data1),
+               content_type='application/json')
+        user_data1 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        user = c.put('/user/1/', json.dumps(user_data1),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                user_data1.items())
 
 
-class RecipeTestCase(TestCase):
-    def setUp(self):
-        meal_cat = MealCategory.objects.create(name="Lunch")
-        meal_cat2 = MealCategory.objects.create(name="Dinner")
-        diet_req = DietaryRequirement.objects.create(name="Vegan")
-        diet_req = DietaryRequirement.objects.create(name="Vegetarian")
-        user = User.objects.create(name="Bob", email="Bob@gmail.com",
-                                    password="Bob")
+# Create your tests here.
+class Ingredient(TestCase):
+    def setUp(self) -> None:
+        cat = IngredientCategory.objects.create(name='grain')
+        cat = IngredientCategory.objects.create(name='vegetable')
+
+    def test_create_ingredient1(self):
+        c = Client()
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        ing = c.post('/ingredients/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                ingredient_data.items())
+
+    def test_create_ingredient2(self):
+        c = Client()
+        ingredient_data = {'name': 'potato', 'category': {'name':
+                                                              'not_grain'}}
+        ing = c.post('/ingredients/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                ingredient_data.items())
+
+    def test_get_ingredient(self):
+        c = Client()
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        c.post('/ingredients/', json.dumps(ingredient_data),
+               content_type='application/json')
+        ing = c.get('/ingredients/potato/')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                ingredient_data.items())
+
+    def test_get_ingredients(self):
+        c = Client()
+        ingredient_data1 = {'name': 'potato', 'category': {'name': 'grain'}}
+        ingredient_data2 = {'name': 'beef', 'category': {'name': 'grain'}}
+        c.post('/ingredients/', json.dumps(ingredient_data1),
+               content_type='application/json')
+        c.post('/ingredients/', json.dumps(ingredient_data2),
+               content_type='application/json')
+        ing = c.get('/ingredients/')
+        self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
+                                ingredient_data1.items())
+        self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
+                                ingredient_data2.items())
+
+    def test_delete_ingredient(self):
+        c = Client()
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        c.post('/ingredients/', json.dumps(ingredient_data),
+               content_type='application/json')
+        c.delete('/ingredients/potato/')
+        ing = c.get('/ingredients/potato/')
+        self.assertContains(ing, "Not found", status_code=404)
+
+    def test_put_ingredient(self):
+        c = Client()
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        c.post('/ingredients/', json.dumps(ingredient_data),
+               content_type='application/json')
+        ingredient_data = {'name': 'potato', 'category': {'name':
+                                                              'vegetable'}}
+        ing = c.put('/ingredients/potato/', json.dumps(ingredient_data),
+                    content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                ingredient_data.items())
+
+
+# Create your tests here.
+class Recipe(TestCase):
+    def setUp(self) -> None:
+        meal_cat = MealCategory.objects.create(name="lunch")
+        meal_cat2 = MealCategory.objects.create(name="dinner")
+        diet_req = DietaryRequirement.objects.create(name="vegan")
+        diet_req = DietaryRequirement.objects.create(name="vegetarian")
+        user = User.objects.create(username="Bob", email="Bob@gmail.com",
+                                   password="Bob")
+        user = User.objects.create(username="Tob", email="Tob@gmail.com",
+                                   password="Tob")
         ingredient_cat = IngredientCategory.objects.create(name="vegetable")
-        ingredient = IngredientForm({"name" : "potato", "category" : "1"})
+        ingredient = IngredientSerializer(data={"name": "potato", "category":
+            {"name": "vegetable"}})
         ingredient.is_valid()
         ingredient.save()
-        ingredient = IngredientForm({"name" : "pea", "category" : "1"})
+        ingredient = IngredientSerializer(data={"name": "pea", "category":
+            {"name": "vegetable"}})
         ingredient.is_valid()
         ingredient.save()
 
-    def test_post_1(self):
-        recipe1 = {"recipe": {"name" : "Hot ham water", "cook_time" : "2 hours",
-                   "method" : "Put in water", "author" : "1", "ingredients" :
-                                  [{"adjective" : "moldy", "unit" : "g",
-                                    "amount" : "20", "recipe" : "1",
-                                    "ingredient" : "potato"},
-                                   {"adjective": "green", "unit": "g",
-                                    "amount": "20", "recipe": "1",
-                                    "ingredient": "pea"}]}}
+    def test_create_recipe(self):
         c = Client()
-        response = c.post('/recipe/', json.dumps(recipe1),
-                          content_type="application/json")
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0][
-            'adjective'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0]['ingredient'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][1][
-            'ingredient'])
-        self.assertContains(response, 'Bob')
-        response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0][
-            'adjective'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0]['ingredient'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][1][
-            'ingredient'])
-        self.assertContains(response, 'Bob')
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        ing = c.post('/recipes/', json.dumps(recipe_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"id": 1,
+                                 "name": "Hot "
+                                         "ham "
+                                         "water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in water",
+                                 "author":
+                                     {"id": 1,
+                                      "username": "Bob",
+                                      "password": "Bob",
+                                      "email": "Bob@gmail.com",
+                                      "favourites": []},
+                                 "meal_cat": [{
+                                     "name": "dinner"}],
+                                 "diet_req":
+                                     [{
+                                         "name": "vegan"}],
+                                 "favourites": [],
+                                 "ingredients":
+                                     [{
+                                         "adjective": "moldy",
+                                         "unit": "g",
+                                         "amount": "20",
+                                         "recipe": 1,
+                                         "ingredient": {
+                                             "name": "potato",
+                                             "category": {
+                                                 "name": "vegetable"}}},
+                                         {
+                                             "adjective": "moldy",
+                                             "unit": "g",
+                                             "amount": "20",
+                                             "recipe": 1,
+                                             "ingredient": {
+                                                 "name": "pea",
+                                                 "category": {
+                                                     "name": "vegetable"}}}]}.items())
 
-    def test_post_2(self):
-        recipe1 = {"recipe": {"name" : "Hot ham water", "cook_time" : "2 hours",
-                   "method" : "Put in water", "author" : "1", "ingredients" :
-                                  [{"adjective" : "moldy", "unit" : "g",
-                                    "amount" : "20", "recipe" : "1",
-                                    "ingredient" : "potato"},
-                                   {"adjective": "green", "unit" : "g",
-                                    "amount" : "20", "recipe": "1",
-                                    "ingredient": "pea"}]}}
+    def test_get_recipe(self):
         c = Client()
-        response = c.post('/recipe/', json.dumps(recipe1),
-                          content_type="application/json")
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0][
-            'adjective'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0]['ingredient'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][1][
-            'ingredient'])
-        self.assertContains(response, 'Bob')
-        response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0][
-            'adjective'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][0]['ingredient'])
-        self.assertContains(response, recipe1['recipe']['ingredients'][1][
-            'ingredient'])
-        self.assertContains(response, 'Bob')
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        ing = c.post('/recipes/', json.dumps(recipe_data),
+                     content_type='application/json')
+        ing = c.get('/recipes/1/')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"id": 1,
+                                 "name": "Hot "
+                                         "ham "
+                                         "water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in water",
+                                 "author":
+                                     {"id": 1,
+                                      "username": "Bob",
+                                      "password": "Bob",
+                                      "email": "Bob@gmail.com",
+                                      "favourites": []},
+                                 "meal_cat": [{
+                                     "name": "dinner"}],
+                                 "diet_req":
+                                     [{
+                                         "name": "vegan"}],
+                                 "favourites": [],
+                                 "ingredients":
+                                     [{
+                                         "adjective": "moldy",
+                                         "unit": "g",
+                                         "amount": "20",
+                                         "recipe": 1,
+                                         "ingredient": {
+                                             "name": "potato",
+                                             "category": {
+                                                 "name": "vegetable"}}},
+                                         {
+                                             "adjective": "moldy",
+                                             "unit": "g",
+                                             "amount": "20",
+                                             "recipe": 1,
+                                             "ingredient": {
+                                                 "name": "pea",
+                                                 "category": {
+                                                     "name": "vegetable"}}}]}.items())
 
-    def test_post_3(self):
-        recipe1 = { "recipe" : {"name" : "Hot ham water", "cook_time" : "2 " \
-                                                                       "hours",
-                   "method" : "Put in water", "author" : "1", "meal_cat" : [
-                "Lunch", "Dinner"], "diet_req" : ["Vegan"], "ingredients" :
-                                  [{"adjective" : "moldy", "unit" : "g",
-                                    "amount" : "20", "recipe" : "1",
-                                    "ingredient" : "potato"},
-                                   {"unit" : "g",
-                                    "amount" : "20", "recipe": "1",
-                                    "ingredient": "pea"}]}}
+    def test_get_recipes(self):
         c = Client()
-        response = c.post('/recipe/', json.dumps(recipe1),
-                          content_type="application/json")
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        for item in recipe1['recipe']['meal_cat']:
-            self.assertContains(response, item)
-        for item in recipe1['recipe']['diet_req']:
-            self.assertContains(response, item)
-        self.assertContains(response, 'Bob')
-        response = c.get('/recipe/1/')
-        self.assertContains(response, recipe1['recipe']['name'])
-        self.assertContains(response, recipe1['recipe']['cook_time'])
-        self.assertContains(response, recipe1['recipe']['method'])
-        for item in recipe1['recipe']['meal_cat']:
-            self.assertContains(response, item)
-        for item in recipe1['recipe']['diet_req']:
-            self.assertContains(response, item)
-        self.assertContains(response, 'Bob')
+        recipe_data1 = {"name": "Hot ham water", "cook_time": "2 hours",
+                        "method": "Put in water", "author": "1", "ingredients":
+                            [{"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "potato"},
+                             {"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "pea"}],
+                        'favourites':
+                            [],
+                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        recipe_data2 = {"name": "Cold ham water", "cook_time": "2 hours",
+                        "method": "Put in cold water", "author": "1",
+                        "ingredients":
+                            [{"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "potato"}],
+                        'favourites':
+                            [],
+                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data1),
+               content_type='application/json')
+        c.post('/recipes/', json.dumps(recipe_data2),
+               content_type='application/json')
+        ing = c.get('/recipes/')
+        self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
+                                {"id": 1,
+                                 "name": "Hot "
+                                         "ham "
+                                         "water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in water",
+                                 "author":
+                                     {"id": 1,
+                                      "username": "Bob",
+                                      "password": "Bob",
+                                      "email": "Bob@gmail.com",
+                                      "favourites": []},
+                                 "meal_cat": [{
+                                     "name": "dinner"}],
+                                 "diet_req":
+                                     [{
+                                         "name": "vegan"}],
+                                 "favourites": [],
+                                 "ingredients":
+                                     [{
+                                         "adjective": "moldy",
+                                         "unit": "g",
+                                         "amount": "20",
+                                         "recipe": 1,
+                                         "ingredient": {
+                                             "name": "potato",
+                                             "category": {
+                                                 "name": "vegetable"}}},
+                                         {
+                                             "adjective": "moldy",
+                                             "unit": "g",
+                                             "amount": "20",
+                                             "recipe": 1,
+                                             "ingredient": {
+                                                 "name": "pea",
+                                                 "category": {
+                                                     "name": "vegetable"}}}]}.items())
+        self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
+                                {"id": 2,
+                                 "name": "Cold "
+                                         "ham "
+                                         "water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in cold water",
+                                 "author":
+                                     {"id": 1,
+                                      "username": "Bob",
+                                      "password": "Bob",
+                                      "email": "Bob@gmail.com",
+                                      "favourites": []},
+                                 "meal_cat": [{
+                                     "name": "dinner"}],
+                                 "diet_req":
+                                     [{
+                                         "name": "vegan"}],
+                                 "favourites": [],
+                                 "ingredients":
+                                     [{
+                                         "adjective": "moldy",
+                                         "unit": "g",
+                                         "amount": "20",
+                                         "recipe": 2,
+                                         "ingredient": {
+                                             "name": "potato",
+                                             "category": {
+                                                 "name": "vegetable"}}}]}.items())
+
+    def test_delete_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data),
+               content_type='application/json')
+        c.delete('/recipes/1/')
+        ing = c.get('/recipes/1/')
+        self.assertContains(ing, "Not found", status_code=404)
+
+    def test_put_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "10", "ingredient":
+                                 "potato"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data),
+               content_type='application/json')
+        recipe_data = {"name": "Cold ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "2", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "lunch"}, {"name": "dinner"}],
+                       'diet_req': [{"name": "vegetarian"}]}
+        ing = c.put('/recipes/1/', json.dumps(recipe_data),
+                    content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"id": 1, "name": "Cold ham water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in water",
+                                 "author": {"id": 2, "username": "Tob",
+                                            "password": "Tob",
+                                            "email": "Tob@gmail.com",
+                                            "favourites": []},
+                                 "meal_cat": [{"name": "dinner"},
+                                              {"name": "lunch"}],
+                                 "diet_req": [{"name": "vegetarian"}],
+                                 "favourites": [], "ingredients": [
+                                    {"adjective": "moldy", "unit": "g",
+                                     "amount": "20", "recipe": 1,
+                                     "ingredient": {"name": "pea", "category": {
+                                         "name": "vegetable"}}}]}.items())
 
 
 # Create your tests here.
-class IngredientTestCase(TestCase):
-    def setUp(self):
-        ing_cat = IngredientCategory.objects.create(name = "vegetable")
-
-    def test_get_post_1(self):
-        ingredient_test = {"ingredient" : {"name" : "pea", "category" :
-            "1"}}
-        c = Client()
-        response = c.post('/ingredients/', json.dumps(ingredient_test),
-                          content_type="application/json")
-        self.assertContains(response, "pea")
-        self.assertContains(response, "vegetable")
-        response = c.get('/ingredients/pea/')
-        self.assertContains(response, "pea")
-        self.assertContains(response, "vegetable")
-
-
-# Create your tests here.
-class PantryIngredientTestCase(TestCase):
-    def setUp(self):
-        ing_cat = IngredientCategory.objects.create(name = "vegetable")
-        ingredient = IngredientForm({"name" : "potato", "category" :
-        "1"})
+class PantryIngredientTest(TestCase):
+    def setUp(self) -> None:
+        cat = IngredientCategory.objects.create(name='grain')
+        cat = IngredientCategory.objects.create(name='vegetable')
+        ingredient = IngredientSerializer(data={"name": "potato", "category":
+            {"name": "vegetable"}})
         ingredient.is_valid()
         ingredient.save()
-        user = User.objects.create(name="Bob", email="Bob@gmail.com",
-                                    password="Bob")
+        ingredient = IngredientSerializer(data={"name": "pea", "category":
+            {"name": "vegetable"}})
+        ingredient.is_valid()
+        ingredient.save()
+        self.user1 = User.objects.create(username="Bob", email="Bob@gmail.com",
+                                         password="Bob")
+        self.user2 = User.objects.create(username="Tob", email="Tob@gmail.com",
+                                         password="Tob")
 
-    def test_get_post(self):
-        ingredient_test = {"ingredients" : {"expiry_date" :
-                                                "2020-06-29",
-                                            "ingredient" : "potato",
-                                           "user" : "1"}}
+    def test_create_pantry_ingredient1(self):
         c = Client()
-        response = c.post('/user/1/pantry/', json.dumps(ingredient_test),
-                          content_type="application/json")
-        self.assertContains(response, "potato")
-        self.assertContains(response, "vegetable")
+        ingredient_data = {'expiry_date': '2020-06-20', 'user': "1",
+                           "ingredient": "potato"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"expiry_date": "2020-06-20",
+                                 "user": {"id": 1, "username": "Bob",
+                                          "password": "Bob",
+                                          "email": "Bob@gmail.com",
+                                          "favourites": []},
+                                 "ingredient": {"name": "potato", "category": {
+                                     "name": "vegetable"}}}.items())
+
+    def test_create_pantry_ingredient2(self):
+        c = Client()
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"expiry_date": None,
+                                 "user": {"id": 1, "username": "Bob",
+                                          "password": "Bob",
+                                          "email": "Bob@gmail.com",
+                                          "favourites": []},
+                                 "ingredient": {"name": "potato", "category": {
+                                     "name": "vegetable"}}}.items())
+
+    def test_get_pantry_ingredient1(self):
+        c = Client()
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        ing = c.get('/user/pantry/1/')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"expiry_date": None,
+                                 "user": {"id": 1, "username": "Bob",
+                                          "password": "Bob",
+                                          "email": "Bob@gmail.com",
+                                          "favourites": []},
+                                 "ingredient": {"name": "potato", "category": {
+                                     "name": "vegetable"}}}.items())
+
+    def test_get_pantry_ingredients1(self):
+        c = Client()
+        ingredient_data1 = {'user': "1", "ingredient": "potato"}
+        ingredient_data2 = {'user': "1", "ingredient": "pea"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data1),
+                     content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data2),
+                     content_type='application/json')
+        api_client = APIClient()
+        api_client.force_authenticate(user=self.user1)
+        response = api_client.get('/user/pantry/')
+        self.assertEqual(json.loads(response.data),
+            [{"expiry_date":
+                  None,
+              "user": {"id": 1,
+                       "username": "Bob",
+                       "password": "Bob",
+                       "email": "Bob@gmail.com",
+                       "favourites": []},
+              "ingredient": {
+                  "name": "pea",
+                  "category": {
+                      "name": "vegetable"}}},
+             {
+                 "expiry_date": None,
+                 "user": {
+                     "id": 1,
+                     "username": "Bob",
+                     "password": "Bob",
+                     "email": "Bob@gmail.com",
+                     "favourites": []},
+                 "ingredient": {
+                     "name": "potato",
+                     "category": {
+                         "name": "vegetable"}}}])
+
+    def test_get_pantry_ingredients2(self):
+        c = Client()
+        ingredient_data1 = {'user': "1", "ingredient": "potato"}
+        ingredient_data2 = {'user': "1", "ingredient": "pea"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data1),
+                     content_type='application/json')
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data2),
+                     content_type='application/json')
+        api_client = APIClient()
+        api_client.force_authenticate(user=self.user2)
+        response = api_client.get('/user/pantry/')
+        self.assertGreaterEqual(json.loads(response.data),
+            [])
+
+    def test_delete_pantry_ingredient(self):
+        c = Client()
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+        ing = c.post('/user/pantry/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        c.delete('/user/pantry/1/')
+        ing = c.get('/user/pantry/1/')
+        self.assertContains(ing, "Not found", status_code=404)
+
+    def test_put_ingredient(self):
+        c = Client()
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+        c.post('/user/pantry/', json.dumps(ingredient_data),
+               content_type='application/json')
+        ingredient_data = {'expiry_date': '2020-06-20',
+                           'user': "1", "ingredient": "potato"}
+        ing = c.put('/user/pantry/1/', json.dumps(ingredient_data),
+                    content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"expiry_date": "2020-06-20",
+                                 "user": {"id": 1, "username": "Bob",
+                                          "password": "Bob",
+                                          "email": "Bob@gmail.com",
+                                          "favourites": []},
+                                 "ingredient": {"name": "potato", "category": {
+                                     "name": "vegetable"}}}.items())
