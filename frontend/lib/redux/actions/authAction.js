@@ -1,4 +1,5 @@
 import * as types from '../types';
+import { create_pantry } from "./pantryAction";
 
 export const update_password = (old, pwd) => async dispatch => {
     //actually check that the password is valid
@@ -28,25 +29,25 @@ export const register = (first, last, email, phone, pwd) => async dispatch => {
         last : last, 
         email : email,
         phone : phone,
-        pwd : pwd
-
     }
     dispatch({
         type : types.LOGIN,
-        userInfo : userInfo
-    })
+        userInfo : userInfo,
+        uid : 0
+    })  
 }
 
 export const login = (email, pwd) => async dispatch => {
     //DO THE AUTHENTICATION STUFF TO LOGIN
     let userInfo = {
         email : email,
-        phone : null
-
+        phone : null,
     }
+    
     dispatch({
         type : types.LOGIN,
-        userInfo : userInfo
+        userInfo : userInfo,
+        uid : 0
     })
 }
 

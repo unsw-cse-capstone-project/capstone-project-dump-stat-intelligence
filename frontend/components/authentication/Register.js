@@ -29,6 +29,8 @@ export default function Register(props) {
         if (true) {
             document.getElementById(alertName).classList.remove(styles.show);
             toggle(props.register, "is-active")
+            //LOGIN SUCCEEDED, GET PANTRY
+            dispatch(create_pantry());
         } else {
             //DISPLAY ERROR MESSAGE
             document.getElementById(alertName).classList.add(styles.show);

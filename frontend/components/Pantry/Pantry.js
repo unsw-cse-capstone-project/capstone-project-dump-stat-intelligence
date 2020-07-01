@@ -1,42 +1,35 @@
 import styles from "./Pantry.module.scss";
 
 import React from "react";
+import { useSelector } from 'react-redux';
+import PantryIngredient from './PantryIngredient';
 
-export default class Indicator extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      section: [
-        { title: "Dairy", ingredients: ["Milk", "Cheese", "Butter", "Creme"] },
-        {
-          title: "Meats",
-          ingredients: ["Beef Sausage", "Salami", "Smoked Salmon"],
-        },
-      ],
-    };
-  }
-  render() {
-    return (
-      <div className={styles.pantry}>
-        <h1 className="title">The pantry.</h1>
-        <div className="control">
-          <input className="input" placeholder="Add an item" />
-        </div>
-        <div className={styles.ingredientSection}>
-          {this.state.section.map((section, i) => (
-            <div key={i}>
-              <h4>{section.title}</h4>
+export default function Indicator() {
+
+  let pantry = useSelector(state => state.pantry)
+  return (
+    <div className={styles.pantry}>
+      <h1 className="title">The pantry.</h1>
+      <div className="control">
+        <input className="input" placeholder="Add an item" />
+      </div>
+      <div className={styles.ingredientSection}>
+        {Object.keys(pantry).map((category, i) => {
+          if (pantry[category].length !== 0) {
+            return <div key={i}>
+              <h4>{category}</h4>
               <div className="tags">
-                {section.ingredients.map((ingredient, j) => (
-                  <span key={j} className="tag is-dark">
-                    {ingredient}
-                  </span>
+                {pantry[category].map((ingredient, j) => (
+                  <PantryIngredient key={j} ingredient={ingredient.name} category={category}/>
                 ))}
               </div>
             </div>
-          ))}
-        </div>
+          }
+
+
+        })}
       </div>
-    );
-  }
+    </div>
+  );
 }
+

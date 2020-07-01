@@ -7,7 +7,7 @@ import Pantry from "./Pantry";
 export default class Indicator extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { open: false };
+    this.state = { open : false };
   }
   render() {
     return (

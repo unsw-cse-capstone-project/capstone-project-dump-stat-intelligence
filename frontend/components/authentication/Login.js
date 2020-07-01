@@ -3,6 +3,7 @@ import styles from "./Auth.module.scss";
 import Modal from "../modal/Modal";
 import { useDispatch } from 'react-redux';
 import { login } from "../../lib/redux/actions/authAction";
+import { create_pantry } from "../../lib/redux/actions/pantryAction";
 
 export default function Login(props) {
     const dispatch = useDispatch();
@@ -21,6 +22,8 @@ export default function Login(props) {
             document.getElementById(alertName).innerHTML = "";
             document.getElementById(alertName).classList.remove(styles.show);
             toggle(props.login);
+            //LOGIN SUCCEEDED, GET PANTRY
+            dispatch(create_pantry());
             
         } else {
             document.getElementById(alertName).innerHTML = "Incorrect login details. Please try again."
