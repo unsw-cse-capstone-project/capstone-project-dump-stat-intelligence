@@ -1,4 +1,5 @@
 from django.test import TestCase, Client
+from rest_framework.test import force_authenticate, APIClient
 from .models import *
 from .views import *
 import json
@@ -444,10 +445,10 @@ class PantryIngredientTest(TestCase):
             {"name": "vegetable"}})
         ingredient.is_valid()
         ingredient.save()
-        user = User.objects.create(username="Bob", email="Bob@gmail.com",
-                                   password="Bob")
-        user = User.objects.create(username="Tob", email="Tob@gmail.com",
-                                   password="Tob")
+        self.user1 = User.objects.create(username="Bob", email="Bob@gmail.com",
+                                         password="Bob")
+        self.user2 = User.objects.create(username="Tob", email="Tob@gmail.com",
+                                         password="Tob")
 
     def test_create_pantry_ingredient1(self):
         c = Client()
@@ -501,23 +502,33 @@ class PantryIngredientTest(TestCase):
                      content_type='application/json')
         ing = c.post('/user/pantry/', json.dumps(ingredient_data2),
                      content_type='application/json')
-        ing = c.get('/user/pantry/')
-        self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
-                                {"expiry_date": None,
-                                 "user": {"id": 1, "username": "Bob",
-                                          "password": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
-                                 "ingredient": {"name": "potato", "category": {
-                                     "name": "vegetable"}}}.items())
-        self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
-                                {"expiry_date": None,
-                                 "user": {"id": 1, "username": "Bob",
-                                          "password": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
-                                 "ingredient": {"name": "pea", "category": {
-                                     "name": "vegetable"}}}.items())
+        api_client = APIClient()
+        api_client.force_authenticate(user=self.user1)
+        response = api_client.get('/user/pantry/')
+        self.assertGreaterEqual(json.loads(response.data),
+            [{"expiry_date":
+                  None,
+              "user": {"id": 1,
+                       "username": "Bob",
+                       "password": "Bob",
+                       "email": "Bob@gmail.com",
+                       "favourites": []},
+              "ingredient": {
+                  "name": "pea",
+                  "category": {
+                      "name": "vegetable"}}},
+             {
+                 "expiry_date": None,
+                 "user": {
+                     "id": 1,
+                     "username": "Bob",
+                     "password": "Bob",
+                     "email": "Bob@gmail.com",
+                     "favourites": []},
+                 "ingredient": {
+                     "name": "potato",
+                     "category": {
+                         "name": "vegetable"}}}])
 
     def test_delete_pantry_ingredient(self):
         c = Client()
