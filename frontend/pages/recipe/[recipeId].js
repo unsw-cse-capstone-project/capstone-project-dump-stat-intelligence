@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-export default function Home() {
-  const router = useRouter();
-  const { recipeId } = router.query;
+import RecipeAPI from "../../lib/api/recipe";
+
+function Recipe(props) {
+  console.log(props);
   return (
     <div>
       <Head>
@@ -12,10 +13,22 @@ export default function Home() {
       <div className="container">
         <div className="columns is-centered">
           <div className="box column is-6">
-            <h1 className="title">This is recipe {recipeId}</h1>
+            <h1 className="title">{props.name}</h1>
+            <p>
+              Author: {props.author.username} | Cook time: {props.cook_time}
+            </p>
+            <p>{props.method}</p>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+Recipe.getInitialProps = async ({ query: { recipeId } }) => {
+  const { data } = await RecipeAPI.get(recipeId);
+
+  return data;
+};
+
+export default Recipe;
