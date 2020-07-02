@@ -1,16 +1,21 @@
 import Head from "next/head";
 import React from "react";
 
+import { useSelector, useDispatch } from "react-redux";
+import { recipes_update } from "../lib/redux/actions/recipesAction";
 
-import RecipeAPI from "../lib/api/recipe";
-
-import { useSelector } from "react-redux";
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 import Filter from "../components/Pantry/Filter";
 
 export default function Explore() {
   const recipes = useSelector((state) => state.recipes.recipes);
-  console.log(recipes);
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    console.log("get all recipes");
+    dispatch(recipes_update());
+  }, []); // See https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects for why that 2nd "[]" parameter
+
   return (
     <>
       <Head>
@@ -19,7 +24,7 @@ export default function Explore() {
       <div>
         <br />
         <h1 className="title is-2">Explore Recipes</h1>
-        <Filter/>
+        <Filter />
         <div className="columns is-multiline">
           {recipes ? (
             recipes.map((recipe, idx) => (
