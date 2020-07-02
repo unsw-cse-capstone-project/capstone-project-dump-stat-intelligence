@@ -1,18 +1,29 @@
 import * as types from '../types';
 import store from '../store';
 
+/*
+PANTRY
 
+    Holds the redux state for the user's pantry ingredients
 
+    pantry : {
+        category : [{ingredient}, {}, {}, ...]
+    }
+
+*/
+
+//NEEDS API
 export const add = (ingredient) => async dispatch => {
-    //DO INTERACTON WITH BACKEND
+    let auth = store.getState().auth;
 
-    let uid = store.getState().auth.uid;
+    if (auth.isLoggedIn) {
+        //INSERT API, user is logged in so update pantry on backend
 
+    }
 
     let newIngredient = {
         category : ingredient.category,
-        name : ingredient.name,
-        expiry : ingredient.expiry
+        name : ingredient.name
     }
     dispatch({
         type : types.PANTRY_ADD,
@@ -20,10 +31,14 @@ export const add = (ingredient) => async dispatch => {
     })
 } 
 
+//NEEDS API
 export const remove = (ingredient) => async dispatch => {
-    //DO INTERACTION WITH BACKEND
+    let auth = store.getState().auth;
 
-    let uid = store.getState().auth.uid;
+    if (auth.isLoggedIn) {
+        //INSER API, user is logged in so update pantry on backend
+
+    }
 
     let toRemove = {
         category : ingredient.category,
@@ -35,18 +50,21 @@ export const remove = (ingredient) => async dispatch => {
     })
 }
 
-export const create_pantry = () => async dispatch => {
-    //GET current pantry from backend
 
-    //CURRENTLY GETS IT LIKE THIS:
-    let uid = store.getState().auth.uid;
-    
-    
-    let newPantry = {
-        meat : [{name : 'sosig', expiry : 'today'}, {name : 'tofu', expiry : 'today'}],
-        veg : [],
-        moreVEG : [{name : 'beans'}]
+//NEEDS API
+export const create_pantry = () => async dispatch => {
+    let auth = store.getState().auth;
+
+    if (auth.isLoggedIn) {
+        //INSER API, user is logged in so update pantry on backend
+
     }
+    
+    
+    let newPantry = {}
+
+
+
     dispatch({
         type : types.PANTRY_CREATE,
         pantry : newPantry

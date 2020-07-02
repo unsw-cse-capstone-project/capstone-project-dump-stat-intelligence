@@ -1,11 +1,26 @@
 import * as types from "../types";
 
+/*
+QUERY
+
+    Holds the redux state for the search query to add a new ingredient
+
+    query : {
+        queryString : "String they are entering",
+        results : [{ingredient}, {}, {}, ...]
+    }
+
+*/
 
 
+//NEEDS API
 export const update_query = (query) => async dispatch => {
-    //Fetch query results from backend
+    //parameter query holds the new string to search for
+
+    //INSERT API, take query param and turn into list of possible ingredients
     
-    //temp testing
+    //currently for testing, it just has more options as the string gets longer...
+    //prestige bootleg 
     let prac = [
         {name : " one", category : "meh"},
         {name : " 2", category : "meh"},

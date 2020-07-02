@@ -1,5 +1,27 @@
 import * as types from '../types';
 
+/*
+AUTH
+
+    Holds the redux state for account state
+
+    auth : {
+        isLoggedIn : bool,
+        uid : int,
+        userInfo : {
+            first : string,
+            last : string,
+            email : string,
+            phone : string
+        }
+    }
+
+
+
+*/
+
+
+
 export const update_password = (old, pwd) => async dispatch => {
     //actually check that the password is valid
     
