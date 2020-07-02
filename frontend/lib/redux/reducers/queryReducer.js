@@ -15,7 +15,9 @@ export const queryReducer = (state = initialState, action ) => {
                 results : action.results
             }
         case types.CLEAR_QUERY:
-            return initialState
+            return {
+                ...initialState
+            }
         default:
             return state
     }

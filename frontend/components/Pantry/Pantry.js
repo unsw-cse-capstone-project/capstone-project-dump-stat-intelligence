@@ -5,26 +5,36 @@ import { useSelector, useDispatch } from 'react-redux';
 import PantryIngredient from './PantryIngredient';
 import { remove } from "../../lib/redux/actions/pantryAction";
 import { explore_remove, explore_add, explore_clear } from "../../lib/redux/actions/exploreAction";
+import { recipes_update } from "../../lib/redux/actions/recipesAction";
+import { update_query } from "../../lib/redux/actions/queryAction";
+import IngredientSearch from "./IngredientSearch"
 
 export default function Indicator() {
   const dispatch = useDispatch();
   function add(event) {
-    console.log("YEET");
     event.preventDefault();
     dispatch(explore_add(event.target.elements.choice.value));
   }
   function clear(event) {
-    
     event.preventDefault();
     dispatch(explore_clear());
   }
+  function search(event) {
+    event.preventDefault();
+    dispatch(recipes_update());
+  }
+  function query(event) {
+    dispatch(update_query(event.target.value))
+  }
   let pantry = useSelector(state => state.pantry)
   let chosen = useSelector(state => state.explore)
+  let searchId = "searcher"
   return (
     <div className={styles.pantry}>
       <h1 className="title">The pantry.</h1>
-      <div className="control">
-        <input className="input" placeholder="Add an item" />
+      <div className={`control ${styles.querySearch}`}>
+        <input id={searchId} name="search" onChange={query} className="input" placeholder="Add an item" />
+        <IngredientSearch searcher={searchId}/> 
       </div>
       <div className={styles.ingredientSection}>
         {Object.keys(pantry).map((category, i) => {
@@ -70,6 +80,7 @@ export default function Indicator() {
           <PantryIngredient idx={idx} func={explore_remove} ingredient={ingredient} />
         ))}
       </div>
+      <button className="button" onClick={search}>Search</button>
     </div>
   );
 }

@@ -38,10 +38,36 @@
 }
 
 .ingredientSection {
-  overflow-y: scroll;
 
   h4 {
     font-weight: bold;
     margin: 10px 0;
+  }
+}
+
+.queryBox {
+  position:relative;
+  width:100%;
+  display:none;
+  z-index:30;
+}
+.queryHover {
+  background-color:var(--background);
+  position:absolute;
+  width:100%;
+  border-radius : 0.2rem;
+}
+
+.querySearch:active .queryBox,
+.querySearch:hover .queryBox {
+  display:block;
+}
+
+.queryIngredient {
+  padding:0.2rem;
+
+  &:hover {
+    cursor: pointer;
+    background-color:white;
   }
 }

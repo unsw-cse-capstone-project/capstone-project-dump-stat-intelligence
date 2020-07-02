@@ -11,7 +11,7 @@ export const add = (ingredient) => async dispatch => {
 
     let newIngredient = {
         category : ingredient.category,
-        name : ingredient.ingredient,
+        name : ingredient.name,
         expiry : ingredient.expiry
     }
     dispatch({

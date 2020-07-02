@@ -12,15 +12,15 @@ export const pantryReducer = (state = initialState, action) => {
                 ...action.pantry
             }
         case types.PANTRY_ADD:
-            let currCat = {}
+            let currCat = []
             //IF CATEGORY ALREADY IN PANTRY, USE CURRENT PANTRY
             if (action.newIngredient.category in state) {
                 currCat = state[action.newIngredient.category];
             }
-            currCat[action.newIngredient.category] = {
+            currCat.push({
                 name : action.newIngredient.name,
                 expiry : action.newIngredient.expiry
-            }
+            })
             let newState = state;
             newState[action.newIngredient.category] = currCat;
             return {

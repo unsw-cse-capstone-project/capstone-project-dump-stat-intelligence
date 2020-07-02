@@ -1,5 +1,7 @@
 import * as types from '../types';
 
+import store from "../store";
+
 export const recipes_clear = () => async dispatch => {
     dispatch({
         type : types.RECIPES_CLEAR
@@ -12,6 +14,7 @@ export const recipes_update = () => async dispatch => {
     //SEARCH BACKEND WITH THE EXPLORE THING
     
     dispatch({
-        type : types.RECIPES_UPDATE
+        type : types.RECIPES_UPDATE,
+        recipes : ["bruh"]
     })
 }
