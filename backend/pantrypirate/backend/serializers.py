@@ -100,7 +100,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         recipe_ing_data = validated_data.pop("ingredients", [])
-        fav = validated_data.pop("favourites")
+        # fav = validated_data.pop("favourites") # Idk what favourites are for but it is buggering the frontend
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
         recipe = Recipe.objects.create(**validated_data)
@@ -118,6 +118,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)
 
+        recipe.save()
         return recipe
 
     def update(self, instance, validated_data):

@@ -47,6 +47,10 @@ class Recipe extends React.Component {
                   <input className="input" placeholder="Title" />
                 </div>
                 <div className="field">
+                  <label className="label">Author ID (for the demo)</label>
+                  <input className="input" placeholder="Author Id" />
+                </div>
+                <div className="field">
                   <label className="label">Cook Time</label>
                   <input className="input" placeholder="Cook Time" />
                 </div>
