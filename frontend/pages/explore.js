@@ -3,11 +3,12 @@ import React from "react";
 
 import RecipeAPI from "../lib/api/recipe";
 
-import { useSelector } from 'react-redux'; 
+import { useSelector } from "react-redux";
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 
-export default function Home() {
-  const recipes = useSelector(state => state.recipes.recipes);
+export default function Explore() {
+  const recipes = useSelector((state) => state.recipes.recipes);
+  console.log(recipes);
   return (
     <>
       <Head>
@@ -36,5 +37,3 @@ export default function Home() {
     </>
   );
 }
-
-

@@ -1,6 +1,8 @@
-import * as types from '../types';
+import * as types from "../types";
 
 import store from "../store";
+
+import RecipeAPI from "../../api/recipe";
 
 /*
 RECIPES
@@ -14,27 +16,26 @@ RECIPES
 
 */
 
-
 //NO API, MAY NOT EVEN BE NECESSARY
-export const recipes_clear = () => async dispatch => {
-    dispatch({
-        type : types.RECIPES_CLEAR
-    })
-}
+export const recipes_clear = () => async (dispatch) => {
+  dispatch({
+    type: types.RECIPES_CLEAR,
+  });
+};
 
-//NEEDS API, NEW SEARCH 
-export const recipes_update = () => async dispatch => {
-    //explore = ["ingredient primary key", "", ""]
-    let explore = store.getState().explore;
-    
-    //INSERT API - TAKE EXPLORE LIST AND TURN INTO RESULTANT RECIPES
-    
-    let result = [
-        {name : "example"}
-    ]
-    
-    dispatch({
-        type : types.RECIPES_UPDATE,
-        recipes : [{name : "bruh"}]
-    })
-}
+//NEEDS API, NEW SEARCH
+export const recipes_update = () => async (dispatch) => {
+  //explore = ["ingredient primary key", "", ""]
+  let explore = store.getState().explore;
+
+  //INSERT API - TAKE EXPLORE LIST AND TURN INTO RESULTANT RECIPES
+  const recipes = await RecipeAPI.getAll();
+  console.log(recipes);
+
+  let result = [{ name: "example" }];
+
+  dispatch({
+    type: types.RECIPES_UPDATE,
+    recipes: recipes.data,
+  });
+};

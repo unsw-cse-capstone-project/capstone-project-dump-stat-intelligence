@@ -22,7 +22,9 @@ class Recipe extends React.Component {
 
   componentDidMount() {}
 
-  handleDelete = async (e) => {};
+  handleSubmit = async (e) => {
+    RecipeAPI.create(this.state.recipe, ""); // TODO: add token
+  };
 
   render() {
     if (this.state.error) {
@@ -44,21 +46,54 @@ class Recipe extends React.Component {
               <form>
                 <div className="field">
                   <label className="label">Title</label>
-                  <input className="input" placeholder="Title" />
+                  <input
+                    className="input"
+                    placeholder="Title"
+                    value={this.state.recipe.title}
+                    onChange={(e) =>
+                      this.setState((prev) => ({
+                        recipe: { ...prev, title: e.target.value },
+                      }))
+                    }
+                  />
                 </div>
                 <div className="field">
                   <label className="label">Author ID (for the demo)</label>
-                  <input className="input" placeholder="Author Id" />
+                  <input
+                    className="input"
+                    placeholder="Author Id"
+                    value={this.state.recipe.author}
+                    onChange={(e) =>
+                      this.setState((prev) => ({
+                        recipe: { ...prev, author: e.target.value },
+                      }))
+                    }
+                  />
                 </div>
                 <div className="field">
                   <label className="label">Cook Time</label>
-                  <input className="input" placeholder="Cook Time" />
+                  <input
+                    className="input"
+                    placeholder="Cook Time"
+                    value={this.state.recipe.cook_time}
+                    onChange={(e) =>
+                      this.setState((prev) => ({
+                        recipe: { ...prev, cook_time: e.target.value },
+                      }))
+                    }
+                  />
                 </div>
                 <div className="field">
                   <label className="label">Method</label>
                   <textarea
                     className="textarea"
                     placeholder="Method"
+                    value={this.state.recipe.method}
+                    onChange={(e) =>
+                      this.setState((prev) => ({
+                        recipe: { ...prev, method: e.target.value },
+                      }))
+                    }
                   ></textarea>
                 </div>
               </form>
