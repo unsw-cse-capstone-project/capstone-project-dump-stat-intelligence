@@ -721,8 +721,7 @@ class SearchTestCase(TestCase):
 
         running_list = {p_apple.ingredient.name : p_apple.pk, p_pear.ingredient.name : p_pear.pk, p_carrot.ingredient.name : p_carrot.pk}
 
-        response = c.get('/recipes/?meal=dinner+lunch&diet='
-                          'vegan&limit=10&offset=21/',
+        response = c.get('/recipes/?ingredients=1+2+3&meal=dinner+lunch&diet=vegan&limit=10&offset=21/',
                          header=json.dumps(running_list),
                          content_type="application/json")
         expected_response = ['Garden salad', 'Mixed salad']
