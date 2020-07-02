@@ -531,6 +531,7 @@ class PantryIngredientTest(TestCase):
         self.assertEqual(response.data,
             [
              {
+                 "id" : 5,
                  "expiry_date": None,
                  "user": {
                      "id": 1,
@@ -543,18 +544,20 @@ class PantryIngredientTest(TestCase):
                      "category": {
                          "name": "alpha"}}},
              {
-             "expiry_date": None,
-             "user": {
-                 "id": 1,
-                 "username": "Bob",
-                 "password": "Bob",
-                 "email": "Bob@gmail.com",
-                 "favourites": []},
-             "ingredient": {
-                 "name": "chick",
-                 "category": {
-                     "name": "grain"}}},
+                 "id" : 3,
+                 "expiry_date": None,
+                 "user": {
+                     "id": 1,
+                     "username": "Bob",
+                     "password": "Bob",
+                     "email": "Bob@gmail.com",
+                     "favourites": []},
+                 "ingredient": {
+                     "name": "chick",
+                     "category": {
+                         "name": "grain"}}},
              {
+                 "id" : 2,
                  "expiry_date":
                      None,
                  "user": {"id": 1,
@@ -567,6 +570,7 @@ class PantryIngredientTest(TestCase):
                      "category": {
                          "name": "vegetable"}}},
              {
+                 "id" : 1,
                  "expiry_date": None,
                  "user": {
                      "id": 1,
@@ -579,6 +583,7 @@ class PantryIngredientTest(TestCase):
                      "category": {
                          "name": "vegetable"}}},
              {
+                 "id" : 4,
                  "expiry_date": None,
                  "user": {
                      "id": 1,
