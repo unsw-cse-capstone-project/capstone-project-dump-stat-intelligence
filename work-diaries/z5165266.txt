@@ -35,3 +35,12 @@ stories.
 
 Just before Week 5, implemented ingredients with Recipes for specific 
 GET and POST and the single ingredient GET and POST.
+
+Week 5
+
+Refactored backend to utilise rest_framework modules, removing the need 
+for django forms and simplifying the view logic. Required rewriting of 
+serializers and the creation of a comprehensive test suite. Also updated 
+the urls to accommodate the flexible ModelViewSet from the 
+rest_framework, and integrated Michael and Sam's search function into 
+the recipe list function.
