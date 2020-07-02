@@ -4,6 +4,8 @@ const initialState = []
 
 export const exploreReducer = (state = initialState, action) => {
     switch(action.type) {
+        case types.EXPLORE_ALL:
+            return action.newList
         case types.EXPLORE_ADD:
             let idx = state.indexOf(action.toAdd);
             let tempState = [...state]

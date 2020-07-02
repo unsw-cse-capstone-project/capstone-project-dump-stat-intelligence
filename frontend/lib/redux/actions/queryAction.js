@@ -28,7 +28,6 @@ export const update_query = (query) => async dispatch => {
 
 
 export const clear_query = () => async dispatch => {
-    console.log("TRYING")
     dispatch({
         type : types.CLEAR_QUERY
     })

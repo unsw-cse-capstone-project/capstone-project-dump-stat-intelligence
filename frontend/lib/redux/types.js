@@ -11,6 +11,7 @@ export const RECIPES_UPDATE = 'RECIPES_UPDATE';
 export const EXPLORE_CLEAR = 'EXPLORE_CLEAR';
 export const EXPLORE_ADD = 'EXPLORE_ADD';
 export const EXPLORE_REMOVE = 'EXPLORE_REMOVE';
+export const EXPLORE_ALL = 'EXPLORE_ALL';
 
 
 //pantry

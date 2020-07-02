@@ -9,6 +9,8 @@ import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { update_query } from "../../lib/redux/actions/queryAction";
 import IngredientSearch from "./IngredientSearch"
 
+import { explore_all } from "../../lib/redux/actions/exploreAction";
+
 export default function Indicator() {
   const dispatch = useDispatch();
   function add(event) {
@@ -25,6 +27,9 @@ export default function Indicator() {
   }
   function query(event) {
     dispatch(update_query(event.target.value))
+  }
+  function bigExplore() {
+    dispatch(explore_all());
   }
   let pantry = useSelector(state => state.pantry)
   let chosen = useSelector(state => state.explore)
@@ -48,39 +53,42 @@ export default function Indicator() {
               </div>
             </div>
           }
-
-
         })}
+        <br/>
+        <button onClick={bigExplore} className={`${styles.wideButton} button`}>Explore with whole pantry</button>
       </div>
-      <form onSubmit={add}>
-        <h3 className="subtitle is-3">Raid the pantry</h3>
-        <div className="control">
-          <label className="label">Choose an ingredient to cook with</label>
-          <div className="select">
-            <select name="choice">
-              {Object.keys(pantry).map((category, i) => {
-                return <>
-                  {pantry[category].map((ingredient,j) => (
-                    ( chosen.indexOf(ingredient.name) === -1 ?
-                      <option key={j}>{ingredient.name}</option>
-                      : ""
-                    )
-                    
-                  ))}
-                </> 
-              })}
-            </select>
+      <hr/>
+      <h1 className="title">Raid the pantry.</h1>
+      <div className={styles.raidBox}>
+        <form onSubmit={add}>
+          <div className="control">
+            <label className="label">Choose an ingredient to cook with</label>
+            <div className="select">
+              <select name="choice">
+                {Object.keys(pantry).map((category, i) => {
+                  return <>
+                    {pantry[category].map((ingredient,j) => (
+                      ( chosen.indexOf(ingredient.name) === -1 ?
+                        <option key={j}>{ingredient.name}</option>
+                        : ""
+                      )
+                      
+                    ))}
+                  </> 
+                })}
+              </select>
+            </div>
+            <button type="submit" className="button">Add</button>
+            <button onClick={clear} className="button">Clear</button>
           </div>
-          <button type="submit" className="button">Add</button>
-          <button onClick={clear} className="button">Clear</button>
+        </form>
+        <div className={styles.ingredientSection}>
+          {chosen.map((ingredient, idx) => (
+            <PantryIngredient idx={idx} func={explore_remove} ingredient={ingredient} />
+          ))}
         </div>
-      </form>
-      <div className={styles.ingredientSection}>
-        {chosen.map((ingredient, idx) => (
-          <PantryIngredient idx={idx} func={explore_remove} ingredient={ingredient} />
-        ))}
+        <button className="button" onClick={search}>Search</button>
       </div>
-      <button className="button" onClick={search}>Search</button>
     </div>
   );
 }
