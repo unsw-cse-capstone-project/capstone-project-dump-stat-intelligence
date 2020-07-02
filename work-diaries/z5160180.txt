@@ -37,9 +37,28 @@ This week was mostly spent putting the finishing touches on our project proposal
 to create templates for the frontend and Zach templates for the backend, in order to maintain a consistent code style and avoid overlaps
 in work. Sam volunteered to format the final report and I offered to assign priority and story points to the user stories in our backlog.
 
-However, based on this weeks 3900 lecture, specifically concerning planning poker, I know believe that we are meant to assign these story
+However, based on this weeks 3900 lecture, specifically concerning planning poker, I now believe that we are meant to assign these story
 points as a team. To comprimise, I set priorities and story points for every story in our current sprint as reccomendations, and plan to
 discuss them with my team in Friday's lab. Additionally, I also spent some more time working on the final proposal, adding and organising
 screenshots of each user story in the backlog grouped by epic and expanding on the niches that our site addresses.
 
-Will update following Friday's lab.
+During the lab meeting on Friday we reviewed our final proposal, and submitted the agreed upon version soon after. My draft story points 
+were agreed to and were thus assigned on Jira. We decided to assign coding roles (Zach and Tom on frontend, Sam, Rohan and I on backend)
+and thus started reviewing django material in preparation for work on the backend beginning next week.
+
+Week 4
+
+Started the week with something of a marathon backend coding session with the whole backend team trio(?) programming. This resulted in us
+implementing initial models, views and urls based on some template routes outlined in Friday's meeting. Specifcally, we initially focused
+on viewing recipe details, and later in the week started work on pantry, cookbook, and other views. Had some major issues initially with 
+ManyToMany objects, and as a result had to implement a number of serializer classes. Additionally, began writing some basic tests to check
+our backend functionality. Once the basic implementation was set up, began addressing outstanding user stories in our active sprint.
+
+Week 5
+
+Started working in earnest on search functionality to filter recipes by current ingredients being searched with (in the running list) and by
+meal category and dietary type. In conjunction to this wrote appropriate tests to investigate this functionality. We were able to successfully 
+return any recipe that matches even a single ingredient, although the threshold for this can be changed relatively trivially. Also modified 
+what pantry_ingredient returns with Sam to better integrate with frontend.
+
+[In progress]
