@@ -3,9 +3,21 @@ import { SERVER_URL } from "../utils/constant";
 import paging from "../utils/paging";
 
 const RecipeAPI = {
-  getAll: async (page, limit = 10) => {
+  getAll: async (
+    meal = "",
+    diet = "",
+    ingredients = "",
+    page = 1,
+    limit = 10
+  ) => {
     console.log("getting");
-    return axios.get(`${SERVER_URL}/recipes?${paging(limit, page)}`);
+    // return axios.get(
+    //   `${SERVER_URL}/recipes?meal=${meal}&diet=${diet}&ingredients=${ingredients}&${paging(
+    //     limit,
+    //     page
+    //   )}`
+    // );
+    return axios.get(`${SERVER_URL}/recipes/`);
   },
   get: async (id) => axios.get(`${SERVER_URL}/recipes/${id}`),
   create: async (recipe, token) => {

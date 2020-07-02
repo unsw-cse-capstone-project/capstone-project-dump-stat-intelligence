@@ -37,10 +37,10 @@ function Explore(props) {
 }
 
 Explore.getInitialProps = async ({ req }) => {
-  const { data } = await RecipeAPI.getAll(1);
+  const { data } = await RecipeAPI.getAll();
   console.log(data);
 
-  return data;
+  return { results: data };
 };
 
 export default Explore;
