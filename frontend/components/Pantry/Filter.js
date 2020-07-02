@@ -1,27 +1,38 @@
-import styles from "./Filer.module.scss"
+import styles from "./Filer.module.scss";
 
 export default function Filter() {
+  return (
+    <div>
+      <form className={`${styles.filter} form`}>
+        <div className="field is-grouped">
+          <div className="control">
+            <div className="select">
+              <select className={styles.option}>
+                <option>Breakfast</option>
+                <option>Lunch</option>
+                <option>Dinner</option>
+              </select>
+            </div>
+          </div>
 
-    return <div className={styles.filterBox}>
-        <form className={styles.filterForm}>
-            <select className={styles.option}>
-                <option>Breakfast</option>    
-                <option>Lunch</option>    
-                <option>Dinner</option>    
-            </select>
-            <select className={styles.option}>
+          <div className="control">
+            <div className="select">
+              <select className={styles.option}>
                 <option>Vegan</option>
                 <option>Vegetarian</option>
                 <option>Gluten Free</option>
                 <option>Dairy Free</option>
-            </select>
+              </select>
+            </div>
+          </div>
 
-            <button className={`${styles.option} button is-button`}>Update</button>
-        </form>
-
-
+          <div className="control">
+            <button className={`${styles.option} button is-button`}>
+              Update
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-
-
-
+  );
 }
