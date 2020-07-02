@@ -6,7 +6,11 @@ EXPLORE
 
     Holds the redux state for the running list
 
-    explore : ["ingredient primary key", "", "", ...]
+    explore : {
+        ingredients : ["ingredient primary key", "", "", ...],
+        meals : ["lunch", ...],
+        
+    }
 
     NOTE: Doesn't need API currently as search is activated with search button
 

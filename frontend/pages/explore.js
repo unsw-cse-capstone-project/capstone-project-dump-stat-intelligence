@@ -1,10 +1,12 @@
 import Head from "next/head";
 import React from "react";
 
+
 import RecipeAPI from "../lib/api/recipe";
 
 import { useSelector } from "react-redux";
 import RecipeCard from "../components/RecipeCard/RecipeCard";
+import Filter from "../components/Pantry/Filter";
 
 export default function Explore() {
   const recipes = useSelector((state) => state.recipes.recipes);
@@ -17,6 +19,7 @@ export default function Explore() {
       <div>
         <br />
         <h1 className="title is-2">Explore Recipes</h1>
+        <Filter/>
         <div className="columns is-multiline">
           {recipes ? (
             recipes.map((recipe, idx) => (
