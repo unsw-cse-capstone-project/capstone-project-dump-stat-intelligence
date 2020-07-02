@@ -8,7 +8,6 @@ import { explore_remove, explore_add, explore_clear } from "../../lib/redux/acti
 import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { update_query } from "../../lib/redux/actions/queryAction";
 import IngredientSearch from "./IngredientSearch"
-
 import { explore_all } from "../../lib/redux/actions/exploreAction";
 
 export default function Indicator() {
@@ -32,7 +31,7 @@ export default function Indicator() {
     dispatch(explore_all());
   }
   let pantry = useSelector(state => state.pantry)
-  let chosen = useSelector(state => state.explore)
+  let chosen = useSelector(state => state.explore.ingredients)
   let searchId = "searcher"
   return (
     <div className={styles.pantry}>
@@ -82,7 +81,7 @@ export default function Indicator() {
             <button onClick={clear} className="button">Clear</button>
           </div>
         </form>
-        <div className={styles.ingredientSection}>
+        <div className="tags">
           {chosen.map((ingredient, idx) => (
             <PantryIngredient idx={idx} func={explore_remove} ingredient={ingredient} />
           ))}

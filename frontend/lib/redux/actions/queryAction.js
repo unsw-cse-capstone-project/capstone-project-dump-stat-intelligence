@@ -22,15 +22,15 @@ export const update_query = (query) => async dispatch => {
     //currently for testing, it just has more options as the string gets longer...
     //prestige bootleg 
     let prac = [
-        {name : " one", category : "meh"},
-        {name : " 2", category : "meh"},
-        {name : " 3", category : "meh"},
-        {name : " 4", category : "meh"},
-        {name : " 5", category : "meh"},
-        {name : " 6", category : "meh"},
-        {name : " 7", category : "meh"},
-        {name : " 8", category : "meh"},
-        {name : " 9", category : "meh"}
+        {name : "one", category : "meh"},
+        {name : "2", category : "meh"},
+        {name : "3", category : "meh"},
+        {name : "4", category : "meh"},
+        {name : "5", category : "meh"},
+        {name : "6", category : "meh"},
+        {name : "7", category : "meh"},
+        {name : "8", category : "meh"},
+        {name : "9", category : "meh"}
     ]
     
     
