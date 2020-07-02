@@ -175,7 +175,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 class PantryIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = PantryIngredient
-        fields = ["expiry_date", "user", "ingredient"]
+        fields = ["id", "expiry_date", "user", "ingredient"]
         extra_kwargs = {"expiry_date": {"required": False}}
 
     def to_representation(self, instance):

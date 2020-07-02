@@ -36,12 +36,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         meals = string['meal'][0].split()
         diets = string['diet'][0].split()
-
-        running_list = json.loads(request.META['header'])
+        running_list = string['ingredients'][0].split()
         # print(running_list)
 
         recipes = Recipe.objects.none()
-        for item in running_list.values():
+        for item in running_list:
             # print(item)
             pIngredient = PantryIngredient.objects.get(pk=item)
             ingredient = pIngredient.ingredient
