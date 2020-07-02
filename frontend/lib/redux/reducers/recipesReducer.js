@@ -3,11 +3,9 @@ import * as types from "../types";
 
 const initalState = {
     recipes : [
-        "Sushi",
-        "Dumplings",
-        "Shepard's Pie",
-        "another one",
-        "Hello world",
+        {name : "Sushi"},
+        {name : "meat"},
+        {name : "beg"},
       ]
 }
 export const recipesReducer = (state = initalState, action) => {

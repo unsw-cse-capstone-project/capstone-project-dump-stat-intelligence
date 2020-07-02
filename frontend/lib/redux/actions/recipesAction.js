@@ -15,6 +15,6 @@ export const recipes_update = () => async dispatch => {
     
     dispatch({
         type : types.RECIPES_UPDATE,
-        recipes : ["bruh"]
+        recipes : [{name : "bruh"}]
     })
 }

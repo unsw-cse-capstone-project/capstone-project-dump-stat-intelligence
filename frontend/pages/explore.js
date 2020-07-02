@@ -6,8 +6,8 @@ import RecipeAPI from "../lib/api/recipe";
 import { useSelector } from 'react-redux'; 
 import RecipeCard from "../components/RecipeCard/RecipeCard";
 
-function Explore(props) {
-  console.log(props.results);
+export default function Home() {
+  const recipes = useSelector(state => state.recipes.recipes);
   return (
     <>
       <Head>
@@ -17,8 +17,8 @@ function Explore(props) {
         <br />
         <h1 className="title is-2">Explore Recipes</h1>
         <div className="columns is-multiline">
-          {props.results ? (
-            props.results.map((recipe, idx) => (
+          {recipes ? (
+            recipes.map((recipe, idx) => (
               <div key={idx} className="column is-3">
                 <RecipeCard
                   className="column is-3"
@@ -37,11 +37,4 @@ function Explore(props) {
   );
 }
 
-Explore.getInitialProps = async ({ req }) => {
-  const { data } = await RecipeAPI.getAll();
-  console.log(data);
 
-  return { results: data };
-};
-
-export default Explore;
