@@ -26,3 +26,9 @@
 
 - Zach began work on Nav bar and I began work on API, frontend routes and RecipeCards
 - Clarified API spec to be consistant with stubbed out API request routes
+
+# Week 5
+
+- Began connecting frontend to backend API
+- Discussed with Rohan about backend refactoring so that API was explorable using Django-rest-framework
+- Struggled with CORS issues
