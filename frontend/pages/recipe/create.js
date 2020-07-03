@@ -23,7 +23,9 @@ class Recipe extends React.Component {
   componentDidMount() {}
 
   handleSubmit = async (e) => {
-    RecipeAPI.create(this.state.recipe, ""); // TODO: add token
+    RecipeAPI.create(this.state.recipe, "").then((res) => {
+      console.log(res);
+    });
   };
 
   render() {
