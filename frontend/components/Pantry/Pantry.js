@@ -30,12 +30,6 @@ export default function Indicator() {
       setTimeout(() => {box.style.maxHeight = 'none'},305)
     }
   }
-  useEffect(() => {
-    let els = ["pantry", "search"]  
-    for (let i = 0; i < els.length; i++) {
-      document.getElementById(els[i] + "-head").addEventListener("click", () => toggleIt(els[i]), [])
-    }
-  }, [])
   
   const dispatch = useDispatch();
   function basic_dispatch(event, func) {
@@ -49,9 +43,10 @@ export default function Indicator() {
     <div className={styles.pantry}>
       
       
-      <div id="pantry-head" className={`${styles.header}`}><div className={styles.title}>The pantry.</div><Arrow name="pantry-icon" /></div>
+      <div id="pantry-head" onClick={() => toggleIt("pantry")} className={`${styles.header}`}><div className={styles.title}>The pantry.</div><Arrow name="pantry-icon" /></div>
       
       <div id="pantry-box" className={styles.drawer}>
+        <br/>
         <form autoComplete="off">
           <div className={`control ${styles.querySearch}`}>
             <input
@@ -92,18 +87,20 @@ export default function Indicator() {
       </div>
       
       <hr />
-
-      <div id="search-head" className={`${styles.header}`}><div className={styles.title}>Raid the pantry</div><Arrow name="search-icon"/></div>
+          
+      <div id="search-head" onClick={() => toggleIt("search")} className={`${styles.header}`}><div className={styles.title}>Raid the pantry</div><Arrow name="search-icon"/></div>
 
       <div id="search-box" className={styles.drawer}>
 
         {Object.keys(pantry).length === 0 && chosen.length === 0 
         ? 
           <div className="control">
+            <br/>
             <label className="label">Add some ingredients to your pantry above to start searching for recipes!</label>
           </div>  
         : 
           <div className={styles.raidBox}>
+            <br/>
             <form onSubmit={(event) => {event.preventDefault(); dispatch(explore_add(event.target.elements.choice.value));}} autocomplete="false">
               <div className="control">
                 <label className="label">Choose an ingredient to cook with</label>
