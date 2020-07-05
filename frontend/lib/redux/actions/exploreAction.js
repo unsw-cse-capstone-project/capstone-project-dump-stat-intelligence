@@ -16,6 +16,22 @@ EXPLORE
 
 */
 
+
+export const filter_clear = () => async dispatch => {
+    dispatch({
+        type : types.FILTER_CLEAR
+    })
+}
+
+export const filter_update = (category, name, status) => async dispatch => {
+    dispatch({
+        type : types.FILTER_UPDATE,
+        category : category,
+        name : name,
+        status : status
+    })
+}
+
 export const explore_add = (toAdd) => async dispatch => {
     dispatch({
         type : types.EXPLORE_ADD,

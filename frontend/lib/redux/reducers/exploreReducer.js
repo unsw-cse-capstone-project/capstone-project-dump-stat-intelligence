@@ -1,11 +1,42 @@
 import * as types from "../types";
 
 const initialState = {
-    ingredients : []
+    ingredients : [],
+    filters : {
+        meal : {
+            breakfast : false,
+            lunch : false,
+            dinner : false
+        },
+        diet : {
+            vegan : false,
+            vegetarian : false,
+            "gluten free" : false,
+            "dairy free" : false
+
+        }
+    }
 }
 
 export const exploreReducer = (state = initialState, action) => {
     switch(action.type) {
+        case types.FILTER_UPDATE:
+            let newFilter = state.filters;
+            newFilter[action.category][action.name] = action.status;
+            return {
+                ...state,
+                filters : {
+                    ...newFilter
+                }
+            }
+
+        case types.FILTER_CLEAR:
+            return {
+                ...state, 
+                filters : {
+                    ...initialState.filters
+                }
+            }
         case types.EXPLORE_ALL:
             return {
                 ...state,

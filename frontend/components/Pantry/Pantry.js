@@ -16,23 +16,9 @@ import { explore_all } from "../../lib/redux/actions/exploreAction";
 
 export default function Indicator() {
   const dispatch = useDispatch();
-  function add(event) {
+  function basic_dispatch(event, func) {
     event.preventDefault();
-    dispatch(explore_add(event.target.elements.choice.value));
-  }
-  function clear(event) {
-    event.preventDefault();
-    dispatch(explore_clear());
-  }
-  function search(event) {
-    event.preventDefault();
-    dispatch(recipes_update());
-  }
-  function query(event) {
-    dispatch(update_query(event.target.value));
-  }
-  function bigExplore() {
-    dispatch(explore_all());
+    dispatch(func());
   }
   let pantry = useSelector((state) => state.pantry);
   let chosen = useSelector((state) => state.explore.ingredients);
@@ -40,12 +26,12 @@ export default function Indicator() {
   return (
     <div className={styles.pantry}>
       <h1 className="title">The pantry.</h1>
-      <form autocomplete="off">
+      <form autoComplete="off">
         <div className={`control ${styles.querySearch}`}>
           <input
             id={searchId}
             name="search"
-            onChange={query}
+            onChange={(event) => {event.preventDefault(); dispatch(update_query(event.target.value));}}
             className="input"
             placeholder="Add an item"
           />
@@ -73,51 +59,61 @@ export default function Indicator() {
           }
         })}
         <br />
-        <button onClick={bigExplore} className={`${styles.wideButton} button`}>
+        <button onClick={(event) => basic_dispatch(event, explore_all)} className={`${styles.wideButton} button`}>
           Explore with whole pantry
         </button>
       </div>
       <hr />
       <h1 className="title">Raid the pantry.</h1>
       <div className={styles.raidBox}>
-        <form onSubmit={add} autocomplete="false">
+        <form onSubmit={(event) => {event.preventDefault(); dispatch(explore_add(event.target.elements.choice.value));}} autocomplete="false">
           <div className="control">
             <label className="label">Choose an ingredient to cook with</label>
-            <div className="select">
-              <select name="choice">
-                {Object.keys(pantry).map((category, i) => {
-                  return (
-                    <>
-                      {pantry[category].map((ingredient, j) =>
-                        chosen.indexOf(ingredient.name) === -1 ? (
-                          <option key={j}>{ingredient.name}</option>
-                        ) : (
-                          ""
-                        )
-                      )}
-                    </>
-                  );
-                })}
-              </select>
+            <div className={`field is-grouped ${styles.formCon}`}>
+              <div className="control">
+                <div className="select">
+                  <select name="choice">
+                    {Object.keys(pantry).map((category, i) => {
+                      return (
+                        <>
+                          {pantry[category].map((ingredient, j) =>
+                            chosen.indexOf(ingredient.name) === -1 ? (
+                              <option key={j}>{ingredient.name}</option>
+                            ) : (
+                              ""
+                            )
+                          )}
+                        </>
+                      );
+                    })}
+                  </select>
+                </div>
+              </div>
+              <div className="control">
+                <button type="submit" className="button">
+                  Add
+                </button>
+              </div>
+              <div className="control">
+                <button onClick={(event) => basic_dispatch(event, explore_clear)} className="button">
+                  Clear
+                </button>
+              </div>
             </div>
-            <button type="submit" className="button">
-              Add
-            </button>
-            <button onClick={clear} className="button">
-              Clear
-            </button>
           </div>
         </form>
-        <div className="tags">
-          {chosen.map((ingredient, idx) => (
-            <PantryIngredient
-              idx={idx}
-              func={explore_remove}
-              ingredient={ingredient}
-            />
-          ))}
+        <div className={styles.searchSection}>
+          <div className="tags">
+            {chosen.map((ingredient, idx) => (
+              <PantryIngredient
+                idx={idx}
+                func={explore_remove}
+                ingredient={ingredient}
+              />
+            ))}
+          </div>
         </div>
-        <button className="button" onClick={search}>
+        <button className={`button ${styles.wideButton}`} onClick={(event) => basic_dispatch(event, recipes_update)}>
           Search
         </button>
       </div>
