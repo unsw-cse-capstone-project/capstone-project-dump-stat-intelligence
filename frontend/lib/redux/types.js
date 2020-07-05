@@ -12,6 +12,8 @@ export const EXPLORE_CLEAR = 'EXPLORE_CLEAR';
 export const EXPLORE_ADD = 'EXPLORE_ADD';
 export const EXPLORE_REMOVE = 'EXPLORE_REMOVE';
 export const EXPLORE_ALL = 'EXPLORE_ALL';
+export const FILTER_UPDATE = 'FILTER_UPDATE';
+export const FILTER_CLEAR = 'FILTER_CLEAR';
 
 
 //pantry

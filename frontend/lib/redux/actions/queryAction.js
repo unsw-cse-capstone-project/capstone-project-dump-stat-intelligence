@@ -30,7 +30,7 @@ export const update_query = (query) => async dispatch => {
         {name : "6", category : "meh"},
         {name : "7", category : "meh"},
         {name : "8", category : "meh"},
-        {name : "9", category : "meh"}
+        {name : "real;lysuperlongmassive black hole", category : "meh"}
     ]
     
     

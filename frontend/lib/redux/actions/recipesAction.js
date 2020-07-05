@@ -25,7 +25,6 @@ export const recipes_clear = () => async (dispatch) => {
 
 //NEEDS API, NEW SEARCH
 export const recipes_update = () => async (dispatch) => {
-  //explore = ["ingredient primary key", "", ""]
   let explore = store.getState().explore;
 
   //INSERT API - TAKE EXPLORE LIST AND TURN INTO RESULTANT RECIPES
