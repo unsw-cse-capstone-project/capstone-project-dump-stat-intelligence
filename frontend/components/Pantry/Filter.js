@@ -11,35 +11,35 @@ export default function Filter() {
   return (
     <div className="field is-grouped">
       <div className="control">
-        <div class="select dropdown is-hoverable">
-          <div class="dropdown-trigger">
-            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+        <div className="select dropdown is-hoverable">
+          <div className="dropdown-trigger">
+            <button className="button" aria-haspopup="true" aria-controls="dropdown-menu4">
               <span>Meal type</span>
-              <span class="icon is-small">
-                <i class="fas fa-check" aria-hidden="true"></i>
+              <span className="icon is-small">
+                <i className="fas fa-check" aria-hidden="true"></i>
               </span>
             </button>
           </div>
-          <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+          <div className="dropdown-menu" id="dropdown-menu4" role="menu">
             <div className="dropdown-content">
               {Object.keys(filters.meal).map((key, idx) => (
-                <FilterItem idx={idx} category="meal" name={key} is_checked={filters.meal[key]}/>
+                <FilterItem key={idx} idx={idx} category="meal" name={key} is_checked={filters.meal[key]}/>
               ))}
             </div>
           </div>
         </div>
       </div>
       <div className="control">
-        <div class="select dropdown is-hoverable">
-          <div class="dropdown-trigger">
-            <button class="button" aria-haspopup="true" aria-controls="dropdown-menu4">
+        <div className="select dropdown is-hoverable">
+          <div className="dropdown-trigger">
+            <button className="button" aria-haspopup="true" aria-controls="dropdown-menu4">
               <span>Dietary requirements</span>
-              <span class="icon is-small">
-                <i class="fas fa-check" aria-hidden="true"></i>
+              <span className="icon is-small">
+                <i className="fas fa-check" aria-hidden="true"></i>
               </span>
             </button>
           </div>
-          <div class="dropdown-menu" id="dropdown-menu4" role="menu">
+          <div className="dropdown-menu" id="dropdown-menu4" role="menu">
             <div className="dropdown-content">
               {Object.keys(filters.diet).map((key, idx) => (
                 <FilterItem idx={idx} category="diet" name={key} is_checked={filters.diet[key]}/>

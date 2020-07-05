@@ -41,7 +41,9 @@ export const pantryReducer = (state = initialState, action) => {
             }
             newState = state;
             newState[action.toRemove.category] = newCat;
-            
+            if (newCat.length === 0) {
+               delete  newState[action.toRemove.category];
+            }
             return {
                 ...newState
             }
