@@ -10,3 +10,6 @@ The main objective for week 3 was to complete the proposal. I finalised the info
 
 Week 4
 For the start of wk4, Tom and I worked through our own idea of what the site would look like individually. We then met on Tuesday and created a combined vision. Between then and Friday, I worked on getting the navbar and icons set up. Over the weekend I worked on finishing the nav and starting to get the settings and logins modals/pages up and running.
+
+Week 5 
+This was possibly the busiest week yet. We had the demo on Friday, so we initally met all together on Monday to see what needed to be done before the demo. I focused on getting as much of the interface up and running and importantly linked with the state on the frontend. This meant working with redux, which I had never worked with before. This took a while especially used in conjuction with next and react. In as much, the majority of my work was writing out all the actions and reducers for the state management system, and then incorporating this with the components to have a dynamic frontend. 
