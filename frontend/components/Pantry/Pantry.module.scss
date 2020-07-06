@@ -4,7 +4,7 @@
   position: fixed;
   bottom: 2rem;
   right: 2rem;
-  background-color: #7522ff;
+  background-color: var(--primary);
   z-index: 39;
   border-radius: 100px;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
@@ -14,7 +14,7 @@
   transition: all 0.2s ease-in-out;
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 5px 16px 0 rgba(0, 0, 0, 0.4);
+    box-shadow: 0 7px 12px 0 rgba(0, 0, 0, 0.4);
   }
 
   img {
