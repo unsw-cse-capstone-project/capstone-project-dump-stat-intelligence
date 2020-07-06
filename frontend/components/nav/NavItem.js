@@ -17,7 +17,6 @@ export default function NavItem(props) {
   }
 
   const playHoverPop = () => {
-    console.log("play sound", props.popSound);
     let audio = document.getElementById(`pop-${props.popSound}`);
     audio.play();
   };
