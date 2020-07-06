@@ -40,7 +40,7 @@ export default function Indicator() {
   let chosen = useSelector((state) => state.explore.ingredients);
   let searchId = "searcher";
   return (
-    <div className={styles.pantry}>
+    <div id="pantry" className={styles.pantry}>
       
       
       <div id="pantry-head" onClick={() => toggleIt("pantry")} className={`${styles.header}`}><div className={styles.title}>The pantry.</div><Arrow name="pantry-icon" /></div>
