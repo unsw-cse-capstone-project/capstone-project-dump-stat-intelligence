@@ -44,3 +44,10 @@ serializers and the creation of a comprehensive test suite. Also updated
 the urls to accommodate the flexible ModelViewSet from the 
 rest_framework, and integrated Michael and Sam's search function into 
 the recipe list function.
+
+Week 6
+
+Met up with team on Monday, discussed roles for the upcoming long sprint 
+as well as redistribution of team workload. Also was assigned GitHub 
+branch management as a resulto of the retrospective which I will be 
+maintaining as the next sprint progresses.
