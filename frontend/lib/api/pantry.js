@@ -3,7 +3,7 @@ import { SERVER_URL } from "../utils/constant";
 import paging from "../utils/paging";
 
 const PantryAPI = {
-  get: async (limit, page, token) =>
+  get: async (limit = 10, page = 1, token) =>
     await axios.get(`${SERVER_URL}/user/pantry?${paging(limit, page)}`, {
       headers: {
         Authorization: `Token ${token}`,

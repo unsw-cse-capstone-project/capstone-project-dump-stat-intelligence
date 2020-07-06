@@ -1,5 +1,7 @@
-import * as types from '../types';
-import store from '../store';
+import * as types from "../types";
+import store from "../store";
+
+import PantryAPI from "../../api/pantry";
 
 /*
 PANTRY
@@ -13,62 +15,62 @@ PANTRY
 */
 
 //NEEDS API
-export const add = (ingredient) => async dispatch => {
-    let auth = store.getState().auth;
+export const add = (ingredient) => async (dispatch) => {
+  let auth = store.getState().auth;
 
-    if (auth.isLoggedIn) {
-        //INSERT API, user is logged in so update pantry on backend
+  if (auth.isLoggedIn) {
+    // TODO: token auth
+    // TODO: is ingredient.ingredient the primary key of
+    // TODO: error handle
+    await PantryAPI.add(ingredient.ingredient, "");
+  }
 
-    }
-
-    let newIngredient = {
-        category : ingredient.category,
-        name : ingredient.name
-    }
-    dispatch({
-        type : types.PANTRY_ADD,
-        newIngredient : newIngredient
-    })
-} 
-
-//NEEDS API
-export const remove = (ingredient) => async dispatch => {
-    let auth = store.getState().auth;
-
-    if (auth.isLoggedIn) {
-        //INSER API, user is logged in so update pantry on backend
-
-    }
-
-    let toRemove = {
-        category : ingredient.category,
-        ingredient : ingredient.ingredient
-    }
-    dispatch({
-        type : types.PANTRY_REMOVE,
-        toRemove : toRemove
-    })
-}
-
+  let newIngredient = {
+    category: ingredient.category,
+    name: ingredient.name,
+  };
+  dispatch({
+    type: types.PANTRY_ADD,
+    newIngredient: newIngredient,
+  });
+};
 
 //NEEDS API
-export const create_pantry = () => async dispatch => {
-    let auth = store.getState().auth;
+export const remove = (ingredient) => async (dispatch) => {
+  let auth = store.getState().auth;
 
-    if (auth.isLoggedIn) {
-        //INSER API, user is logged in so update pantry on backend
+  if (auth.isLoggedIn) {
+    //INSER API, user is logged in so update pantry on backend
 
-    }
-    
-    
-    let newPantry = {}
+    // TODO: token auth
+    // TODO: is ingredient.ingredient the primary key of
+    // TODO: error handle
+    await PantryAPI.delete(ingredient.ingredient, "");
+  }
 
+  let toRemove = {
+    category: ingredient.category,
+    ingredient: ingredient.ingredient,
+  };
+  dispatch({
+    type: types.PANTRY_REMOVE,
+    toRemove: toRemove,
+  });
+};
 
+// TODO: @zach maybe "get" pantry instead of create; api does not create pantry
+// but gets pantry that already exists? Not really big deal.
+export const create_pantry = () => async (dispatch) => {
+  let auth = store.getState().auth;
+  let newPantry = {};
 
-    dispatch({
-        type : types.PANTRY_CREATE,
-        pantry : newPantry
-    })
+  if (auth.isLoggedIn) {
+    response = await PantryAPI.get(10, 1, ""); // TODO: token auth, error handling
+    newPantry = response.data;
+  }
 
-
-}
+  dispatch({
+    type: types.PANTRY_CREATE,
+    pantry: newPantry,
+  });
+};

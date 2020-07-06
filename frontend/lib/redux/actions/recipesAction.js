@@ -23,15 +23,15 @@ export const recipes_clear = () => async (dispatch) => {
   });
 };
 
-//NEEDS API, NEW SEARCH
+// NEW SEARCH
 export const recipes_update = () => async (dispatch) => {
   let explore = store.getState().explore;
 
-  //INSERT API - TAKE EXPLORE LIST AND TURN INTO RESULTANT RECIPES
+  // TODO: use .get(searchParams) to take into account explore parameters
+
+  // get all recipes
   const recipes = await RecipeAPI.getAll();
   console.log(recipes);
-
-  let result = [{ name: "example" }];
 
   dispatch({
     type: types.RECIPES_UPDATE,
