@@ -1,6 +1,7 @@
 .recipe {
     transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
     border-radius:8px;
+    position:relative;
     img {
         border-radius:8px 8px 00;
 
@@ -9,5 +10,56 @@
         cursor: pointer;
         transform: translateY(-3px);
         box-shadow: 0 0 30px 10px rgba(10,10,10,0.05);
+        .editHolder {
+            display:block;
+        }
     }
+}
+
+.starHolder:hover, .editHolder:hover {
+    transform:scale(1.2);
+    .delete {
+        display:flex;
+    }
+}
+
+
+.star, .edit {
+    fill:white;
+}
+.starHolder {
+    background-color:var(--tertiary);
+}
+.editHolder {
+    display:none;
+    background-color:var(--primary);
+}
+
+.starHolder, .editHolder {
+    transition:transform 0.2s ease-in-out;
+    transform:scale(1);
+    position:absolute;
+    top:-1.25rem;
+    right:-1.25rem;
+    width:2.5rem;
+    height:2.5rem;
+    padding:0.5rem;
+    border-radius:2.5rem;
+}
+
+.delete {
+    transition:transform 0.2s ease-in-out;
+    transform:scale(1);
+    position:absolute;
+    top:-0.25rem;
+    right:-0.25rem;
+    display:none;
+    justify-content: center;
+    align-items:center;
+    background-color:black;
+    color:white;
+    font-size:2rem;
+    border-radius:1rem;
+    width:1rem;
+    height:1rem;
 }

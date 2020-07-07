@@ -1,6 +1,7 @@
 import Link from "next/link";
 import styles from "./Cookbook.module.scss";
-
+import FaveIcon from "./FaveIcon";
+import EditIcon from "./EditIcon";
 
 export default function RecipeIcon(props) {
     return <Link href={`/recipe/${props.id}`}>
@@ -10,9 +11,13 @@ export default function RecipeIcon(props) {
                     <img src={props.src} alt={props.title}/>
                 </figure>
             </div>
+
             <div className="card-content">
                 <h4 className="title is-4">{props.title}</h4>
             </div>
+            <div onClick={(e) => e.preventDefault()}>{
+                props.fave ? <FaveIcon/> : <EditIcon/>
+            }</div>
         </div>
 
 

@@ -3,9 +3,8 @@ import Head from "next/head";
 import { useSelector } from 'react-redux';
 import RecipeIcon from "../components/cookbook/RecipeIcon";
 
-export default function Home() {
-  const favourites = useSelector(state => state.recipes.recipes)
-  console.log(favourites)
+export default function CookBook() {
+  const favourites = useSelector((state) => state.recipes.recipes)
   return (
     <>
       <Head>
@@ -17,7 +16,16 @@ export default function Home() {
         <div className="columns is-multiline">
           {favourites.map((recipe, idx) => (
             <div key={idx} className="column is-3">
-              <RecipeIcon title={recipe.name} id={recipe.id}/>
+              <RecipeIcon fave={true} title={recipe.name} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
+            </div>
+          ))}
+        </div>
+        <br/><br/>
+        <h1 className="title is-3">My recipes</h1>
+        <div className="columns is-multiline">
+          {favourites.map((recipe, idx) => (
+            <div key={idx} className="column is-3">
+              <RecipeIcon title={recipe.name} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
             </div>
           ))}
         </div>
