@@ -42,7 +42,7 @@ export default function(props) {
         </div>
         <hr/>
         <div className="field control">
-            <button type="submit" class="button is-link">Update</button>
+            <button type="submit" className="button is-link">Update</button>
         </div>
     </form>
     return <Modal id={props.id} content={form}/>

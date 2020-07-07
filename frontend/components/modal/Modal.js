@@ -1,8 +1,14 @@
 import styles from "./Modal.module.scss";
 
+import { useDispatch } from "react-redux";
+
 export default function Login(props) {
+  const dispatch = useDispatch();
   function toggle() {
     document.getElementById(props.id).classList.toggle("is-active");
+    if (props.func) {
+      dispatch(props.func());
+    }
   }
   return (
     <div id={props.id} className="modal">

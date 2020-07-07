@@ -1,10 +1,12 @@
 import styles from "./NavItem.module.scss";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { new_next } from "../../lib/redux/actions/authAction"
 
 export default function NavItem(props) {
   const router = useRouter();
+  const dispatch = useDispatch();
   let isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
   let active = router.pathname.indexOf(props.href) > -1 && props.href !== "/";
   function forceLogin() {
@@ -14,6 +16,7 @@ export default function NavItem(props) {
     document
       .getElementById(props.restricted + "-alert")
       .classList.add(styles.show);
+    dispatch(new_next(props.href));
   }
 
   const playHoverPop = () => {

@@ -4,7 +4,6 @@ import Explore from "../icons/Explore";
 import Cookbook from "../icons/Cookbook";
 import Create from "../icons/Create";
 import Settings from "../icons/Settings";
-import Pantry from "../icons/Pantry";
 import User from "../icons/User";
 import NavItem from "./NavItem";
 import NavLogin from "./NavLogin";

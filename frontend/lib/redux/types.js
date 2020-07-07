@@ -2,6 +2,8 @@
 export const LOGIN = 'LOGIN';
 export const LOGOUT = 'LOGOUT';
 export const UPDATE_DEETS = 'UPDATE_DEETS';
+export const NEW_NEXT = 'NEW_NEXT';
+export const CLEAR_NEXT = 'CLEAR_NEXT';
 
 //Recipes
 export const RECIPES_CLEAR = 'RECIPES_CLEAR';

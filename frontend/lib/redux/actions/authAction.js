@@ -9,6 +9,7 @@ AUTH
     auth : {
         isLoggedIn : bool,
         uid : int,
+        nextPage : string,
         userInfo : {
             first : string,
             last : string,
@@ -20,6 +21,19 @@ AUTH
 
 
 */
+export const clear_next = () => async (dispatch) => {
+  dispatch({
+    type: types.CLEAR_NEXT
+  })
+}
+
+
+export const new_next = (next) => async (dispatch) => {
+  dispatch({
+    type: types.NEW_NEXT,
+    next: next
+  })
+}
 
 export const update_password = (old, pwd) => async (dispatch) => {
   //actually check that the password is valid

@@ -1,15 +1,22 @@
 import styles from "./Auth.module.scss";
 
 import Modal from "../modal/Modal";
-import { useDispatch } from 'react-redux';
-import { login } from "../../lib/redux/actions/authAction";
+import { useDispatch, useSelector } from 'react-redux';
+import { login, clear_next } from "../../lib/redux/actions/authAction";
 import { create_pantry } from "../../lib/redux/actions/pantryAction";
+import { useRouter } from "next/router";
 
 export default function Login(props) {
     const dispatch = useDispatch();
+    const router = useRouter();
+    const next = useSelector(state => state.auth.nextPage);
     const alertName = props.login + "-alert"
     function toggle(id) {
         document.getElementById(id).classList.toggle("is-active");
+    }
+    function close(id) {
+        toggle(id);
+        dispatch(clear_next);
     }
     function inn(event) {
         event.preventDefault();
@@ -21,9 +28,12 @@ export default function Login(props) {
         if (true) {
             document.getElementById(alertName).innerHTML = "";
             document.getElementById(alertName).classList.remove(styles.show);
-            toggle(props.login);
+            close(props.login);
             //LOGIN SUCCEEDED, GET PANTRY
             dispatch(create_pantry());
+            if (next) {
+                router.push(next);
+            }
             
         } else {
             document.getElementById(alertName).innerHTML = "Incorrect login details. Please try again."
@@ -54,5 +64,5 @@ export default function Login(props) {
             <p>Don't have an account? <span onClick={() => {toggle(props.login); toggle(props.register)}} className={styles.register}>Register</span></p>
         </div>
     </form>
-    return <Modal id={props.login} content={content}/>
+    return <Modal id={props.login} content={content} func={clear_next} />
 }

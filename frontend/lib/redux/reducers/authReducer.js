@@ -3,6 +3,7 @@ import * as types from '../types';
 const initialState = {
     isLoggedIn : false,
     uid : null,
+    nextPage : null,
     userInfo : {
         first : null,
         last  : null,
@@ -15,6 +16,17 @@ const initialState = {
 
 export const authReducer = (state=initialState, action) => {
     switch (action.type) {
+        case types.NEW_NEXT:
+            console.log(action.next);
+            return {
+                ...state,
+                nextPage : action.next
+            }
+        case types.CLEAR_NEXT:
+            return {
+                ...state,
+                nextPage : null
+            }
         case types.LOGIN:
             return {
                 ...state,
