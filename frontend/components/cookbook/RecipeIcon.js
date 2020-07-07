@@ -16,7 +16,7 @@ export default function RecipeIcon(props) {
                 <h4 className="title is-4">{props.title}</h4>
             </div>
             <div onClick={(e) => e.preventDefault()}>{
-                props.fave ? <FaveIcon/> : <EditIcon/>
+                props.fave ? <FaveIcon id={props.id}/> : <EditIcon/>
             }</div>
         </div>
 

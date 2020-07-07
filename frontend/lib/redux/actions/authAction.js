@@ -21,6 +21,24 @@ AUTH
 
 
 */
+//NEED TO ADD DOCUMENTATION FOR API STUFF IN THIS ONE TOO
+
+export const remove_favourite = (id) => async (dispatch) => {
+  dispatch({
+    type: types.REMOVE_FAVE,
+    id : id
+  })
+}
+
+export const add_favourite = (recipe) => async (dispatch) => {
+  dispatch({
+    type: types.ADD_FAVE,
+    recipe: recipe
+
+  })
+}
+
+
 export const clear_next = () => async (dispatch) => {
   dispatch({
     type: types.CLEAR_NEXT

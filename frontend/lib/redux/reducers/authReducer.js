@@ -4,6 +4,8 @@ const initialState = {
     isLoggedIn : false,
     uid : null,
     nextPage : null,
+    favourites : [],
+    owned : [],
     userInfo : {
         first : null,
         last  : null,
@@ -16,8 +18,38 @@ const initialState = {
 
 export const authReducer = (state=initialState, action) => {
     switch (action.type) {
+        case types.ADD_FAVE:
+            //do a check to make sure it's not already a fave
+            for (let i = 0; i < state.favourites.length; i++) {
+                if (action.recipe.id === state.favourites[i].id) {
+                    return {
+                        ...state
+                    }
+                } 
+            }
+            //Evidently, hasn't been added
+            let newFaves = state.favourites;
+            newFaves.push(action.recipe);
+            return {
+                ...state,
+                favourites:[...newFaves]
+            }
+        case types.REMOVE_FAVE:
+            for (let i = 0; i < state.favourites.length; i++) {
+                if (action.id === state.favourites[i].id) {
+                    //delete it!
+                    newFaves = state.favourites;
+                    newFaves.splice(i,1);
+                    return {
+                        ...state,
+                        favourites:[...newFaves]
+                    } 
+                }
+            }
+            return {
+                ...state
+            }
         case types.NEW_NEXT:
-            console.log(action.next);
             return {
                 ...state,
                 nextPage : action.next

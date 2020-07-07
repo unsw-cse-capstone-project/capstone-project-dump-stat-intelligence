@@ -4,6 +4,8 @@ export const LOGOUT = 'LOGOUT';
 export const UPDATE_DEETS = 'UPDATE_DEETS';
 export const NEW_NEXT = 'NEW_NEXT';
 export const CLEAR_NEXT = 'CLEAR_NEXT';
+export const ADD_FAVE = 'ADD_FAVE';
+export const REMOVE_FAVE = 'REMOVE_FAVE'
 
 //Recipes
 export const RECIPES_CLEAR = 'RECIPES_CLEAR';
