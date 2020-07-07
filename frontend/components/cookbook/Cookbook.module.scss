@@ -1,0 +1,13 @@
+.recipe {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border-radius:8px;
+    img {
+        border-radius:8px 8px 00;
+
+    }
+    &:hover {
+        cursor: pointer;
+        transform: translateY(-3px);
+        box-shadow: 0 0 30px 10px rgba(10,10,10,0.05);
+    }
+}
