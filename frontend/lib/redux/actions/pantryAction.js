@@ -58,9 +58,7 @@ export const remove = (ingredient) => async (dispatch) => {
   });
 };
 
-// TODO: @zach maybe "get" pantry instead of create; api does not create pantry
-// but gets pantry that already exists? Not really big deal.
-export const create_pantry = () => async (dispatch) => {
+export const get_pantry = () => async (dispatch) => {
   let auth = store.getState().auth;
   let newPantry = {};
 
@@ -70,7 +68,7 @@ export const create_pantry = () => async (dispatch) => {
   }
 
   dispatch({
-    type: types.PANTRY_CREATE,
+    type: types.PANTRY_GET,
     pantry: newPantry,
   });
 };

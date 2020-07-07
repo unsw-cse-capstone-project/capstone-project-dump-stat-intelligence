@@ -3,7 +3,7 @@ import styles from "./Auth.module.scss";
 import Modal from "../modal/Modal";
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clear_next } from "../../lib/redux/actions/authAction";
-import { create_pantry } from "../../lib/redux/actions/pantryAction";
+import { get_pantry } from "../../lib/redux/actions/pantryAction";
 import { useRouter } from "next/router";
 
 export default function Login(props) {
@@ -30,7 +30,7 @@ export default function Login(props) {
             document.getElementById(alertName).classList.remove(styles.show);
             close(props.login);
             //LOGIN SUCCEEDED, GET PANTRY
-            dispatch(create_pantry());
+            dispatch(get_pantry());
             if (next) {
                 router.push(next);
             }

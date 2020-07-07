@@ -7,7 +7,7 @@ const initialState = {
 
 export const pantryReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.PANTRY_CREATE:
+        case types.PANTRY_GET:
             return {
                 ...action.pantry
             }
