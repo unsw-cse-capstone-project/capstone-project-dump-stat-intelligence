@@ -1,14 +1,21 @@
 import styles from "./Auth.module.scss";
 
 import Modal from "../modal/Modal";
-import { register } from "../../lib/redux/actions/authAction"
-import { useDispatch } from 'react-redux';
+import { register, clear_next } from "../../lib/redux/actions/authAction"
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from "next/router";
 
 export default function Register(props) {
     const dispatch = useDispatch();
+    const router = useRouter();
+    const next = useSelector(state => state.auth.nextPage);
     const alertName = props.register + "-alert"
     function toggle(id, clas) {
         document.getElementById(id).classList.toggle(clas);
+    }
+    function close(id, clas) {
+        toggle(id, clas);
+        dispatch(clear_next());
     }
     function join(event) {
         event.preventDefault();
@@ -28,9 +35,13 @@ export default function Register(props) {
         //If succeeded, login and close 
         if (true) {
             document.getElementById(alertName).classList.remove(styles.show);
-            toggle(props.register, "is-active")
+            close(props.register, "is-active")
             //LOGIN SUCCEEDED, GET PANTRY
             dispatch(create_pantry());
+            //If redirects, do so
+            if (next) {
+                router.push(next);
+            }
         } else {
             //DISPLAY ERROR MESSAGE
             document.getElementById(alertName).classList.add(styles.show);
@@ -74,7 +85,7 @@ export default function Register(props) {
         <hr/>
         <p>Already have an account? <span onClick={() => {toggle(props.register, "is-active"); toggle(props.login, "is-active")}} className={styles.register}>Sign in</span></p>
     </>
-    return <Modal id={props.register} content={content}/>
+    return <Modal id={props.register} content={content} func={clear_next}/>
 
 
 }
