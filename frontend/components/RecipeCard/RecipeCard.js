@@ -9,22 +9,29 @@ import { add_favourite } from "../../lib/redux/actions/authAction";
 export default function RecipeCard(props) {
   const dispatch = useDispatch();
   function add() {
-    dispatch(add_favourite({ name: props.title, id: props.id }));
+    dispatch(add_favourite({ name: props.recipe.name, id: props.recipe.id }));
   }
   return (
-    <Link href={`/recipe/${props.id}`}>
+    <Link href={`/recipe/${props.recipe.id}`}>
       <div onClick={add} className={"card " + styles.recipe}>
         <div className="card-image">
           <figure className="image is-4by3">
-            <img src={props.src} alt={props.title} />
+            <img src={props.src} alt={props.recipe.name} />
           </figure>
         </div>
         <div className="card-content">
-          <h4 className="title is-4">{props.title}</h4>
-          <Indicator value="1">
-            <li>Turkey</li>
-            <li>Gravy</li>
-            <li>Butter</li>
+          <h4 className="title is-5" style={{ textAlign: "center" }}>
+            {props.recipe.name}
+          </h4>
+          <p>
+            {props.recipe.author.username} | {props.recipe.cook_time}
+          </p>
+          <Indicator value={props.recipe.ingredients.length}>
+            <ul>
+              {props.recipe.ingredients.forEach((ingredient, idx) => (
+                <li key={idx}>{ingredient}</li>
+              ))}
+            </ul>
           </Indicator>
         </div>
       </div>

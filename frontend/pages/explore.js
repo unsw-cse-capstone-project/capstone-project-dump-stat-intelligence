@@ -32,8 +32,7 @@ export default function Explore() {
                 <RecipeCard
                   className="column is-3"
                   src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}
-                  title={recipe.name}
-                  id={recipe.id} // TODO: alter
+                  recipe={recipe}
                 />
               </div>
             ))
