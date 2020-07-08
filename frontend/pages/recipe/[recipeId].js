@@ -1,108 +1,110 @@
 import Head from "next/head";
-import { withRouter } from "next/router";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useState, useEffect } from "react";
 
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
-class Recipe extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      loading: true,
-      deleteLoading: false,
-      recipe: null,
-      error: null,
-    };
-  }
+const Recipe = (props) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [recipe, setRecipe] = useState({
+    name: "",
+    cook_time: "",
+    method: "",
+    author: { name: "" },
+    diet_req: [],
+    meal_cat: [],
+    ingredients: [],
+  });
+  const [error, setError] = useState(null);
 
-  componentDidMount() {
-    console.log(this.props.router.query);
-    RecipeAPI.get(this.props.router.query.recipeId).then(
+  useEffect(() => {
+    // don't know why but router.query is not returning the id?
+    let recipeId = window.location.href.split("/").pop();
+    RecipeAPI.get(recipeId).then(
       ({ data }) => {
-        this.setState({ recipe: data, loading: false });
+        setRecipe(data);
+        setLoading(false);
       },
       (err) => {
-        this.setState({ error: err.response, loading: false });
+        setError(err.response);
+        setLoading(false);
       }
     );
-  }
+  }, []);
 
-  handleDelete = async (e) => {
-    this.setState({ deleteLoading: true });
-    const res = await RecipeAPI.delete(this.state.recipe.id, ""); // TODO: token authentication
+  const handleDelete = async (e) => {
+    setDeleteLoading(true);
+    const res = await RecipeAPI.delete(recipe.id, ""); // TODO: token authentication
     console.log(res);
-    this.props.router.push("/explore");
-    this.setState({ deleteLoading: false });
+    router.push("/explore");
+    setDeleteLoading(false);
   };
 
-  render() {
-    if (this.state.error) {
-      return <Error message={this.state.error.statusText} />;
-    }
+  if (error) {
+    return <Error message={error.statusText} />;
+  }
 
-    if (this.state.loading) {
-      return <p>Loading</p>;
-    }
-    return (
-      <div>
-        <Head>
-          <title>Pantry Pirate | Create</title>
-        </Head>
-        <div className="container">
-          <div className="columns is-centered">
-            <div className="box column is-10">
-              <h1 className="title is-2">{this.state.recipe.name}</h1>
-              <img
-                src={`https://source.unsplash.com/1200x600/?${this.state.recipe.name}`}
-              />
-              <p>
-                Author: {this.state.recipe.author.username} | Cook time:{" "}
-                {this.state.recipe.cook_time}
-              </p>
-              <div className="tags">
-                {this.state.recipe.diet_req.map((diet, idx) => (
-                  <span className="tag" key={idx}>
-                    {diet}
-                  </span>
-                ))}
+  if (loading) {
+    return <p>Loading</p>;
+  }
+
+  return (
+    <div>
+      <Head>
+        <title>Pantry Pirate | Create</title>
+      </Head>
+      <div className="container">
+        <div className="columns is-centered">
+          <div className="box column is-10">
+            <h1 className="title is-2">{recipe.name}</h1>
+            <img src={`https://source.unsplash.com/1200x600/?${recipe.name}`} />
+            <p>
+              Author: {recipe.author.username} | Cook time: {recipe.cook_time}
+            </p>
+            <div className="tags">
+              {recipe.diet_req.map((diet, idx) => (
+                <span className="tag" key={idx}>
+                  {diet}
+                </span>
+              ))}
+            </div>
+            <div className="buttons">
+              <a className="button is-light">Edit</a>
+              <a
+                className={`button is-light is-danger ${
+                  deleteLoading ? "is-loading" : null
+                }`}
+                onClick={handleDelete}
+              >
+                Delete
+              </a>
+            </div>
+            <hr />
+            <div className="columns">
+              <div className="column is-4">
+                <h4 className="title is-4">Ingredients</h4>
+                <ul>
+                  {recipe.ingredients.map((ingredient, idx) => (
+                    <li key={idx}>
+                      {ingredient.amount} {ingredient.unit}{" "}
+                      {ingredient.ingredient.name}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="buttons">
-                <a className="button is-light">Edit</a>
-                <a
-                  className={`button is-light is-danger ${
-                    this.state.deleteLoading ? "is-loading" : null
-                  }`}
-                  onClick={this.handleDelete}
-                >
-                  Delete
-                </a>
-              </div>
-              <hr />
-              <div className="columns">
-                <div className="column is-4">
-                  <h4 className="title is-4">Ingredients</h4>
-                  <ul>
-                    {this.state.recipe.ingredients.map((ingredient, idx) => (
-                      <li key={idx}>
-                        {ingredient.amount} {ingredient.unit}{" "}
-                        {ingredient.ingredient.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="column is-6">
-                  <h4 className="title is-4">Method</h4>
-                  <p>{this.state.recipe.method}</p>
-                </div>
+              <div className="column is-6">
+                <h4 className="title is-4">Method</h4>
+                <p>{recipe.method}</p>
               </div>
             </div>
           </div>
         </div>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
-// You can't use hooks (i.e. useRouter) with a class component in react
-export default withRouter(Recipe);
+export default Recipe;
