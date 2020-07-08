@@ -10,6 +10,7 @@ class Recipe extends React.Component {
     super(props);
     this.state = {
       loading: true,
+      deleteLoading: false,
       recipe: null,
       error: null,
     };
@@ -18,21 +19,20 @@ class Recipe extends React.Component {
   componentDidMount() {
     RecipeAPI.get(this.props.router.query.recipeId).then(
       ({ data }) => {
-        console.log(data);
         this.setState({ recipe: data, loading: false });
       },
       (err) => {
-        console.log(err);
         this.setState({ error: err.response, loading: false });
       }
     );
   }
 
   handleDelete = async (e) => {
-    this.setState({ loading: true });
+    this.setState({ deleteLoading: true });
     const res = await RecipeAPI.delete(this.state.recipe.id, ""); // TODO: token authentication
     console.log(res);
-    this.setState({ loading: false });
+    this.props.router.push("/explore");
+    this.setState({ deleteLoading: false });
   };
 
   render() {
@@ -69,7 +69,9 @@ class Recipe extends React.Component {
               <div className="buttons">
                 <a className="button is-light">Edit</a>
                 <a
-                  className="button is-light is-danger"
+                  className={`button is-light is-danger ${
+                    this.state.deleteLoading ? "is-loading" : null
+                  }`}
                   onClick={this.handleDelete}
                 >
                   Delete

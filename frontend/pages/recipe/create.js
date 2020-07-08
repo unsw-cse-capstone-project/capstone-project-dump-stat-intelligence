@@ -5,16 +5,19 @@ import React from "react";
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
-class Recipe extends React.Component {
+class CreateRecipe extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: false,
       recipe: {
-        title: "",
+        name: "",
         method: "",
         cook_time: "",
         author: "",
+        diet_req: [],
+        ingredients: [],
+        meal_cat: [],
       },
       error: null,
     };
@@ -23,9 +26,26 @@ class Recipe extends React.Component {
   componentDidMount() {}
 
   handleSubmit = async (e) => {
-    RecipeAPI.create(this.state.recipe, "").then((res) => {
-      console.log(res);
-    });
+    this.setState({ loading: true });
+    RecipeAPI.create(this.state.recipe, "")
+      .then((res) => {
+        console.log(res);
+        if (res.status == 201) {
+          this.props.router.push("/recipe/" + res.data.id);
+        }
+        this.setState({ loading: false });
+      })
+      .catch((err) => {
+        this.setState({ loading: false });
+        console.log("skrt", err.response);
+      }); // TODO: map the errors to fields
+  };
+
+  handleInputChange = ({ target }, name) => {
+    this.setState((prev) => ({
+      ...prev,
+      recipe: { ...prev.recipe, [name]: target.value },
+    }));
   };
 
   render() {
@@ -51,12 +71,8 @@ class Recipe extends React.Component {
                   <input
                     className="input"
                     placeholder="Title"
-                    value={this.state.recipe.title}
-                    onChange={(e) =>
-                      this.setState((prev) => ({
-                        recipe: { ...prev, title: e.target.value },
-                      }))
-                    }
+                    value={this.state.recipe.name}
+                    onChange={(e) => this.handleInputChange(e, "name")}
                   />
                 </div>
                 <div className="field">
@@ -65,11 +81,7 @@ class Recipe extends React.Component {
                     className="input"
                     placeholder="Author Id"
                     value={this.state.recipe.author}
-                    onChange={(e) =>
-                      this.setState((prev) => ({
-                        recipe: { ...prev, author: e.target.value },
-                      }))
-                    }
+                    onChange={(e) => this.handleInputChange(e, "author")}
                   />
                 </div>
                 <div className="field">
@@ -78,11 +90,7 @@ class Recipe extends React.Component {
                     className="input"
                     placeholder="Cook Time"
                     value={this.state.recipe.cook_time}
-                    onChange={(e) =>
-                      this.setState((prev) => ({
-                        recipe: { ...prev, cook_time: e.target.value },
-                      }))
-                    }
+                    onChange={(e) => this.handleInputChange(e, "cook_time")}
                   />
                 </div>
                 <div className="field">
@@ -91,21 +99,21 @@ class Recipe extends React.Component {
                     className="textarea"
                     placeholder="Method"
                     value={this.state.recipe.method}
-                    onChange={(e) =>
-                      this.setState((prev) => ({
-                        recipe: { ...prev, method: e.target.value },
-                      }))
-                    }
+                    onChange={(e) => this.handleInputChange(e, "method")}
                   ></textarea>
                 </div>
               </form>
               <br />
 
               <div className="buttons">
-                <button className="button is-light is-success">
+                <button
+                  className={`button is-light is-success ${
+                    this.state.loading ? "is-loading" : null
+                  }`}
+                  onClick={this.handleSubmit}
+                >
                   Add Recipe
                 </button>
-                <button className="button is-light is-danger">Discard</button>
               </div>
             </div>
           </div>
@@ -116,4 +124,4 @@ class Recipe extends React.Component {
 }
 
 // You can't use hooks (i.e. useRouter) with a class component in react
-export default withRouter(Recipe);
+export default withRouter(CreateRecipe);

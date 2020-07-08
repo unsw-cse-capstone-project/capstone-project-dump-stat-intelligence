@@ -19,13 +19,17 @@ const RecipeAPI = {
     // );
     return axios.get(`${SERVER_URL}/recipes/`);
   },
-  get: async (id) => axios.get(`${SERVER_URL}/recipes/${id}`),
+  get: async (id) => axios.get(`${SERVER_URL}/recipes/${id}/`),
   create: async (recipe, token) => {
-    // TODO: token could be implemented at an axios level
     const res = await axios.post(
-      `${SERVER_URL}/recipes`,
-      JSON.stringify({ recipe }),
-      { headers: { Authorization: `Token ${token}` } }
+      `${SERVER_URL}/recipes/`,
+      JSON.stringify(recipe),
+      {
+        headers: {
+          Authorization: `Token ${token}`,
+          "content-type": "application/json",
+        },
+      }
     );
     return res;
   },
@@ -38,7 +42,7 @@ const RecipeAPI = {
     return res;
   },
   delete: async (id, token) =>
-    axios.delete(`${SERVER_URL}/recipes/${id}`, {
+    axios.delete(`${SERVER_URL}/recipes/${id}/`, {
       headers: { Authorization: `Token ${token}` },
     }),
 };
