@@ -1,5 +1,4 @@
 //auth
-//controls user info including favourites and user deets
 export const LOGIN = 'LOGIN'; //login user
 export const LOGOUT = 'LOGOUT'; //logout user
 export const UPDATE_DEETS = 'UPDATE_DEETS'; //update user deets
@@ -30,3 +29,8 @@ export const PANTRY_REMOVE = 'PANTRY_REMOVE'; //remove item from pantry
 //Ingredient 
 export const QUERY = 'QUERY'; // new key stroke, search for new ingredient
 export const CLEAR_QUERY = 'CLEAR_QUERY'; // set query back to empty
+
+//Create
+export const CLEAR_CREATE = 'CLEAR_CREATE'; // clear all the recipe info
+export const LOAD_CREATE = 'LOAD_CREATE'; //load info from user to edit
+export const SAVE_CREATE = 'SAVE_CREATE'; //save recipe and commit to database
