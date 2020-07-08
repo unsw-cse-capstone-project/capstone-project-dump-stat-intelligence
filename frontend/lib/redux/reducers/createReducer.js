@@ -12,6 +12,12 @@ const initialState = {
 
 export const createReducer = (state = initialState, action) => {
     switch (action.type) {
+        case types.UPDATE_CREATE:
+            
+            return {
+                ...state,
+                [action.category] : action.newVal    
+            }
         case types.LOAD_CREATE:
             return {
                 ...action.loaded
@@ -19,6 +25,10 @@ export const createReducer = (state = initialState, action) => {
         case types.CLEAR_CREATE:
             return {
                 ...initialState
+            }
+        default:
+            return {
+                ...state
             }
     }
 }

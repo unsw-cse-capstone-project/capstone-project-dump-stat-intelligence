@@ -16,6 +16,15 @@ CREATE
 
 
 */
+//NO API, frontend only
+export const update_create = (category, newVal) => async (dispatch) => {
+    dispatch({
+        type: types.UPDATE_CREATE,
+        category : category,
+        newVal : newVal
+    })
+}
+
 
 //NEEDS API
 export const save_create = () => async (dispatch) => {

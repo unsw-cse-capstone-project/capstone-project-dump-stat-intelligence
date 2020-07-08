@@ -4,12 +4,14 @@ import { pantryReducer } from './pantryReducer';
 import { queryReducer } from './queryReducer';
 import { exploreReducer } from './exploreReducer';
 import { recipesReducer } from './recipesReducer'
+import { createReducer } from './createReducer';
 
 export default combineReducers({
     auth : authReducer,
     pantry : pantryReducer,
     query : queryReducer,
     explore : exploreReducer,
-    recipes : recipesReducer
+    recipes : recipesReducer,
+    create : createReducer
 
 });

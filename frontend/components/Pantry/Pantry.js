@@ -18,7 +18,7 @@ import Arrow from "./Arrow";
 
 
 
-export default function Indicator() {
+export default function Pantry() {
   function toggleIt(id) {
     document.getElementById(id + "-icon").classList.toggle(styles.arrowUp);
     let box = document.getElementById(id + "-box")

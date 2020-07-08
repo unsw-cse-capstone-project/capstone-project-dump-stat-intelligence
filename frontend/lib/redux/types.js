@@ -34,3 +34,4 @@ export const CLEAR_QUERY = 'CLEAR_QUERY'; // set query back to empty
 export const CLEAR_CREATE = 'CLEAR_CREATE'; // clear all the recipe info
 export const LOAD_CREATE = 'LOAD_CREATE'; //load info from user to edit
 export const SAVE_CREATE = 'SAVE_CREATE'; //save recipe and commit to database
+export const UPDATE_CREATE = 'UPDATE_CREATE'; //update an element of the recipe
