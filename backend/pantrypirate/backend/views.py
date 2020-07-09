@@ -1,21 +1,54 @@
-from rest_framework import viewsets
-from rest_framework.authentication import (
-    TokenAuthentication,
-    SessionAuthentication,
-    BaseAuthentication,
-)
-from django.db.models import Prefetch
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework import viewsets, generics, views
+from rest_framework.authentication import TokenAuthentication, authenticate
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.authtoken.models import Token
 from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
 import urllib.parse
-import json
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-id")
     serializer_class = UserSerializer
+
+
+class UserLogin(views.APIView):
+    queryset = User.objects.all().order_by("-id")
+    permission_classes = (AllowAny, )
+    serializer_class = LoginUser
+    authentication_classes = [TokenAuthentication]
+
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        serializer = LoginUser(data=data)
+        if serializer.is_valid():
+            user = authenticate(username=serializer.data['username'],
+                                password=serializer.data['password'])
+            if not user:
+                return Response({'error' : 'Invalid credentials'}, status=Http404)
+            token = Token.objects.get(user=user)
+            return Response({'token': token.key}, status=200)
+
+        return Response(serializer.errors, status=400)
+
+
+class UserCreate(generics.CreateAPIView):
+    queryset = User.objects.all().order_by("-id")
+    serializer_class = CreateUser
+    permission_classes = (AllowAny, )
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer
+        serializer = serializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                token = Token.objects.create(user=user)
+                json = serializer.data
+                json['token'] = token.key
+                return Response(json)
+        return Response(serializer.errors, status=Http404)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -82,7 +115,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
 

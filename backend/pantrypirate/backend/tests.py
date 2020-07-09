@@ -16,10 +16,12 @@ class UserTestCase(TestCase):
         : 'save_a_piece@forme.com'}
         user = c.post('/user/', json.dumps(user_data1),
                       content_type='application/json')
+        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
         user = c.post('/user/', json.dumps(user_data2),
                       content_type='application/json')
+        user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data2.items())
 
@@ -30,6 +32,7 @@ class UserTestCase(TestCase):
         c.post('/user/', json.dumps(user_data1),
                content_type='application/json')
         user = c.get('/user/1/')
+        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
 
@@ -44,6 +47,8 @@ class UserTestCase(TestCase):
         c.post('/user/', json.dumps(user_data2),
                content_type='application/json')
         users = c.get('/user/')
+        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
+        user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(users.content)['results'][1].items(),
                                 user_data1.items())
         self.assertGreaterEqual(json.loads(users.content)['results'][0].items(),
@@ -69,6 +74,8 @@ class UserTestCase(TestCase):
         : 'save_a_piece@forme.com'}
         user = c.put('/user/1/', json.dumps(user_data1),
                      content_type='application/json')
+        user_data1 = {'username': 'Bob1', 'email'
+        : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
 
@@ -683,7 +690,7 @@ class SearchTestCase(TestCase):
         vegetable.save()
         tomato = Ingredient(name="tomato", category=vegetable)
         tomato.save()
-        carrot = Ingredient(name="carrot", category=vegetable)
+        carrot = Ingredient(name="cgit checarrot", category=vegetable)
         carrot.save()
 
         r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=fruit_salad)

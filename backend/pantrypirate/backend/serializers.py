@@ -6,10 +6,40 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = User
         fields = ["id", "username", "password", "email", "favourites"]
-        extra_kwargs = {"favourites": {"required": False}}
+        extra_kwargs = {"favourites": {"required": False},
+                        "password" : {"write_only" : True}}
+
+
+class LoginUser(serializers.ModelSerializer):
+
+    class Meta:
+        model=User
+        fields = ['username', 'password']
+        extra_kwargs = {"username": {"validators": [UnicodeUsernameValidator()]},
+                        "password" : {"validators": [UnicodeUsernameValidator()]}}
+
+
+class CreateUser(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "password", "email"]
+
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response.pop('password')
+        return response
 
 
 class MealCatSerializer(serializers.ModelSerializer):
@@ -101,6 +131,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         recipe_ing_data = validated_data.pop("ingredients", [])
         # fav = validated_data.pop("favourites") # Idk what favourites are for but it is buggering the frontend
+        # Favourites are the users who favourite the recipes, currently not
+        # really implemented but should be sent in the post as empty list
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
         recipe = Recipe.objects.create(**validated_data)
@@ -148,6 +180,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         # TODO: Understand what is going on here
         # Why does it only update if a ingredient id is returned
         # When are these ingredient ids returned to the frontend?
+        # ----- Response
+        # The else case creates new ingredients (adding to the recipe for
+        # example).
         for ing in ingredients:
             ing_id = ing.get("id", None)
             if ing_id:
