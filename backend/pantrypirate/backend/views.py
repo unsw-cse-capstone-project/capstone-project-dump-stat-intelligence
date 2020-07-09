@@ -1,4 +1,6 @@
 from rest_framework import viewsets, generics, views
+from rest_framework.views import APIView
+from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.authtoken.models import Token
@@ -13,7 +15,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
 
 
-class UserLogin(views.APIView):
+# Authenticates username and password with database, creates a token for use
+class UserLogin(APIView):
     queryset = User.objects.all().order_by("-id")
     permission_classes = (AllowAny, )
     serializer_class = LoginUser
@@ -27,12 +30,15 @@ class UserLogin(views.APIView):
                                 password=serializer.data['password'])
             if not user:
                 return Response({'error' : 'Invalid credentials'}, status=Http404)
-            token = Token.objects.get(user=user)
+            token = Token.objects.create(user=user)
+            json = serializer.data
+            json['token'] = token.key
             return Response({'token': token.key}, status=200)
 
         return Response(serializer.errors, status=400)
 
 
+# Register user, checks for duplicates
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all().order_by("-id")
     serializer_class = CreateUser
@@ -44,11 +50,15 @@ class UserCreate(generics.CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
             if user:
-                token = Token.objects.create(user=user)
-                json = serializer.data
-                json['token'] = token.key
-                return Response(json)
-        return Response(serializer.errors, status=Http404)
+                return Response(data=user.data)
+        return Response(serializer.errors, status=404)
+
+
+# Removes the authentication token from the user, logging them out
+class UserLogout(APIView):
+    def get(self, request):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

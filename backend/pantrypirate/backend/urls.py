@@ -15,6 +15,7 @@ urlpatterns = [
     # User Related Paths
     path('user/login/', UserLogin.as_view()),
     path('user/register/', UserCreate.as_view()),
+    path('user/logout/', UserLogout.as_view()),
 
     # Auto routes and API routes
     path('', include(router.urls)),
