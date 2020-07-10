@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, views
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication, authenticate
+from rest_framework.authentication import TokenAuthentication, authenticate, BaseAuthentication
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -126,6 +126,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication, BaseAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
