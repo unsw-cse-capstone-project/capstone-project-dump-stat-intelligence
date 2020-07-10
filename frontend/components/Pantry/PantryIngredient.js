@@ -7,8 +7,18 @@ export default function PantryIngredient(props) {
     function cya(ingredient, category) {
         dispatch(props.func({ingredient : ingredient, category : category}));
     }
+    //CHECK TO SEE IF INGREDIENT IS CLOSE TO EXPIRING
+    let close = false
+    const now = new Date();
+    
+    if (props.expiry) {
+        console.log(props.expiry)
+        if ((props.expiry - now) / (1000 * 60 * 60 * 24) < 7) {
 
-    return <span key={props.idx} className="tag is-dark">
+            close = true;
+        }
+    }
+    return <span key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"}`}>
         {props.ingredient}
         <button onClick={() => cya(props.ingredient, props.category)} className="delete is-small"/>
     </span>

@@ -24,10 +24,10 @@ export const add = (ingredient) => async (dispatch) => {
     // TODO: error handle
     await PantryAPI.add(ingredient.ingredient, "");
   }
-
   let newIngredient = {
     category: ingredient.category,
     name: ingredient.name,
+    expiry : ingredient.expiry
   };
   dispatch({
     type: types.PANTRY_ADD,

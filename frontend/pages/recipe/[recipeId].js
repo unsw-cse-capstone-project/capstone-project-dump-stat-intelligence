@@ -5,15 +5,20 @@ import React, { useState, useEffect } from "react";
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
+import { useDispatch } from "react-redux";
+import { add_favourite, remove_favourite } from "../../lib/redux/actions/authAction";
+
 const Recipe = (props) => {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [recipe, setRecipe] = useState({
+    id : null,
     name: "",
     cook_time: "",
     method: "",
     author: { name: "" },
+    isFavourite : false,
     diet_req: [],
     meal_cat: [],
     ingredients: [],
@@ -42,6 +47,8 @@ const Recipe = (props) => {
     router.push("/explore");
     setDeleteLoading(false);
   };
+
+
 
   if (error) {
     return <Error message={error.statusText} />;
@@ -81,6 +88,12 @@ const Recipe = (props) => {
               >
                 Delete
               </a>
+              { /*TODO: dont show if you authored*/
+                /*if not favourited*/ recipe.isFavourite ? 
+                <a className="button is-light is-warning">Favourite</a> :
+                /*if favourited*/
+                <a className="button is-light is-warning">Unfavourite</a>
+              }
             </div>
             <hr />
             <div className="columns">
@@ -108,3 +121,28 @@ const Recipe = (props) => {
 };
 
 export default Recipe;
+
+
+
+
+/*
+  FOR WHEN ITS FUNCTIONAL AGAIN
+
+  function addFave() {
+    useDispatch(add_favourite({title : recipe.name, src : null,  id : recipe.id}))
+    setRecipe({
+      ...recipe,
+      isFavourite : true
+    })
+  }
+
+  function removeFave() {
+    useDispatch(remove_favourite(recipe.id));
+    setRecipe({
+      ...recipe,
+      isFavourite : false
+    })
+  }
+
+
+*/

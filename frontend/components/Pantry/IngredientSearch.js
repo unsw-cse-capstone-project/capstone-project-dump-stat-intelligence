@@ -10,7 +10,7 @@ export default function IngredientSearch(props) {
             <div className={styles.queryBox}>
                 <div className={styles.queryHover}>
                     {results.map((ingredient, idx) => (
-                        <Ingredient searcher={props.searcher} idx={idx} name={ingredient.name} category={ingredient.category}/>
+                        <Ingredient searcher={props.searcher} idx={idx} name={ingredient.name} expiry={ingredient.expiry} category={ingredient.category}/>
                     ))}
                 </div>
             </div>
