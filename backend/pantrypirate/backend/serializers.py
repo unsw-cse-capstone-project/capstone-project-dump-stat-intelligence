@@ -17,10 +17,13 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginUser(serializers.ModelSerializer):
 
     class Meta:
-        model=User
-        fields = ['username', 'password']
+        model = User
+        fields = ['id', 'username', 'password']
         extra_kwargs = {"username": {"validators": [UnicodeUsernameValidator()]},
                         "password" : {"validators": [UnicodeUsernameValidator()]}}
+
+    def to_representation(self, instance):
+        return instance['id']
 
 
 class CreateUser(serializers.ModelSerializer):

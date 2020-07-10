@@ -4,6 +4,7 @@ from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
@@ -17,27 +18,25 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 # Authenticates username and password with database, creates a token for use
-class UserLogin(APIView):
+class UserLogin(ObtainAuthToken):
     queryset = User.objects.all().order_by("-id")
     permission_classes = (AllowAny, )
     serializer_class = LoginUser
     authentication_classes = [TokenAuthentication]
 
     def post(self, request, *args, **kwargs):
-        data = request.data
-        serializer = LoginUser(data=data)
-        if serializer.is_valid():
-            user = authenticate(username=serializer.data['username'],
-                                password=serializer.data['password'])
-            if not user:
-                return Response({'error' : 'Invalid credentials'}, status=Http404)
-            token = Token.objects.create(user=user)
-            json = serializer.data
-            json['token'] = token.key
-            return Response(headers={'Authorization': ('Token %s') % (
-                token.key)}, status=200)
-
-        return Response(serializer.errors, status=400)
+        serializer = self.serializer_class(data=request.data, context={
+            'request': request})
+        serializer.is_valid(raise_exception=True)
+        print(serializer.validated_data)
+        user = serializer.validated_data['id']
+        print(serializer.validated_data)
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        })
 
 
 # Register user, checks for duplicates
