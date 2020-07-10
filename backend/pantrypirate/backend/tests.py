@@ -704,7 +704,6 @@ class PantryIngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": "2020-06-20",
                                  "user": {"id": 1, "username": "Bob",
-                                          "password": "Bob",
                                           "email": "Bob@gmail.com",
                                           "favourites": []},
                                  "ingredient": {"name": "potato", "category": {
