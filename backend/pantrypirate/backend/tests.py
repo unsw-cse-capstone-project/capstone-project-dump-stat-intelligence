@@ -14,16 +14,29 @@ class UserTestCase(TestCase):
         : 'save_a_piece@forme.com'}
         user_data2 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
-        user = c.post('/user/', json.dumps(user_data1),
+        user = c.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
         user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
-        user = c.post('/user/', json.dumps(user_data2),
+        user = c.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
         user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data2.items())
+
+    def test_login_user(self):
+        c = Client()
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+        user = c.post('/user/register/', json.dumps(user_data1),
+                      content_type='application/json')
+        user_data1.pop('email')
+        response = c.post('/user/login/', json.dumps(user_data1),
+                       content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        print(response)
+        print(response.data)
 
     def test_get_user(self):
         c = Client()

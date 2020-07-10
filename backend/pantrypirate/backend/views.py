@@ -2,7 +2,7 @@ from rest_framework import viewsets, generics, views
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.authentication import TokenAuthentication, authenticate
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from .serializers import *
 from .models import *
@@ -10,6 +10,7 @@ from rest_framework.views import Response, Http404
 import urllib.parse
 
 
+# Allows updating of the user accounts, can get a list of all users
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-id")
     serializer_class = UserSerializer
@@ -33,7 +34,8 @@ class UserLogin(APIView):
             token = Token.objects.create(user=user)
             json = serializer.data
             json['token'] = token.key
-            return Response({'token': token.key}, status=200)
+            return Response(headers={'Authorization': ('Token %s') % (
+                token.key)}, status=200)
 
         return Response(serializer.errors, status=400)
 
@@ -50,7 +52,7 @@ class UserCreate(generics.CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
             if user:
-                return Response(data=user.data)
+                return Response(data=serializer.data)
         return Response(serializer.errors, status=404)
 
 
@@ -125,7 +127,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthenticated]
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
 
@@ -138,4 +140,4 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         else:
-            return Http404
+            return Response(status=404)

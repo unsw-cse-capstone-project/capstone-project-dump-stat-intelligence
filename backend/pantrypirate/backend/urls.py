@@ -13,7 +13,7 @@ router.register(r'ingredients', IngredientViewSet)
 urlpatterns = [
 
     # User Related Paths
-    path('user/login/', UserLogin.as_view()),
+    path('user/login/', views.obtain_auth_token),
     path('user/register/', UserCreate.as_view()),
     path('user/logout/', UserLogout.as_view()),
 
