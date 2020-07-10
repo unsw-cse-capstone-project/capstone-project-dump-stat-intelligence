@@ -1,7 +1,7 @@
 from rest_framework import viewsets, generics, views
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication, authenticate, BaseAuthentication
+from rest_framework.authentication import TokenAuthentication, authenticate
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -18,25 +18,25 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 # Authenticates username and password with database, creates a token for use
-class UserLogin(ObtainAuthToken):
-    queryset = User.objects.all().order_by("-id")
-    permission_classes = (AllowAny, )
-    serializer_class = LoginUser
-    authentication_classes = [TokenAuthentication]
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data, context={
-            'request': request})
-        serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
-        user = serializer.validated_data['id']
-        print(serializer.validated_data)
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email': user.email
-        })
+# class UserLogin(ObtainAuthToken):
+#     queryset = User.objects.all().order_by("-id")
+#     permission_classes = (AllowAny, )
+#     serializer_class = LoginUser
+#     authentication_classes = [TokenAuthentication]
+#
+#     def post(self, request, *args, **kwargs):
+#         serializer = self.serializer_class(data=request.data, context={
+#             'request': request})
+#         serializer.is_valid(raise_exception=True)
+#         print(serializer.validated_data)
+#         user = serializer.validated_data['id']
+#         print(serializer.validated_data)
+#         token, created = Token.objects.get_or_create(user=user)
+#         return Response({
+#             'token': token.key,
+#             'user_id': user.pk,
+#             'email': user.email
+#         })
 
 
 # Register user, checks for duplicates
@@ -126,8 +126,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
 
 
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication, BaseAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = (IsAuthenticated,)
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
 
@@ -136,7 +135,6 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             queryset = PantryIngredient.objects.filter(
                 user=request.user).order_by('ingredient__category__name',
                 'ingredient__name')
-            # print(queryset)
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         else:
