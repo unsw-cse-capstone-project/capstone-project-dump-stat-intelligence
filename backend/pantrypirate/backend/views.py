@@ -1,10 +1,7 @@
 from rest_framework import viewsets, generics, views
 from rest_framework.views import APIView
 from rest_framework import status
-from rest_framework.authentication import TokenAuthentication, authenticate
-from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
@@ -16,27 +13,10 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-id")
     serializer_class = UserSerializer
 
-
-# Authenticates username and password with database, creates a token for use
-# class UserLogin(ObtainAuthToken):
-#     queryset = User.objects.all().order_by("-id")
-#     permission_classes = (AllowAny, )
-#     serializer_class = LoginUser
-#     authentication_classes = [TokenAuthentication]
-#
-#     def post(self, request, *args, **kwargs):
-#         serializer = self.serializer_class(data=request.data, context={
-#             'request': request})
-#         serializer.is_valid(raise_exception=True)
-#         print(serializer.validated_data)
-#         user = serializer.validated_data['id']
-#         print(serializer.validated_data)
-#         token, created = Token.objects.get_or_create(user=user)
-#         return Response({
-#             'token': token.key,
-#             'user_id': user.pk,
-#             'email': user.email
-#         })
+    def get_permissions(self):
+        if self.action is 'list':
+            self.permission_classes = [IsAdminUser]
+        return super(UserViewSet, self).get_permissions()
 
 
 # Register user, checks for duplicates
@@ -66,6 +46,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by("name")
     serializer_class = RecipeSerializer
 
+    # Make search allowany permission (anonymous can use it)
+    def check_permissions(self, request):
+        if self.action is 'list':
+            return
+        return super(RecipeViewSet, self).check_permissions(request)
+
+    # Search for recipes given the running list input and filters
     def list(self, request, *args, **kwargs):
         # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
         # print(request.GET.get('meal'))
@@ -121,6 +108,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
 class IngredientViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
 

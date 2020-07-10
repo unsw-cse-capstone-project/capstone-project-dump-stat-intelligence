@@ -24,6 +24,8 @@ class UserTestCase(TestCase):
         user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data2.items())
+        user = User.objects.get(pk=1)
+        self.assertIsNotNone(user)
 
     def test_login_user1(self):
         c = Client()
@@ -62,54 +64,87 @@ class UserTestCase(TestCase):
                        content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
-    def test_get_user(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        c.post('/user/', json.dumps(user_data1),
+    def test_logout_user(self):
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+        user = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        user_data.pop('email')
+        token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
-        user = c.get('/user/1/')
-        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        response = api_client.post('/user/logout/')
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+        r = api_client.post('/user/pantry/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertEqual(response.status_code, 405)
+
+    def test_get_user(self):
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+        user = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        user_data.pop('email')
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        user = api_client.get('/user/1/')
+        user_data1 = {'username': 'Bob', 'email' : 'Bob@gmail.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
 
     def test_get_users(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        user_data2 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        c.post('/user/', json.dumps(user_data1),
+        api_client1 = APIClient()
+        user_data1 = {'username' : 'Bob1', 'password' : 'Bob', 'email':
+            'Bob1@gmail.com'}
+        user = api_client1.post('/user/register/', json.dumps(user_data1),
+                      content_type='application/json')
+        user_data1.pop('email')
+        token = api_client1.post('/user/login/', json.dumps(user_data1),
                content_type='application/json')
-        c.post('/user/', json.dumps(user_data2),
-               content_type='application/json')
-        users = c.get('/user/')
-        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
-        user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
-        self.assertGreaterEqual(json.loads(users.content)['results'][1].items(),
-                                user_data1.items())
-        self.assertGreaterEqual(json.loads(users.content)['results'][0].items(),
-                                user_data2.items())
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        api_client2 = APIClient()
+        user_data2 = {'username': 'Bob2', 'password': 'extra_cheese', 'email'
+        : 'Bob2@forme.com'}
+        user = api_client2.post('/user/register/', json.dumps(user_data2),
+                      content_type='application/json')
+        users = api_client1.get('/user/')
+        self.assertContains(users, text='', status_code=403)
 
     def test_delete_user(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        c.post('/user/', json.dumps(user_data1),
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+        user = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        user_data.pop('email')
+        token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
-        c.delete('/user/1/')
-        user = c.get('/user/1/')
-        self.assertContains(user, "Not found", status_code=404)
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        api_client.delete('/user/1/')
+        user = api_client.get('/user/1/')
+        self.assertContains(user, '', status_code=401)
 
     def test_put_user(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        c.post('/user/', json.dumps(user_data1),
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+        user = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        user_data.pop('email')
+        token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
         user_data1 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
-        user = c.put('/user/1/', json.dumps(user_data1),
+        user = api_client.put('/user/1/', json.dumps(user_data1),
                      content_type='application/json')
         user_data1 = {'username': 'Bob1', 'email'
         : 'save_a_piece@forme.com'}
@@ -124,62 +159,92 @@ class IngredientTest(TestCase):
         cat = IngredientCategory.objects.create(name='vegetable')
 
     def test_create_ingredient1(self):
-        c = Client()
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
         ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
-        ing = c.post('/ingredients/', json.dumps(ingredient_data),
+        ing = api_client.post('/ingredients/', json.dumps(ingredient_data),
                      content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
     def test_create_ingredient2(self):
-        c = Client()
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
         ingredient_data = {'name': 'potato', 'category': {'name':
                                                               'not_grain'}}
-        ing = c.post('/ingredients/', json.dumps(ingredient_data),
+        ing = api_client.post('/ingredients/', json.dumps(ingredient_data),
                      content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
     def test_get_ingredient(self):
-        c = Client()
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
-        c.post('/ingredients/', json.dumps(ingredient_data),
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
-        ing = c.get('/ingredients/potato/')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        api_client.post('/ingredients/', json.dumps(ingredient_data),
+               content_type='application/json')
+        ing = api_client.get('/ingredients/potato/')
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
     def test_get_ingredients(self):
-        c = Client()
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
         ingredient_data1 = {'name': 'potato', 'category': {'name': 'grain'}}
         ingredient_data2 = {'name': 'beef', 'category': {'name': 'grain'}}
-        c.post('/ingredients/', json.dumps(ingredient_data1),
+        api_client.post('/ingredients/', json.dumps(ingredient_data1),
                content_type='application/json')
-        c.post('/ingredients/', json.dumps(ingredient_data2),
+        api_client.post('/ingredients/', json.dumps(ingredient_data2),
                content_type='application/json')
-        ing = c.get('/ingredients/')
+        ing = api_client.get('/ingredients/')
         self.assertGreaterEqual(json.loads(ing.content)['results'][1].items(),
                                 ingredient_data1.items())
         self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
                                 ingredient_data2.items())
 
     def test_delete_ingredient(self):
-        c = Client()
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
-        c.post('/ingredients/', json.dumps(ingredient_data),
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
-        c.delete('/ingredients/potato/')
-        ing = c.get('/ingredients/potato/')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        api_client.post('/ingredients/', json.dumps(ingredient_data),
+               content_type='application/json')
+        api_client.delete('/ingredients/potato/')
+        ing = api_client.get('/ingredients/potato/')
         self.assertContains(ing, "Not found", status_code=404)
 
     def test_put_ingredient(self):
-        c = Client()
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
         ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
-        c.post('/ingredients/', json.dumps(ingredient_data),
+        api_client.post('/ingredients/', json.dumps(ingredient_data),
                content_type='application/json')
         ingredient_data = {'name': 'potato', 'category': {'name':
                                                               'vegetable'}}
-        ing = c.put('/ingredients/potato/', json.dumps(ingredient_data),
+        ing = api_client.put('/ingredients/potato/', json.dumps(ingredient_data),
                     content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
@@ -524,8 +589,6 @@ class PantryIngredientTest(TestCase):
             'token'])
         ing = api_client.post('/user/pantry/', json.dumps(ingredient_data),
                               content_type='application/json')
-        print(ing)
-        print(ing.content)
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": "2020-06-20",
                                  "user": {"id": 1, "username": "Bob",
