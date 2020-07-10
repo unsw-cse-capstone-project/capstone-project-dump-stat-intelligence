@@ -50,5 +50,5 @@ Week 6
 Met up with team on Monday, discussed roles for the upcoming long sprint 
 as well as redistribution of team workload. Also was assigned GitHub 
 branch management as a resulto of the retrospective which I will be 
-maintaining as the next sprint progresses. Worked on trying to get token 
-based user registration, login and logout working.
+maintaining as the next sprint progresses. Worked on implementing 
+token-based authentication and authorization.
