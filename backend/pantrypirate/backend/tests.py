@@ -36,7 +36,7 @@ class UserTestCase(TestCase):
                        content_type='application/json')
         self.assertEqual(response.status_code, 200)
         print(response)
-        print(response.data)
+        print(response.META)
 
     def test_get_user(self):
         c = Client()
