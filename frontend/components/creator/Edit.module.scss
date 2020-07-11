@@ -21,7 +21,7 @@
 
 
 .editor {
-    width:22rem;
+    width: calc(max(22rem, 40%));
     height:75vh;
     background-color:white;
     box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
@@ -60,4 +60,9 @@
 .onionLayer {
     overflow-y: scroll;
     height:calc(100% - 4rem);
+}
+
+.wrap {
+    white-space:pre-wrap;
+
 }

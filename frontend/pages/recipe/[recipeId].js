@@ -127,7 +127,7 @@ const Recipe = (props) => {
               </div>
               <div className="column is-6">
                 <h4 className="title is-4">Method</h4>
-                <p>{recipe.method}</p>
+                <p style={{whiteSpace:"pre-wrap"}}>{recipe.method}</p>
               </div>
             </div>
           </div>

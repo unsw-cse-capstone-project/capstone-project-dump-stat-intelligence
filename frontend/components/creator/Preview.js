@@ -50,7 +50,7 @@ export default function Preview() {
                     </div>
                     <div className="column is-6">
                         <h4 className="title is-4">Method</h4>
-                        <p>{creation.method}</p>
+                        <p className={styles.wrap}>{creation.method}</p>
                     </div>
                     </div>
                     <hr/>
