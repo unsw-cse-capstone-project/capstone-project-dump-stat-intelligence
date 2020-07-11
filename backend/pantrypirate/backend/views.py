@@ -9,10 +9,15 @@ import urllib.parse
 
 
 # Allows updating of the user accounts, can get a list of all users
+# Default permission class is authenticated with the exception of list.
+# However, additional changes will need to be made to permissions and
+# detection based on frontend requirements
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by("-id")
     serializer_class = UserSerializer
 
+    # Currently, user list is set to admin only access so that users cannot
+    # get a list of users. If needed I can change.
     def get_permissions(self):
         if self.action is 'list':
             self.permission_classes = [IsAdminUser]
@@ -20,6 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 # Register user, checks for duplicates
+# Requires email, password and username, anyone can create account
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all().order_by("-id")
     serializer_class = CreateUser
@@ -36,12 +42,19 @@ class UserCreate(generics.CreateAPIView):
 
 
 # Removes the authentication token from the user, logging them out
+# This solution currently does not have token expiration based on time,
+# will need to be updated to account for it later
 class UserLogout(APIView):
     def get(self, request):
         request.user.auth_token.delete()
         return Response(status=status.HTTP_200_OK)
 
 
+# Recipes can be retrieved, updated, searched, deleted and created.
+# Default permission is authenticated, currently doesn't check that the
+# request user is the same as the update/delete recipe user, will need to be
+# implemented later.
+# Listing and retrieving can be done by any user
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by("name")
     serializer_class = RecipeSerializer
@@ -109,14 +122,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         return Response(lst)
 
 
+# Supports create, retrieve, put, list and delete
+# Refer to serialiser or test for format
 class IngredientViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAuthenticated,)
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
 
 
+# List currently has specific authentication request, likely redundant now
+# that IsAuthenticated is the default permission for all views
+# List returns ordered by category name primarily, then ingredient name
+# secondarily
 class PantryIngredientViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
     queryset = PantryIngredient.objects.all()
     serializer_class = PantryIngredientSerializer
 

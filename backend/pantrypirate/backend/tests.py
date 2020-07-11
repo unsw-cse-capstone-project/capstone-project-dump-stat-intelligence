@@ -5,9 +5,11 @@ from .views import *
 import json
 
 
-# Create your tests here.
+# Tests for the user login, logout, register and retrieve, put, list, delete
+# functionality
 class UserTestCase(TestCase):
 
+    # Test checking users can be created and return correct contents
     def test_create_user(self):
         c = Client()
         user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
@@ -27,6 +29,8 @@ class UserTestCase(TestCase):
         user = User.objects.get(pk=1)
         self.assertIsNotNone(user)
 
+    # Test checking that users can log in with their username and password
+    # and have a token returned to frontend
     def test_login_user1(self):
         c = Client()
         user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
@@ -38,6 +42,7 @@ class UserTestCase(TestCase):
                        content_type='application/json')
         self.assertEqual(response.status_code, 200)
 
+    # Test checking that incorrect username will make login unsuccessful
     def test_login_user2(self):
         c = Client()
         user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
@@ -51,6 +56,7 @@ class UserTestCase(TestCase):
                        content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+    # Test checking that incorrect password will make login unsuccessful
     def test_login_user3(self):
         c = Client()
         user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
@@ -64,6 +70,8 @@ class UserTestCase(TestCase):
                        content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
+    # Test checking that logout destroys the token permission for the
+    # previously logged in user
     def test_logout_user(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
@@ -81,6 +89,7 @@ class UserTestCase(TestCase):
                      content_type='application/json')
         self.assertEqual(response.status_code, 405)
 
+    # Test checking that a user can retrieve the details of a user
     def test_get_user(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
@@ -97,6 +106,7 @@ class UserTestCase(TestCase):
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
 
+    # Test checking that a user cannot access the full list of users
     def test_get_users(self):
         api_client1 = APIClient()
         user_data1 = {'username' : 'Bob1', 'password' : 'Bob', 'email':
@@ -116,6 +126,8 @@ class UserTestCase(TestCase):
         users = api_client1.get('/user/')
         self.assertContains(users, text='', status_code=403)
 
+    # Test checking that a user can delete a user (not yet implemented to
+    # only allow deletion of self)
     def test_delete_user(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
@@ -131,6 +143,8 @@ class UserTestCase(TestCase):
         user = api_client.get('/user/1/')
         self.assertContains(user, '', status_code=401)
 
+    # Test checking that a user can update a user's details (not yet
+    # implemented to only allow update of self)
     def test_put_user(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
@@ -152,12 +166,19 @@ class UserTestCase(TestCase):
                                 user_data1.items())
 
 
-# Create your tests here.
+# Tests for ingredient create, retrieve, list, delete and put
 class IngredientTest(TestCase):
     def setUp(self) -> None:
         cat = IngredientCategory.objects.create(name='grain')
         cat = IngredientCategory.objects.create(name='vegetable')
+        api_client = APIClient()
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+        user = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
 
+    # Test that a user is able to create a new ingredient (necessary for
+    # expansion of ingredient database)
     def test_create_ingredient1(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -171,6 +192,7 @@ class IngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
+    # Test that a new ingredient can be made with a new category
     def test_create_ingredient2(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -185,6 +207,7 @@ class IngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
+    # Test that a user can retrieve a specific ingredient by name
     def test_get_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -199,6 +222,8 @@ class IngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 ingredient_data.items())
 
+    # Test that a user can retrieve a list of all ingredients and their
+    # categories
     def test_get_ingredients(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -218,6 +243,8 @@ class IngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content)['results'][0].items(),
                                 ingredient_data2.items())
 
+    # Test that a user can delete an ingredient type (probably should be
+    # restricted to ones they've added)
     def test_delete_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -232,6 +259,7 @@ class IngredientTest(TestCase):
         ing = api_client.get('/ingredients/potato/')
         self.assertContains(ing, "Not found", status_code=404)
 
+    # Test that a user can update an ingredient's category if misplaced
     def test_put_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -250,298 +278,308 @@ class IngredientTest(TestCase):
                                 ingredient_data.items())
 
 
-# Create your tests here.
-# class RecipeTest(TestCase):
-#     def setUp(self) -> None:
-#         meal_cat = MealCategory.objects.create(name="lunch")
-#         meal_cat2 = MealCategory.objects.create(name="dinner")
-#         diet_req = DietaryRequirement.objects.create(name="vegan")
-#         diet_req = DietaryRequirement.objects.create(name="vegetarian")
-#         user = User.objects.create(username="Bob", email="Bob@gmail.com",
-#                                    password="Bob")
-#         user = User.objects.create(username="Tob", email="Tob@gmail.com",
-#                                    password="Tob")
-#         ingredient_cat = IngredientCategory.objects.create(name="vegetable")
-#         ingredient = IngredientSerializer(data={"name": "potato", "category":
-#             {"name": "vegetable"}})
-#         ingredient.is_valid()
-#         ingredient.save()
-#         ingredient = IngredientSerializer(data={"name": "pea", "category":
-#             {"name": "vegetable"}})
-#         ingredient.is_valid()
-#         ingredient.save()
-#
-#     def test_create_recipe(self):
-#         c = Client()
-#         recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
-#                        "method": "Put in water", "author": "1", "ingredients":
-#                            [{"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "potato"},
-#                             {"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "pea"}],
-#                        'favourites':
-#                            [],
-#                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         ing = c.post('/recipes/', json.dumps(recipe_data),
-#                      content_type='application/json')
-#         self.assertGreaterEqual(json.loads(ing.content).items(),
-#             {"id": 1,
-#              "name": "Hot "
-#                      "ham "
-#                      "water",
-#              "cook_time": "2 hours",
-#              "method": "Put in water",
-#              "author":
-#                  {"id": 1,
-#                   "username": "Bob",
-#                   "password": "Bob",
-#                   "email": "Bob@gmail.com",
-#                   "favourites": []},
-#              "meal_cat": [{
-#                  "name": "dinner"}],
-#              "diet_req":
-#                  [{
-#                      "name": "vegan"}],
-#              "favourites": [],
-#              "ingredients":
-#                  [{
-#                      "adjective": "moldy",
-#                      "unit": "g",
-#                      "amount": "20",
-#                      "recipe": 1,
-#                      "ingredient": {
-#                          "name": "potato",
-#                          "category": {
-#                              "name": "vegetable"}}},
-#                      {
-#                          "adjective": "moldy",
-#                          "unit": "g",
-#                          "amount": "20",
-#                          "recipe": 1,
-#                          "ingredient": {
-#                              "name": "pea",
-#                              "category": {
-#                                  "name": "vegetable"}}}]}.items())
-#
-#     def test_get_recipe(self):
-#         c = Client()
-#         recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
-#                        "method": "Put in water", "author": "1", "ingredients":
-#                            [{"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "potato"},
-#                             {"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "pea"}],
-#                        'favourites':
-#                            [],
-#                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         ing = c.post('/recipes/', json.dumps(recipe_data),
-#                      content_type='application/json')
-#         ing = c.get('/recipes/1/')
-#         self.assertGreaterEqual(json.loads(ing.content).items(),
-#             {"id": 1,
-#              "name": "Hot "
-#                      "ham "
-#                      "water",
-#              "cook_time": "2 hours",
-#              "method": "Put in water",
-#              "author":
-#                  {"id": 1,
-#                   "username": "Bob",
-#                   "password": "Bob",
-#                   "email": "Bob@gmail.com",
-#                   "favourites": []},
-#              "meal_cat": [{
-#                  "name": "dinner"}],
-#              "diet_req":
-#                  [{
-#                      "name": "vegan"}],
-#              "favourites": [],
-#              "ingredients":
-#                  [{
-#                      "adjective": "moldy",
-#                      "unit": "g",
-#                      "amount": "20",
-#                      "recipe": 1,
-#                      "ingredient": {
-#                          "name": "potato",
-#                          "category": {
-#                              "name": "vegetable"}}},
-#                      {
-#                          "adjective": "moldy",
-#                          "unit": "g",
-#                          "amount": "20",
-#                          "recipe": 1,
-#                          "ingredient": {
-#                              "name": "pea",
-#                              "category": {
-#                                  "name": "vegetable"}}}]}.items())
-#
-#     def test_get_recipes(self):
-#         c = Client()
-#         recipe_data1 = {"name": "Hot ham water", "cook_time": "2 hours",
-#                         "method": "Put in water", "author": "1", "ingredients":
-#                             [{"adjective": "moldy", "unit": "g",
-#                               "amount": "20", "ingredient":
-#                                   "potato"},
-#                              {"adjective": "moldy", "unit": "g",
-#                               "amount": "20", "ingredient":
-#                                   "pea"}],
-#                         'favourites':
-#                             [],
-#                         'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         recipe_data2 = {"name": "Cold ham water", "cook_time": "2 hours",
-#                         "method": "Put in cold water", "author": "1",
-#                         "ingredients":
-#                             [{"adjective": "moldy", "unit": "g",
-#                               "amount": "20", "ingredient":
-#                                   "potato"}],
-#                         'favourites':
-#                             [],
-#                         'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         c.post('/recipes/', json.dumps(recipe_data1),
-#                content_type='application/json')
-#         c.post('/recipes/', json.dumps(recipe_data2),
-#                content_type='application/json')
-#         ing = c.get('/recipes/')
-#         self.assertGreaterEqual(json.loads(ing.content)[1].items(),
-#             {"id": 1,
-#              "name": "Hot "
-#                      "ham "
-#                      "water",
-#              "cook_time": "2 hours",
-#              "method": "Put in water",
-#              "author":
-#                  {"id": 1,
-#                   "username": "Bob",
-#                   "password": "Bob",
-#                   "email": "Bob@gmail.com",
-#                   "favourites": []},
-#              "meal_cat": [{
-#                  "name": "dinner"}],
-#              "diet_req":
-#                  [{
-#                      "name": "vegan"}],
-#              "favourites": [],
-#              "ingredients":
-#                  [{
-#                      "adjective": "moldy",
-#                      "unit": "g",
-#                      "amount": "20",
-#                      "recipe": 1,
-#                      "ingredient": {
-#                          "name": "potato",
-#                          "category": {
-#                              "name": "vegetable"}}},
-#                      {
-#                          "adjective": "moldy",
-#                          "unit": "g",
-#                          "amount": "20",
-#                          "recipe": 1,
-#                          "ingredient": {
-#                              "name": "pea",
-#                              "category": {
-#                                  "name": "vegetable"}}}]}.items())
-#         self.assertGreaterEqual(json.loads(ing.content)[0].items(),
-#             {"id": 2,
-#              "name": "Cold "
-#                      "ham "
-#                      "water",
-#              "cook_time": "2 hours",
-#              "method": "Put in cold water",
-#              "author":
-#                  {"id": 1,
-#                   "username": "Bob",
-#                   "password": "Bob",
-#                   "email": "Bob@gmail.com",
-#                   "favourites": []},
-#              "meal_cat": [{
-#                  "name": "dinner"}],
-#              "diet_req":
-#                  [{
-#                      "name": "vegan"}],
-#              "favourites": [],
-#              "ingredients":
-#                  [{
-#                      "adjective": "moldy",
-#                      "unit": "g",
-#                      "amount": "20",
-#                      "recipe": 2,
-#                      "ingredient": {
-#                          "name": "potato",
-#                          "category": {
-#                              "name": "vegetable"}}}]}.items())
-#
-#     def test_delete_recipe(self):
-#         c = Client()
-#         recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
-#                        "method": "Put in water", "author": "1", "ingredients":
-#                            [{"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "potato"},
-#                             {"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "pea"}],
-#                        'favourites':
-#                            [],
-#                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         c.post('/recipes/', json.dumps(recipe_data),
-#                content_type='application/json')
-#         c.delete('/recipes/1/')
-#         ing = c.get('/recipes/1/')
-#         self.assertContains(ing, "Not found", status_code=404)
-#
-#     def test_put_recipe(self):
-#         c = Client()
-#         recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
-#                        "method": "Put in water", "author": "1", "ingredients":
-#                            [{"adjective": "moldy", "unit": "g",
-#                              "amount": "10", "ingredient":
-#                                  "potato"}],
-#                        'favourites':
-#                            [],
-#                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
-#                 "name": "vegan"}]}
-#         c.post('/recipes/', json.dumps(recipe_data),
-#                content_type='application/json')
-#         recipe_data = {"name": "Cold ham water", "cook_time": "2 hours",
-#                        "method": "Put in water", "author": "2", "ingredients":
-#                            [{"adjective": "moldy", "unit": "g",
-#                              "amount": "20", "ingredient":
-#                                  "pea"}],
-#                        'favourites':
-#                            [],
-#                        'meal_cat': [{"name": "lunch"}, {"name": "dinner"}],
-#                        'diet_req': [{"name": "vegetarian"}]}
-#         ing = c.put('/recipes/1/', json.dumps(recipe_data),
-#                     content_type='application/json')
-#         self.assertGreaterEqual(json.loads(ing.content).items(),
-#                                 {"id": 1, "name": "Cold ham water",
-#                                  "cook_time": "2 hours",
-#                                  "method": "Put in water",
-#                                  "author": {"id": 2, "username": "Tob",
-#                                             "password": "Tob",
-#                                             "email": "Tob@gmail.com",
-#                                             "favourites": []},
-#                                  "meal_cat": [{"name": "dinner"},
-#                                               {"name": "lunch"}],
-#                                  "diet_req": [{"name": "vegetarian"}],
-#                                  "favourites": [], "ingredients": [
-#                                     {"adjective": "moldy", "unit": "g",
-#                                      "amount": "20", "recipe": 1,
-#                                      "ingredient": {"name": "pea", "category": {
-#                                          "name": "vegetable"}}}]}.items())
+# Test for create, get, list, delete and put for recipes
+class RecipeTest(TestCase):
+    def setUp(self) -> None:
+        meal_cat = MealCategory.objects.create(name="lunch")
+        meal_cat2 = MealCategory.objects.create(name="dinner")
+        diet_req = DietaryRequirement.objects.create(name="vegan")
+        diet_req = DietaryRequirement.objects.create(name="vegetarian")
+        user = User.objects.create(username="Bob", email="Bob@gmail.com",
+                                   password="Bob")
+        user = User.objects.create(username="Tob", email="Tob@gmail.com",
+                                   password="Tob")
+        ingredient_cat = IngredientCategory.objects.create(name="vegetable")
+        ingredient = IngredientSerializer(data={"name": "potato", "category":
+            {"name": "vegetable"}})
+        ingredient.is_valid()
+        ingredient.save()
+        ingredient = IngredientSerializer(data={"name": "pea", "category":
+            {"name": "vegetable"}})
+        ingredient.is_valid()
+        ingredient.save()
+
+    # Test that a user can create a new recipe and the recipe details are
+    # returned correctly
+    def test_create_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        ing = c.post('/recipes/', json.dumps(recipe_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
+
+    # Test that a user can retrieve a recipe (notably does not need to be
+    # logged in)
+    def test_get_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        ing = c.post('/recipes/', json.dumps(recipe_data),
+                     content_type='application/json')
+        ing = c.get('/recipes/1/')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
+
+    # Test that a user can retrieve a list of recipes (notably does not need
+    # to be logged in)
+    def test_get_recipes(self):
+        c = Client()
+        recipe_data1 = {"name": "Hot ham water", "cook_time": "2 hours",
+                        "method": "Put in water", "author": "1", "ingredients":
+                            [{"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "potato"},
+                             {"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "pea"}],
+                        'favourites':
+                            [],
+                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        recipe_data2 = {"name": "Cold ham water", "cook_time": "2 hours",
+                        "method": "Put in cold water", "author": "1",
+                        "ingredients":
+                            [{"adjective": "moldy", "unit": "g",
+                              "amount": "20", "ingredient":
+                                  "potato"}],
+                        'favourites':
+                            [],
+                        'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data1),
+               content_type='application/json')
+        c.post('/recipes/', json.dumps(recipe_data2),
+               content_type='application/json')
+        ing = c.get('/recipes/')
+        self.assertGreaterEqual(json.loads(ing.content)[1].items(),
+            {"id": 1,
+             "name": "Hot "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 1,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}},
+                     {
+                         "adjective": "moldy",
+                         "unit": "g",
+                         "amount": "20",
+                         "recipe": 1,
+                         "ingredient": {
+                             "name": "pea",
+                             "category": {
+                                 "name": "vegetable"}}}]}.items())
+        self.assertGreaterEqual(json.loads(ing.content)[0].items(),
+            {"id": 2,
+             "name": "Cold "
+                     "ham "
+                     "water",
+             "cook_time": "2 hours",
+             "method": "Put in cold water",
+             "author":
+                 {"id": 1,
+                  "username": "Bob",
+                  "password": "Bob",
+                  "email": "Bob@gmail.com",
+                  "favourites": []},
+             "meal_cat": [{
+                 "name": "dinner"}],
+             "diet_req":
+                 [{
+                     "name": "vegan"}],
+             "favourites": [],
+             "ingredients":
+                 [{
+                     "adjective": "moldy",
+                     "unit": "g",
+                     "amount": "20",
+                     "recipe": 2,
+                     "ingredient": {
+                         "name": "potato",
+                         "category": {
+                             "name": "vegetable"}}}]}.items())
+
+    # Test that a user can delete a recipe (not yet implemented to restrict
+    # to only recipes they've made)
+    def test_delete_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "potato"},
+                            {"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data),
+               content_type='application/json')
+        c.delete('/recipes/1/')
+        ing = c.get('/recipes/1/')
+        self.assertContains(ing, "Not found", status_code=404)
+
+    # Test that a user can update a recipe's details (not yet implemented to
+    # restrict to recipes they've made)
+    def test_put_recipe(self):
+        c = Client()
+        recipe_data = {"name": "Hot ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "1", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "10", "ingredient":
+                                 "potato"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "dinner"}], 'diet_req': [{
+                "name": "vegan"}]}
+        c.post('/recipes/', json.dumps(recipe_data),
+               content_type='application/json')
+        recipe_data = {"name": "Cold ham water", "cook_time": "2 hours",
+                       "method": "Put in water", "author": "2", "ingredients":
+                           [{"adjective": "moldy", "unit": "g",
+                             "amount": "20", "ingredient":
+                                 "pea"}],
+                       'favourites':
+                           [],
+                       'meal_cat': [{"name": "lunch"}, {"name": "dinner"}],
+                       'diet_req': [{"name": "vegetarian"}]}
+        ing = c.put('/recipes/1/', json.dumps(recipe_data),
+                    content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                {"id": 1, "name": "Cold ham water",
+                                 "cook_time": "2 hours",
+                                 "method": "Put in water",
+                                 "author": {"id": 2, "username": "Tob",
+                                            "password": "Tob",
+                                            "email": "Tob@gmail.com",
+                                            "favourites": []},
+                                 "meal_cat": [{"name": "dinner"},
+                                              {"name": "lunch"}],
+                                 "diet_req": [{"name": "vegetarian"}],
+                                 "favourites": [], "ingredients": [
+                                    {"adjective": "moldy", "unit": "g",
+                                     "amount": "20", "recipe": 1,
+                                     "ingredient": {"name": "pea", "category": {
+                                         "name": "vegetable"}}}]}.items())
 
 
-# Create your tests here.
+# Tests for create, delete, put, retrieve and list for pantry ingredients
 class PantryIngredientTest(TestCase):
     def setUp(self) -> None:
         cat = IngredientCategory.objects.create(name='grain')
@@ -578,6 +616,8 @@ class PantryIngredientTest(TestCase):
         c.post('/user/register/', json.dumps(user_data),
                content_type='application/json')
 
+    # Test that a user can create a pantry ingredient (notably needs to be
+    # logged in as anonymous pantry is handled on frontend)
     def test_create_pantry_ingredient1(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -597,6 +637,8 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
+    # Test that a user does not need to enter in expiry date when creating an
+    # ingredient
     def test_create_pantry_ingredient2(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -615,6 +657,7 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
+    # Test that a user can retrieve a pantry ingredient
     def test_get_pantry_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -634,6 +677,7 @@ class PantryIngredientTest(TestCase):
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
+    # Test that a user can get a list of their pantry ingredients
     def test_get_pantry_ingredients1(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -720,6 +764,7 @@ class PantryIngredientTest(TestCase):
                      "category": {
                          "name": "zeta"}}}])
 
+    # Test that a user cannot get a list of other user's pantry ingredients
     def test_get_pantry_ingredients2(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -736,6 +781,8 @@ class PantryIngredientTest(TestCase):
         response = api_client.get('/user/pantry/')
         self.assertGreaterEqual(response.data, [])
 
+    # Test that a user can delete a pantry ingredient (not yet implemented to
+    # restrict to user's pantry ingredients)
     def test_delete_pantry_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
@@ -750,6 +797,8 @@ class PantryIngredientTest(TestCase):
         ing = api_client.get('/user/pantry/1/')
         self.assertContains(ing, "Not found", status_code=404)
 
+    # Test that a user can update a pantry ingredient (not yet implemented to
+    # restrict to user's pantry ingredient)
     def test_put_pantry_ingredient(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob'}

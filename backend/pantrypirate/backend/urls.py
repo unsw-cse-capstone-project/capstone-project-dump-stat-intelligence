@@ -4,6 +4,8 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from django.contrib.auth import views as auth
 
+# Router recognises url patterns and request types, sending them to the
+# appropriate views
 router = routers.DefaultRouter()
 router.register(r'user/pantry', PantryIngredientViewSet, basename='pantry')
 router.register(r'user', UserViewSet)
@@ -12,7 +14,7 @@ router.register(r'ingredients', IngredientViewSet)
 
 urlpatterns = [
 
-    # User Related Paths
+    # User Related Paths - put in first to take priority over the user viewset
     path('user/login/', views.obtain_auth_token),
     path('user/register/', UserCreate.as_view()),
     path('user/logout/', UserLogout.as_view()),
