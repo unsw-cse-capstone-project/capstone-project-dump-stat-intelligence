@@ -6,6 +6,7 @@ import RecipeAPI from "../../lib/api/recipe";
 
 import GeneralEdit from "./GeneralEdit";
 import MethodEdit from "./MethodEdit";
+import IngredientEdit from "./IngredientEdit";
 
 export default function Editor() {
   const router = useRouter();
@@ -78,13 +79,7 @@ export default function Editor() {
             <GeneralEdit/>
           </div>
           <div id="editBox1" className={styles.editBox}>
-            List of current ingredients
-            <br />
-            Each one can be deleted or edited
-            <br />
-            Add ingredient form at bottom
-            <br />
-            How to redorder them??
+            <IngredientEdit/>
           </div>
           <div id="editBox2" className={styles.editBox}>
             <MethodEdit/>

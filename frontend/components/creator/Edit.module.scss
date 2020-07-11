@@ -51,6 +51,8 @@
 
 .editBox {
     display:none;
+    width:100%;
+    padding-right:12px;
 }
 
 .showBox {
@@ -59,6 +61,7 @@
 
 .onionLayer {
     overflow-y: scroll;
+    width:100%;
     height:calc(100% - 4rem);
 }
 
@@ -66,3 +69,30 @@
     white-space:pre-wrap;
 
 }
+
+.ingredient {
+    font-size:1rem !important;
+    height:auto !important;
+    white-space:pre-line !important;
+}
+
+
+
+.querySearch:active .queryBox,
+.querySearch:hover .queryBox {
+  display:block;
+}
+
+.queryBox {
+    position:relative;
+    width:100%;
+    display:none;
+    z-index:33;
+  }
+  .queryHover {
+    background-color:var(--background);
+    position:absolute;
+    width:100%;
+    border-radius : 0.2rem;
+  }
+  
