@@ -11,6 +11,7 @@ AUTH
     auth : {
         isLoggedIn : bool,
         uid : int,
+        token : string,
         nextPage : string,
         favourites : [{recipe}, ...],
         owned : [{recipe}, ...]
@@ -95,22 +96,23 @@ export const update_details = (first, last, email, phone) => async (dispatch) =>
 export const register = (first, last, email, phone, pwd) => async (dispatch) => {
   //INSERT API, register new user with backend
 
-  let userInfo = {
-    first: first,
-    last: last,
-    email: email,
-    phone: phone,
-  };
-
-
+  
+  
   UserAPI.register(`{first} {last}`, email, pwd)
-    .then((res) => {
-      // TODO: do something with token here that comes back from response
+  .then((res) => {
+    // TODO: do something with token here that comes back from response
+      let userInfo = {
+        first: first,
+        last: last,
+        email: email,
+        phone: phone,
+      };
 
       dispatch({
         type: types.LOGIN,
         userInfo: userInfo,
         uid: 0,
+        token: null
       });
     })
     .catch((err) => {
@@ -121,20 +123,21 @@ export const register = (first, last, email, phone, pwd) => async (dispatch) => 
 
 //NEEDS API
 export const login = (email, pwd) => async (dispatch) => {
-  let userInfo = {
-    email: email,
-    phone: null,
-  };
   
   //INSET API, login and return token TODO: NOT SET UP WITH REDUX YET
   UserAPI.login(email, pwd)
-    .then((res) => {
-      // TODO: do something with token here that comes back from response
+  .then((res) => {
+    // TODO: do something with token here that comes back from response
+      let userInfo = {
+        email: email,
+        phone: null,
+      };
 
       dispatch({
         type: types.LOGIN,
         userInfo: userInfo,
         uid: 0,
+        token : null
       });
     })
     .catch((err) => {

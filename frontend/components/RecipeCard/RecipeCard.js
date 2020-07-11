@@ -4,7 +4,9 @@ import styles from "./RecipeCard.module.scss";
 import Indicator from "./Indicator";
 
 
+
 export default function RecipeCard(props) {
+  
   return (
     <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
       <div className={"card " + styles.recipe}>

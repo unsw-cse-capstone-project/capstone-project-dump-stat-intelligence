@@ -5,8 +5,7 @@ import RecipeIcon from "./RecipeIcon";
 import Arrow from "./Arrow";
 
 export default function Favourites() {
-    const owned = useSelector((state) => state.auth.owned)
-
+    const owned = useSelector((state) => state.auth.favourites)
     function toggleIt(id) {
         document.getElementById(`${id}-icon`).classList.toggle(styles.arrowUp);
         let box = document.getElementById(`${id}-box`)
@@ -29,7 +28,7 @@ export default function Favourites() {
             <div className={styles.buffer}></div>
             {owned.map((recipe, idx) => (
                 <div key={idx} className="column is-3">
-                <RecipeIcon fave={true} title={recipe.title} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
+                <RecipeIcon owned={true} fave={true} title={recipe.title} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
                 </div>
             ))}
         </div>

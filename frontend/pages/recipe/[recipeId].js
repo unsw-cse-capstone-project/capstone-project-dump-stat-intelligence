@@ -104,7 +104,7 @@ const Recipe = (props) => {
             <div className="tags">
               {recipe.diet_req.map((diet, idx) => (
                 <span className="tag" key={idx}>
-                  {diet}
+                  {diet.name}
                 </span>
               ))}
             </div>
