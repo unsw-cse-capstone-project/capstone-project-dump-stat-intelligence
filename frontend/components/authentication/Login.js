@@ -33,6 +33,7 @@ export default function Login(props) {
             dispatch(get_pantry());
             if (next) {
                 router.push(next);
+                dispatch(clear_next());
             }
             
         } else {

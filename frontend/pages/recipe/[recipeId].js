@@ -5,10 +5,12 @@ import React, { useState, useEffect } from "react";
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { add_favourite, remove_favourite } from "../../lib/redux/actions/authAction";
 
 const Recipe = (props) => {
+  const dispatch = useDispatch();
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -18,6 +20,7 @@ const Recipe = (props) => {
     cook_time: "",
     method: "",
     author: { name: "" },
+    isAuthor : false,
     isFavourite : false,
     diet_req: [],
     meal_cat: [],
@@ -47,15 +50,42 @@ const Recipe = (props) => {
     router.push("/explore");
     setDeleteLoading(false);
   };
-
-
-
+  
   if (error) {
     return <Error message={error.statusText} />;
   }
 
   if (loading) {
     return <p>Loading</p>;
+  }
+
+  function addFave() {
+    dispatch(add_favourite({title : recipe.name, src : null,  id : recipe.id}))
+    setRecipe({
+      ...recipe,
+      isFavourite : true
+    })
+  }
+
+  function removeFave() {
+    dispatch(remove_favourite(recipe.id));
+    setRecipe({
+      ...recipe,
+      isFavourite : false
+    })
+  }
+
+
+  let faveButton = null;
+  if (isLoggedIn) {
+    faveButton = recipe.isFavourite ? <a onClick={removeFave} className="button is-light is-warning">UnFavourite</a> : <a onClick={addFave} className="button is-light is-warning">Favourite</a>
+  }
+  let controlButtons = null;
+  if (recipe.isAuthor) {
+    controlButtons = <> 
+      <a className="button is-light">Edit</a>
+      <a className={`button is-light is-danger ${deleteLoading ? "is-loading" : null}`} onClick={handleDelete}>Delete</a>
+    </>
   }
 
   return (
@@ -79,21 +109,8 @@ const Recipe = (props) => {
               ))}
             </div>
             <div className="buttons">
-              <a className="button is-light">Edit</a>
-              <a
-                className={`button is-light is-danger ${
-                  deleteLoading ? "is-loading" : null
-                }`}
-                onClick={handleDelete}
-              >
-                Delete
-              </a>
-              { /*TODO: dont show if you authored*/
-                /*if not favourited*/ recipe.isFavourite ? 
-                <a className="button is-light is-warning">Favourite</a> :
-                /*if favourited*/
-                <a className="button is-light is-warning">Unfavourite</a>
-              }
+              
+              { faveButton }
             </div>
             <hr />
             <div className="columns">
@@ -122,27 +139,3 @@ const Recipe = (props) => {
 
 export default Recipe;
 
-
-
-
-/*
-  FOR WHEN ITS FUNCTIONAL AGAIN
-
-  function addFave() {
-    useDispatch(add_favourite({title : recipe.name, src : null,  id : recipe.id}))
-    setRecipe({
-      ...recipe,
-      isFavourite : true
-    })
-  }
-
-  function removeFave() {
-    useDispatch(remove_favourite(recipe.id));
-    setRecipe({
-      ...recipe,
-      isFavourite : false
-    })
-  }
-
-
-*/
