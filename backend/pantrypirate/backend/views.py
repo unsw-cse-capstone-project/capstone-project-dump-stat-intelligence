@@ -46,11 +46,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by("name")
     serializer_class = RecipeSerializer
 
-    # Make search allowany permission (anonymous can use it)
-    def check_permissions(self, request):
-        if self.action is 'list':
-            return
-        return super(RecipeViewSet, self).check_permissions(request)
+    # Make general and specific recipe get anonymous allowable
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'retrieve':
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
     # Search for recipes given the running list input and filters
     def list(self, request, *args, **kwargs):
