@@ -33,6 +33,7 @@ const Recipe = (props) => {
     let recipeId = window.location.href.split("/").pop();
     RecipeAPI.get(recipeId).then(
       ({ data }) => {
+        console.log(data);
         setRecipe(data);
         setLoading(false);
       },
@@ -104,7 +105,7 @@ const Recipe = (props) => {
             <div className="tags">
               {recipe.diet_req.map((diet, idx) => (
                 <span className="tag" key={idx}>
-                  {diet}
+                  {diet.name}
                 </span>
               ))}
             </div>

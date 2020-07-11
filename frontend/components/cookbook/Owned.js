@@ -6,7 +6,6 @@ import Arrow from "./Arrow";
 
 export default function Favourites() {
     const owned = useSelector((state) => state.auth.favourites)
-
     function toggleIt(id) {
         document.getElementById(`${id}-icon`).classList.toggle(styles.arrowUp);
         let box = document.getElementById(`${id}-box`)
