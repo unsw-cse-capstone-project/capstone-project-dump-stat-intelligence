@@ -3,8 +3,8 @@ import styles from "./Edit.module.scss";
 
 import { useSelector, useDispatch } from 'react-redux';
 import { clear_create } from "../../lib/redux/actions/createAction";
-import { useRouter } from 'next/router'
-
+import { useRouter } from 'next/router';
+import NewIngredient from "./NewIngredient";
 
 export default function Preview() {
     const dispatch = useDispatch();
@@ -17,6 +17,7 @@ export default function Preview() {
 
     return <div className="container">
         <div className="columns is-centred">
+                <NewIngredient id="new-ingredient"/>
                 <div className="box column is-10">
                     <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
                     {
