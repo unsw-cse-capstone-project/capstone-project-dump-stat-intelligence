@@ -56,3 +56,8 @@
 .showBox {
     display:block;
 }
+
+.onionLayer {
+    overflow-y: scroll;
+    height:calc(100% - 4rem);
+}

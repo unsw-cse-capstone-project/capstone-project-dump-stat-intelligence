@@ -4,12 +4,12 @@ import * as types from "../types";
 const initialState = {
     name : "New Recipe",
     id : null,
-    cook_time : null,
+    cook_time : "",
     ingredients : [],
-    method : null,
+    method : "",
     author : {
         id : null,
-        username : null,
+        username : "",
 
     },
     diet_req : [],

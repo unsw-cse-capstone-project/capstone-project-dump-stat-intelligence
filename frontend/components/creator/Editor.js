@@ -4,6 +4,9 @@ import { useRouter } from "next/router";
 
 import RecipeAPI from "../../lib/api/recipe";
 
+import GeneralEdit from "./GeneralEdit";
+import MethodEdit from "./MethodEdit";
+
 export default function Editor() {
   const router = useRouter();
   const [active, setActive] = useState(0);
@@ -70,76 +73,21 @@ export default function Editor() {
             </li>
           </ul>
         </div>
-        <div id="editBox0" className={`${styles.editBox} ${styles.showBox}`}>
-          <div className="form">
-            <div className="field control">
-              <label className="label">Title</label>
-              <input
-                name="title"
-                className="input"
-                type="text"
-                value={recipe.name}
-                onChange={(e) => handleInput(e, "name")}
-              />
-            </div>
-            <div className="field control">
-              <label className="label">Cook time</label>
-              <input
-                name="cook_time"
-                className="input"
-                type="text"
-                value={recipe.cook_time}
-                onChange={(e) => handleInput(e, "cook_time")}
-              />
-            </div>
-            <div className="field control">
-              <label className="label">
-                Author ID (until auth is implemented)
-              </label>
-              <input
-                name="author"
-                className="input"
-                type="text"
-                value={recipe.author}
-                onChange={(e) => handleInput(e, "author")}
-              />
-            </div>
-            <div className="field control">
-              <label className="label">Image URL</label>
-              <input
-                name="cook_time"
-                className="input"
-                type="text"
-                value={recipe.image_url}
-                onChange={(e) => handleInput(e, "image_url")}
-              />
-            </div>
-            <button
-              className={`button is-success is-light ${
-                isLoading ? "is-loading" : null
-              }`}
-              onClick={handleSubmit}
-            >
-              Add Recipe
-            </button>
+        <div className={styles.onionLayer}>
+          <div id="editBox0" className={`${styles.editBox} ${styles.showBox}`}>
+            <GeneralEdit/>
           </div>
-        </div>
-        <div id="editBox1" className={styles.editBox}>
-          List of current ingredients
-          <br />
-          Each one can be deleted or edited
-          <br />
-          Add ingredient form at bottom
-          <br />
-          How to redorder them??
-        </div>
-        <div id="editBox2" className={styles.editBox}>
-          <div className="field control">
-            <textarea
-              className="textarea input"
-              onChange={(e) => handleInput(e, "method")}
-              value={recipe.method}
-            ></textarea>
+          <div id="editBox1" className={styles.editBox}>
+            List of current ingredients
+            <br />
+            Each one can be deleted or edited
+            <br />
+            Add ingredient form at bottom
+            <br />
+            How to redorder them??
+          </div>
+          <div id="editBox2" className={styles.editBox}>
+            <MethodEdit/>
           </div>
         </div>
       </div>
