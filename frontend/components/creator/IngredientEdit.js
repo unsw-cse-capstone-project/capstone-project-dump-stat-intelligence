@@ -41,7 +41,7 @@ export default function IngredientEdit() {
         </form>
         <h1 className="title is-6">Can't find the ingredient you're looking for? </h1>
         <div className="control">
-            <button onClick={() => document.getElementById("new-ingredient").classList.toggle("is-active")} className="button">Create Ingredient</button>
+            <button style={{width:"100%"}} onClick={() => document.getElementById("new-ingredient").classList.toggle("is-active")} className="button">Create Ingredient</button>
         </div>
         
     </div>
