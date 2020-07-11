@@ -12,7 +12,7 @@ export default function RecipeCard(props) {
     dispatch(add_favourite({ name: props.recipe.name, id: props.recipe.id }));
   }
   return (
-    <Link href={`/recipe/${props.recipe.id}`}>
+    <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
       <div onClick={add} className={"card " + styles.recipe}>
         <div className="card-image">
           <figure className="image is-4by3">
