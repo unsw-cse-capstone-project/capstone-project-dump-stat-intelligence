@@ -72,6 +72,7 @@ export default function Pantry() {
                         idx={j}
                         ingredient={ingredient.name}
                         category={category}
+                        expiry={ingredient.expiry}
                       />
                     ))}
                   </div>

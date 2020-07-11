@@ -1,35 +1,21 @@
 import Head from "next/head";
+import Favourites from "../components/cookbook/Favourites";
+import Owned from "../components/cookbook/Owned";
 
 import { useSelector } from 'react-redux';
 import RecipeIcon from "../components/cookbook/RecipeIcon";
 
 export default function CookBook() {
-  const favourites = useSelector((state) => state.auth.favourites)
-  const owned = useSelector(state => state.auth.owned)
+  
   return (
     <>
       <Head>
         <title>Pantry Pirate | Cookbook</title>
       </Head>
       <div>
-        <br/>
-        <h1 className="title is-3">My Favourited recipes</h1>
-        <div className="columns is-multiline">
-          {favourites.map((recipe, idx) => (
-            <div key={idx} className="column is-3">
-              <RecipeIcon fave={true} title={recipe.name} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
-            </div>
-          ))}
-        </div>
-        <br/><br/>
-        <h1 className="title is-3">My recipes</h1>
-        <div className="columns is-multiline">
-          {owned.map((recipe, idx) => (
-            <div key={idx} className="column is-3">
-              <RecipeIcon title={recipe.name} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
-            </div>
-          ))}
-        </div>
+        <Favourites/>
+        <hr/>
+        <Owned/>
       </div>
     </>
   );

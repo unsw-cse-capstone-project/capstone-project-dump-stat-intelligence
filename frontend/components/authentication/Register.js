@@ -41,6 +41,7 @@ export default function Register(props) {
             //If redirects, do so
             if (next) {
                 router.push(next);
+                dispatch(clear_next);
             }
         } else {
             //DISPLAY ERROR MESSAGE

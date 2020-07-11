@@ -4,7 +4,8 @@ import FaveIcon from "./FaveIcon";
 import EditIcon from "./EditIcon";
 
 export default function RecipeIcon(props) {
-    return <Link href={`/recipe/${props.id}`}>
+    
+    return <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.id}`}>
         <div className={`card ${styles.recipe}`}>
             <div className="card-image">
                 <figure className="image is-4by3">

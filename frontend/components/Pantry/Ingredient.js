@@ -8,7 +8,7 @@ export default function Ingredient(props) {
     const dispatch = useDispatch();
     function newIn() {
         
-        dispatch(add({name : props.name, category : props.category}));
+        dispatch(add({name : props.name, category : props.category, expiry : props.expiry}));
         dispatch(clear_query());
         document.getElementById(props.searcher).value = null;
         
