@@ -77,7 +77,7 @@ export default function Filter() {
             }}
             className="button"
           >
-            <span>Update</span>
+            <span>Filter</span>
           </button>
         </div>
       </div>

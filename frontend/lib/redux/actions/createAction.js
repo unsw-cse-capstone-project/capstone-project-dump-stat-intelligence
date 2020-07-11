@@ -17,6 +17,25 @@ CREATE
 
 
 */
+//NEEDS API
+export const create_ingredient = (name, category) => {
+  //INSERT API, add ingredient to databse
+  console.log("ADDING ", name, category)
+}
+
+
+//NO API, frontend only
+export const remove_ingredient = (idx) => async (dispatch) => {
+  let ingredients = [...store.getState().create.ingredients];
+  ingredients.splice(idx, 1);
+  dispatch({
+    type: types.UPDATE_CREATE,
+    category: "ingredients",
+    newVal: ingredients
+  })
+}
+
+
 //NO API, frontend only
 export const update_create = (category, newVal) => async (dispatch) => {
   dispatch({

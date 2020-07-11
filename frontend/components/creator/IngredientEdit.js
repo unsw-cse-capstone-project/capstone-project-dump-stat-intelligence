@@ -2,8 +2,7 @@ import styles from "./Edit.module.scss";
 
 import { useSelector, useDispatch } from "react-redux";
 import Ingredient from "./Ingredient";
-import IngredientSearch from "../Pantry/IngredientSearch";
-
+import NewIngredient from "./NewIngredient";
 
 export default function IngredientEdit() {
     let ingredients = useSelector(state => state.create.ingredients);
@@ -40,5 +39,10 @@ export default function IngredientEdit() {
                 </div>
             </div>
         </form>
+        <h1 className="title is-6">Can't find the ingredient you're looking for? </h1>
+        <div className="control">
+            <button style={{width:"100%"}} onClick={() => document.getElementById("new-ingredient").classList.toggle("is-active")} className="button">Create Ingredient</button>
+        </div>
+        
     </div>
 }
