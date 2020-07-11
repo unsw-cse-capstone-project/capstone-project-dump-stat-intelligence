@@ -55,11 +55,10 @@ export const clear_create = () => async (dispatch) => {
 export const load_create = (id) => async (dispatch) => {
   let uid = store.getState().auth.uid;
   //INSERT API - actually load recipe from backend instead of dummy data
-  //TEMPORARY ... LOAD RECIPE LIKE WHEN YOU VEIW A RECIPE
   
-  //TODO - finalise what the contents of this will actually be i.e. what is in an ingredient. Will have to change on create page as well.
+  //TEMPORARY ... LOAD RECIPE LIKE WHEN YOU VEIW A RECIPE
   let recipe = null
-  RecipeAPI.get(id).then(({ data }) => {console.log(data), recipe = data}).then(() => {
+  RecipeAPI.get(id).then(({ data }) => {recipe = data}).then(() => {
     dispatch({
       type: types.LOAD_CREATE,
       loaded: recipe,
