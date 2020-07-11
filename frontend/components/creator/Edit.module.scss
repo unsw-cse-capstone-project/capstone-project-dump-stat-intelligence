@@ -51,6 +51,7 @@
 
 .editBox {
     display:none;
+    width:100%;
 }
 
 .showBox {
@@ -59,10 +60,17 @@
 
 .onionLayer {
     overflow-y: scroll;
+    width:100%;
     height:calc(100% - 4rem);
 }
 
 .wrap {
     white-space:pre-wrap;
 
+}
+
+.ingredient {
+    font-size:1rem !important;
+    height:auto !important;
+    white-space:pre-line !important;
 }
