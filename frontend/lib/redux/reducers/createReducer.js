@@ -2,11 +2,18 @@ import * as types from "../types";
 
 //NOTE - if id is null, it is assumed the recipe is yet to be added, if its not null then it is being edited.
 const initialState = {
-    title : null,
+    name : "New Recipe",
     id : null,
     cook_time : null,
     ingredients : [],
-    method : []
+    method : null,
+    author : {
+        id : null,
+        username : null,
+
+    },
+    diet_req : [],
+    ingredients : []
 }
 
 

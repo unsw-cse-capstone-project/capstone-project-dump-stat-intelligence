@@ -10,7 +10,6 @@ export default function Preview() {
     const dispatch = useDispatch();
     const router = useRouter();
     let creation = useSelector(state => state.create)
-    console.log(creation);
     function discard() {
         dispatch(clear_create());
         router.push("/cookbook")
@@ -20,7 +19,11 @@ export default function Preview() {
         <div className="columns is-centred">
                 <div className="box column is-10">
                     <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
-                    <img src={`https://source.unsplash.com/1200x600/?${creation.name}`} />
+                    {
+                        creation.name !== "New Recipe" ?
+                        <img src={`https://source.unsplash.com/1200x600/?${creation.name}`} />
+                        : ""
+                    }
                     <p>
                     Author: {creation.author.username} | Cook time: {creation.cook_time}
                     </p>
