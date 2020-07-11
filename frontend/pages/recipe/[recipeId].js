@@ -33,7 +33,6 @@ const Recipe = (props) => {
     let recipeId = window.location.href.split("/").pop();
     RecipeAPI.get(recipeId).then(
       ({ data }) => {
-        console.log(data);
         setRecipe(data);
         setLoading(false);
       },
