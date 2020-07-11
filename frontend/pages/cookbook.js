@@ -3,10 +3,17 @@ import Favourites from "../components/cookbook/Favourites";
 import Owned from "../components/cookbook/Owned";
 
 import { useSelector } from 'react-redux';
-import RecipeIcon from "../components/cookbook/RecipeIcon";
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 
 export default function CookBook() {
-  
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/")
+    }
+  }, [])
   return (
     <>
       <Head>

@@ -52,14 +52,14 @@ export const clear_create = () => async (dispatch) => {
 };
 
 //NEEDS API
-export const load_create = () => async (dispatch) => {
+export const load_create = (id) => async (dispatch) => {
   let uid = store.getState().auth.uid;
   //INSERT API - actually load recipe from backend instead of dummy data
 
   //TODO - finalise what the contents of this will actually be i.e. what is in an ingredient. Will have to change on create page as well.
   let recipe = {
     title: "DUMMY",
-    id: 0,
+    id: id,
     cook_time: "60 hours",
     ingredients: [
       { name: "Coriander", qty: "3 buckets" },
