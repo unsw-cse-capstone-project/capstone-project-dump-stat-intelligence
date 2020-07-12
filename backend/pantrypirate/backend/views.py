@@ -1,11 +1,21 @@
 from rest_framework import viewsets, generics, views
 from rest_framework.views import APIView
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated, AllowAny, IsAdminUser
 from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
 import urllib.parse
+
+
+# Custom token authentication to allow the id to be returned alongside the token
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        return Response({'token': token.key, 'id': token.user_id})
 
 
 # Allows updating of the user accounts, can get a list of all users
@@ -22,6 +32,17 @@ class UserViewSet(viewsets.ModelViewSet):
         if self.action == "list":
             self.permission_classes = [IsAdminUser]
         return super(UserViewSet, self).get_permissions()
+
+    # Make deletion only compatible for our account
+    def destroy(self, request, *args, **kwargs):
+        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
+                       i][
+                          -1])
+        if request.user.id is user_id:
+            return super(UserViewSet, self).destroy(self, request, *args,
+                                                  **kwargs)
+        else:
+            return Response(status=401)
 
 
 # Register user, checks for duplicates
