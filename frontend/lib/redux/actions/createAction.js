@@ -21,27 +21,25 @@ CREATE
 export const add_category = (name, category) => async (dispatch) => {
   dispatch({
     type: types.CAT_ADD_CREATE,
-    name : name,
-    category : category
-  })
-}
+    name: name,
+    category: category,
+  });
+};
 
 //NO API, frontend only
 export const remove_category = (name, category) => async (dispatch) => {
   dispatch({
     type: types.CAT_REMOVE_CREATE,
-    name : name,
-    category : category
-  })
-}
-
+    name: name,
+    category: category,
+  });
+};
 
 //NEEDS API
 export const create_ingredient = (name, category) => {
   //INSERT API, add ingredient to databse
-  console.log("ADDING ", name, category)
-}
-
+  console.log("ADDING ", name, category);
+};
 
 //NO API, frontend only
 export const remove_ingredient = (idx) => async (dispatch) => {
@@ -50,10 +48,9 @@ export const remove_ingredient = (idx) => async (dispatch) => {
   dispatch({
     type: types.UPDATE_CREATE,
     category: "ingredients",
-    newVal: ingredients
-  })
-}
-
+    newVal: ingredients,
+  });
+};
 
 //NO API, frontend only
 export const update_create = (category, newVal) => async (dispatch) => {
@@ -68,9 +65,11 @@ export const update_create = (category, newVal) => async (dispatch) => {
 export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
   //INSERT API, send to backend to add recipe
+  console.log("save_create action occured");
   RecipeAPI.create(recipe, "")
     .then((res) => {
       // do something
+      console.log("created recipe", recipe);
     })
     .catch((err) => {
       console.error(err.response);
@@ -93,14 +92,17 @@ export const clear_create = () => async (dispatch) => {
 export const load_create = (id) => async (dispatch) => {
   let uid = store.getState().auth.uid;
   //INSERT API - actually load recipe from backend instead of dummy data
-  
-  //TEMPORARY ... LOAD RECIPE LIKE WHEN YOU VEIW A RECIPE
-  let recipe = null
-  RecipeAPI.get(id).then(({ data }) => {recipe = data}).then(() => {
-    dispatch({
-      type: types.LOAD_CREATE,
-      loaded: recipe,
-    })}
-  )
 
+  //TEMPORARY ... LOAD RECIPE LIKE WHEN YOU VEIW A RECIPE
+  let recipe = null;
+  RecipeAPI.get(id)
+    .then(({ data }) => {
+      recipe = data;
+    })
+    .then(() => {
+      dispatch({
+        type: types.LOAD_CREATE,
+        loaded: recipe,
+      });
+    });
 };
