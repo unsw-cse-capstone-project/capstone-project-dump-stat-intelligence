@@ -126,7 +126,7 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
       dispatch({
         type: types.LOGIN,
         userInfo: data,
-        uid: data.uid,
+        uid: data.id,
         token: user.token,
       });
     })
