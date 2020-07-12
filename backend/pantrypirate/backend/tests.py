@@ -23,7 +23,6 @@ class UserTestCase(TestCase):
                                 user_data1.items())
         user = c.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
-        print(user.data)
         user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data2.items())
@@ -151,28 +150,24 @@ class UserTestCase(TestCase):
         api_client1 = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        user = api_client1.post('/user/register/', json.dumps(user_data),
+        token = api_client1.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data.pop('email')
-        token = api_client1.post('/user/login/', json.dumps(user_data),
-               content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
         api_client2 = APIClient()
         user_data1 = {'username' : 'Bob1', 'password' : 'Bob1', 'email':
             'Bob1@gmail.com'}
-        user = api_client2.post('/user/register/', json.dumps(user_data1),
+        token = api_client2.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
-        user_data1.pop('email')
-        token = api_client2.post('/user/login/', json.dumps(user_data1),
-               content_type='application/json')
         api_client2.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
         response = api_client2.delete('/user/1/')
         self.assertContains(response, '', status_code=401)
         user = api_client2.get('/user/1/')
-        print(user.content)
         self.assertContains(user, '', status_code=200)
+        response = api_client2.delete('/user/2/')
+        user = api_client1.get('/user/2/')
+        self.assertContains(user, '', status_code=404)
 
     # Test checking that a user can update a user's details (not yet
     # implemented to only allow update of self)
@@ -204,6 +199,34 @@ class UserTestCase(TestCase):
             'token'])
         self.assertContains(token, '', status_code=200)
         response = api_client1.get('/user/1/')
+        self.assertContains(response, '', status_code=200)
+
+    # Test checking that a user can update a user's details (not yet
+    # implemented to only allow update of self)
+    def test_put_user2(self):
+        api_client1 = APIClient()
+        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        token = api_client1.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        api_client2 = APIClient()
+        user_data = {'username' : 'Tob', 'password' : 'Tob', 'email':
+            'Tob@gmail.com'}
+        token = api_client2.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        api_client2.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        user_data = {'username' : 'Cob1', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        user = api_client2.put('/user/1/', json.dumps(user_data),
+                     content_type='application/json')
+        user_data.pop('password')
+        print(user.content)
+        # self.assertContains(user, '', status_code=401)
+        response = api_client1.get('/user/1/')
+        print(response.content)
         self.assertContains(response, '', status_code=200)
 
 
