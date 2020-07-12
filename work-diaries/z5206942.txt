@@ -37,3 +37,7 @@
 
 - Started a new sprint however didn't have much time to complete much.
 - On sunday began serious work on linkup - particular auth and storing tokens in localstorage
+- Completed auth linkup with backend
+- Completed recipe creation linkup with backend
+- Fixed some issues with favouriting in redux
+- Converted many direct API calls to redux actions
