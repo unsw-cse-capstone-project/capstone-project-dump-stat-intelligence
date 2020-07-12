@@ -57,14 +57,16 @@
 .queryBox {
   position:relative;
   width:100%;
-  display:none;
-  z-index:33;
+  display:block;
+  height:0px;
 }
 .queryHover {
   background-color:var(--background);
   position:absolute;
+  z-index:38;
   width:100%;
   border-radius : 0.2rem;
+  top:4rem;
 }
 
 .querySearch:active .queryBox,

@@ -31,9 +31,18 @@
     right: 2rem;
     bottom: 7rem;
     padding: 12px;
+    padding-top:4rem;
     transform:scale(0);
     opacity:0;
     transition: 300ms ease;
+    overflow-y: scroll;
+}
+
+.header {
+    position:absolute;
+    top:12px;
+    display:flex;
+    justify-content: start;
 }
 
 .editorShow {
@@ -52,22 +61,21 @@
 .editBox {
     display:none;
     width:100%;
-    padding-right:12px;
+    height:100%;
 }
 
 .showBox {
     display:block;
 }
 
-.onionLayer {
-    overflow-y: scroll;
+.wideTag {
     width:100%;
-    height:calc(100% - 4rem);
+    font-size:1rem !important;
 }
+
 
 .wrap {
     white-space:pre-wrap;
-
 }
 
 .ingredient {
@@ -87,12 +95,16 @@
     position:relative;
     width:100%;
     display:none;
-    z-index:33;
-  }
-  .queryHover {
+}
+.queryHover {
     background-color:var(--background);
     position:absolute;
     width:100%;
     border-radius : 0.2rem;
-  }
+}
   
+
+.formCon {
+    flex-wrap:wrap;
+    justify-content: space-around !important;
+}
