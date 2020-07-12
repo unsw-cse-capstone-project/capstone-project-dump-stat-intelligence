@@ -3,10 +3,10 @@ import paging from "../utils/paging";
 
 const RecipeAPI = {
   search: async (name, page, limit = 10) =>
-    api.get(`/ingredients?search=${name}&${paging(limit, page)}`),
-  get: async (id) => api.get(`/ingredients/${id}`),
+    api.get(`/ingredients/?search=${name}&${paging(limit, page)}`),
+  get: async (id) => api.get(`/ingredients/${id}/`),
   create: async (ingredient) =>
-    await api.post(`/ingredients`, JSON.stringify({ ingredient })),
+    await api.post(`/ingredients/`, JSON.stringify({ ingredient })),
 };
 
 export default RecipeAPI;

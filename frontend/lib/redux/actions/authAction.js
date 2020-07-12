@@ -3,6 +3,8 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
+import { getToken, setToken, removeToken } from "../../utils/token";
+
 /*
 AUTH
 
@@ -92,28 +94,19 @@ export const update_details = (first, last, email, phone) => async (
 };
 
 //NEEDS API
-export const register = (first, last, email, phone, pwd) => async (
-  dispatch
-) => {
+export const register = (username, email, password) => async (dispatch) => {
   //INSERT API, register new user with backend
-
-  UserAPI.register(`{first} {last}`, email, pwd)
+  console.log("REGISTER EVENT!");
+  UserAPI.register(username, email, password)
     .then((res) => {
-      // TODO: do something with token here that comes back from response
-      let userInfo = {
-        first: first,
-        last: last,
-        email: email,
-        phone: phone,
-      };
-
-      // TODO: store token in localstorage / axios token
+      let data = res.data;
+      setToken(data.token);
 
       dispatch({
         type: types.LOGIN,
-        userInfo: userInfo,
-        uid: 0,
-        token: null,
+        userInfo: data,
+        uid: data.id,
+        token: data.token,
       });
     })
     .catch((err) => {
@@ -121,27 +114,24 @@ export const register = (first, last, email, phone, pwd) => async (
     });
 };
 
-export const login = (email, pwd) => async (dispatch) => {
-  UserAPI.login(email, pwd)
+export const login = (email, password) => async (dispatch) => {
+  console.log("LOGIN ACTION!");
+  UserAPI.login(email, password)
     .then((res) => {
-      let userInfo = {
-        email: email,
-        phone: null,
-        token: res.token,
-        id: res.id,
-      };
-
-      // TODO: store token in localstorage / axios token
+      let data = res.data;
+      setToken(data.token);
 
       dispatch({
         type: types.LOGIN,
-        userInfo: userInfo,
-        uid: 3,
-        token: null,
+        userInfo: data,
+        uid: data.id,
+        token: data.token,
       });
     })
     .catch((err) => {
+      console.log("redux error");
       console.error(err);
+      console.error(err.response);
     });
 };
 
@@ -149,8 +139,7 @@ export const logout = () => async (dispatch) => {
   UserAPI.logout()
     .then((res) => {
       console.log("API logout");
-
-      // TODO: remove token from localstorage / axios token
+      removeToken();
 
       dispatch({
         type: types.LOGOUT,

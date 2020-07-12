@@ -1,16 +1,11 @@
 import api from "./api";
-import paging from "../utils/paging";
 
 const UserAPI = {
   login: async (username, password) => {
     try {
-      const res = await api.post(
-        `/user/login/`,
-        JSON.stringify({ username, password })
-      );
-      return res;
+      return await api.post(`/user/login/`, { username, password });
     } catch (e) {
-      return e.response;
+      console.error(e.response);
     }
   },
   logout: async () => {
@@ -18,13 +13,14 @@ const UserAPI = {
   },
   register: async (username, email, password) => {
     try {
-      const res = await api.post(
-        `/user/register`,
-        JSON.stringify({ username, email, password })
-      );
+      const res = await api.post(`/user/register/`, {
+        username,
+        email,
+        password,
+      });
       return res;
     } catch (e) {
-      return e.response;
+      console.error(e.response);
     }
   },
 };
