@@ -164,7 +164,8 @@ class UserTestCase(TestCase):
         response = api_client2.delete('/user/1/')
         self.assertContains(user, '', status_code=401)
         user = api_client2.get('/user/1/')
-        self.assertGreaterEqual(user, '', status_code=404)
+        print(user.content)
+        self.assertGreaterEqual(user, '', status_code=200)
 
     # Test checking that a user can update a user's details (not yet
     # implemented to only allow update of self)
