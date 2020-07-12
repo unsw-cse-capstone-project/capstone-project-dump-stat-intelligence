@@ -1,7 +1,7 @@
 import styles from "./Edit.module.scss";
 
 import { useSelector, useDispatch } from 'react-redux';
-import { update_create } from "../../lib/redux/actions/createAction";
+import { update_create, add_category, remove_category } from "../../lib/redux/actions/createAction";
 import DropItem from "./DropItem";
 
 export default function GeneralEdit() {
@@ -54,58 +54,66 @@ export default function GeneralEdit() {
             />
         </div>
         <div className="field control">
-          <div className="select dropdown is-hoverable" style={{width:"100%"}}>
-            <div style={{width:"100%"}} className="dropdown-trigger">
-              <button
-                className="button"
-                style={{width:"100%"}}
-                aria-haspopup="true"
-                aria-controls="dropdown-menu4"
-              >
-                <span>Meal type</span>
-                <span className="icon is-small">
-                  <i className="fas fa-check" aria-hidden="true"></i>
-                </span>
-              </button>
-            </div>
-            <div style={{width:"100%"}} className="dropdown-menu" id="dropdown-menu4" role="menu">
-              <div className="dropdown-content">
-                {Object.keys(meal).map((key, idx) => (
-                  <DropItem
-                    key={idx}
-                    name={key}
-                    is_checked={meal[key]}
-                  />
-                ))}
-              </div>
-            </div>
+        <label className="label">Meal type</label>
+            <div className="select dropdown is-hoverable" style={{width:"100%"}}>
+                <div style={{width:"100%"}} className="dropdown-trigger">
+                <button
+                    className="button"
+                    style={{width:"100%"}}
+                    aria-haspopup="true"
+                    aria-controls="dropdown-menu4"
+                >
+                    <span>Meal type</span>
+                    <span className="icon is-small">
+                    <i className="fas fa-check" aria-hidden="true"></i>
+                    </span>
+                </button>
+                </div>
+                <div style={{width:"100%"}} className="dropdown-menu" id="dropdown-menu4" role="menu">
+                <div className="dropdown-content">
+                    {Object.keys(meal).map((key, idx) => (
+                    <DropItem
+                        key={idx}
+                        name={key}
+                        is_checked={meal[key]}
+                        add={add_category}
+                        remove={remove_category}
+                        category="meal_cat"
+                    />
+                    ))}
+                </div>
+                </div>
           </div>
         </div>
         <div className="field control">
-          <div className="select dropdown is-hoverable" style={{width:"100%"}}>
-            <div style={{width:"100%"}} className="dropdown-trigger">
-              <button
-                className="button"
-                style={{width:"100%"}}
-                aria-haspopup="true"
-                aria-controls="dropdown-menu4"
-              >
-                <span>Dietary Requirements</span>
-                <span className="icon is-small">
-                  <i className="fas fa-check" aria-hidden="true"></i>
-                </span>
-              </button>
-            </div>
-            <div style={{width:"100%"}} className="dropdown-menu" id="dropdown-menu4" role="menu">
-              <div className="dropdown-content">
-                {Object.keys(diet).map((key, idx) => (
-                  <DropItem
-                    key={idx}
-                    name={key}
-                    is_checked={diet[key]}
-                  />
-                ))}
-              </div>
+            <label className="label">Dietary requirements</label>
+            <div className="select dropdown is-hoverable" style={{width:"100%"}}>
+                <div style={{width:"100%"}} className="dropdown-trigger">
+                <button
+                    className="button"
+                    style={{width:"100%"}}
+                    aria-haspopup="true"
+                    aria-controls="dropdown-menu4"
+                >
+                    <span>Dietary requirements</span>
+                    <span className="icon is-small">
+                    <i className="fas fa-check" aria-hidden="true"></i>
+                    </span>
+                </button>
+                </div>
+                <div style={{width:"100%"}} className="dropdown-menu" id="dropdown-menu4" role="menu">
+                <div className="dropdown-content">
+                    {Object.keys(diet).map((key, idx) => (
+                    <DropItem
+                        key={idx}
+                        name={key}
+                        is_checked={diet[key]}
+                        add={add_category}
+                        remove={remove_category}
+                        category="diet_req"
+                    />
+                    ))}
+                </div>
             </div>
           </div>
         </div>
