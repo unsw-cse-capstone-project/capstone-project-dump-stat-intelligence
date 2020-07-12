@@ -62,19 +62,11 @@ const Recipe = (props) => {
   function addFave() {
     dispatch(add_favourite({ title: recipe.name, src: null, id: recipe.id }));
     setFavourite(true);
-    // setRecipe({
-    //   ...recipe,
-    //   isFavourite: true,
-    // });
   }
 
   function removeFave() {
     dispatch(remove_favourite(recipe.id));
     setFavourite(false);
-    // setRecipe({
-    //   ...recipe,
-    //   isFavourite: false,
-    // });
   }
 
   let faveButton = null;
