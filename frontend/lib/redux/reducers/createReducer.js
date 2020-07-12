@@ -13,6 +13,7 @@ const initialState = {
 
     },
     diet_req : [],
+    meal_cat : [],
     ingredients : []
 }
 
@@ -20,6 +21,26 @@ const initialState = {
 
 export const createReducer = (state = initialState, action) => {
     switch (action.type) {
+        case types.CAT_REMOVE_CREATE:
+            let newCat = state[action.category];
+            //removing relevant one
+            for (let i = 0; i < newCat.length; i++) {
+                if (newCat[i].name === action.name) {
+                    newCat.splice(i, 1);
+                    break;
+                }
+            }
+            return {
+                ...state,
+                [action.category] : [...newCat]
+            }
+        case types.CAT_ADD_CREATE:
+            newCat = state[action.category];
+            newCat.push({name : action.name});
+            return {
+                ...state,
+                [action.category] : [...newCat]
+            }
         case types.UPDATE_CREATE:
             
             return {

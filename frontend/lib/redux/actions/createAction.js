@@ -17,6 +17,25 @@ CREATE
 
 
 */
+//NO API, frontend only
+export const add_category = (name, category) => async (dispatch) => {
+  dispatch({
+    type: types.CAT_ADD_CREATE,
+    name : name,
+    category : category
+  })
+}
+
+//NO API, frontend only
+export const remove_category = (name, category) => async (dispatch) => {
+  dispatch({
+    type: types.CAT_REMOVE_CREATE,
+    name : name,
+    category : category
+  })
+}
+
+
 //NEEDS API
 export const create_ingredient = (name, category) => {
   //INSERT API, add ingredient to databse
