@@ -3,7 +3,7 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
-import { getUser, setUser, removeUser } from "../../utils/storeUser";
+import { getUser, setUser, removeUser } from "../../utils/localstorage";
 
 /*
 AUTH

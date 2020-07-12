@@ -33,23 +33,25 @@ export default function Register(props) {
     event.target.elements.password.value = "";
     //If succeeded, login and close
 
-    router.push("/explore");
-    // COMMENTING OUT CREATE PANTRY FOR THE MOMENT
+    // router.push("/explore");
 
-    // if (true) {
-    //   document.getElementById(alertName).classList.remove(styles.show);
-    //   close(props.register, "is-active");
-    //   //LOGIN SUCCEEDED, GET PANTRY
-    //   dispatch(get_pantry());
-    //   //If redirects, do so
-    //   if (next) {
-    //     router.push(next);
-    //     dispatch(clear_next);
-    //   }
-    // } else {
-    //   //DISPLAY ERROR MESSAGE
-    //   document.getElementById(alertName).classList.add(styles.show);
-    // }
+    //ONLY IF LOGIN SUCCEEDED, CLOSE MODAL AND EMPTY VALS
+    if (true) {
+      document.getElementById(alertName).innerHTML = "";
+      document.getElementById(alertName).classList.remove(styles.show);
+      close(props.login);
+      //LOGIN SUCCEEDED, GET PANTRY
+      dispatch(get_pantry());
+      if (next) {
+        router.push(next);
+        dispatch(clear_next());
+      }
+    } else {
+      document.getElementById(alertName).innerHTML =
+        "Incorrect login details. Please try again.";
+      document.getElementById(alertName).classList.add(styles.show);
+      //NEED TO DISPLAY ERROR MESSAGE HERE
+    }
   }
   let content = (
     <>
