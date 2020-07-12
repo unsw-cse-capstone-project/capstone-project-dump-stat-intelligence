@@ -1,16 +1,19 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
+import Link from 'next/link';
 
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
 import { useDispatch, useSelector } from "react-redux";
 import { add_favourite, remove_favourite } from "../../lib/redux/actions/authAction";
+import { load_create } from "../../lib/redux/actions/createAction";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
   let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+  const uid = useSelector(state => state.auth.uid)
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -20,7 +23,6 @@ const Recipe = (props) => {
     cook_time: "",
     method: "",
     author: { name: "" },
-    isAuthor : false,
     isFavourite : false,
     diet_req: [],
     meal_cat: [],
@@ -77,16 +79,19 @@ const Recipe = (props) => {
 
 
   let faveButton = null;
-  if (isLoggedIn) {
-    faveButton = recipe.isFavourite ? <a onClick={removeFave} className="button is-light is-warning">UnFavourite</a> : <a onClick={addFave} className="button is-light is-warning">Favourite</a>
-  }
   let controlButtons = null;
-  if (recipe.isAuthor) {
+  if (isLoggedIn && uid === recipe.author.id) {
     controlButtons = <> 
-      <a className="button is-light">Edit</a>
+      <Link href="/recipe/create">
+        <a onClick={() => dispatch(load_create(recipe.id))} className="button is-light">Edit</a>
+
+      </Link>
       <a className={`button is-light is-danger ${deleteLoading ? "is-loading" : null}`} onClick={handleDelete}>Delete</a>
     </>
+  } else if (isLoggedIn) {
+    faveButton = recipe.isFavourite ? <a onClick={removeFave} className="button is-light is-warning">UnFavourite</a> : <a onClick={addFave} className="button is-light is-warning">Favourite</a>
   }
+
 
   return (
     <div>
@@ -111,6 +116,7 @@ const Recipe = (props) => {
             <div className="buttons">
               
               { faveButton }
+              { controlButtons }
             </div>
             <hr />
             <div className="columns">

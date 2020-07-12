@@ -136,7 +136,7 @@ export const login = (email, pwd) => async (dispatch) => {
       dispatch({
         type: types.LOGIN,
         userInfo: userInfo,
-        uid: 0,
+        uid: 3,
         token : null
       });
     })
