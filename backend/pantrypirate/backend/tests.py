@@ -23,11 +23,13 @@ class UserTestCase(TestCase):
                                 user_data1.items())
         user = c.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
+        print(user.data)
         user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data2.items())
         user = User.objects.get(pk=1)
         self.assertIsNotNone(user)
+
 
     # Test checking that users can log in with their username and password
     # and have a token returned to frontend
@@ -151,20 +153,26 @@ class UserTestCase(TestCase):
             'Bob@gmail.com'}
         user = api_client1.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        api_client2 = APIClient()
-        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
-            'Bob@gmail.com'}
-        user = api_client2.post('/user/register/', json.dumps(user_data),
-                      content_type='application/json')
         user_data.pop('email')
-        token = api_client2.post('/user/login/', json.dumps(user_data),
+        token = api_client1.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        api_client2 = APIClient()
+        user_data1 = {'username' : 'Bob1', 'password' : 'Bob1', 'email':
+            'Bob1@gmail.com'}
+        user = api_client2.post('/user/register/', json.dumps(user_data1),
+                      content_type='application/json')
+        user_data1.pop('email')
+        token = api_client2.post('/user/login/', json.dumps(user_data1),
                content_type='application/json')
         api_client2.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
         response = api_client2.delete('/user/1/')
-        self.assertContains(user, '', status_code=401)
+        self.assertContains(response, '', status_code=401)
         user = api_client2.get('/user/1/')
-        self.assertGreaterEqual(user, '', status_code=404)
+        print(user.content)
+        self.assertContains(user, '', status_code=200)
 
     # Test checking that a user can update a user's details (not yet
     # implemented to only allow update of self)
