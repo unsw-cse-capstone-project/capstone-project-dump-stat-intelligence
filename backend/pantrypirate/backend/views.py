@@ -8,6 +8,8 @@ from .serializers import *
 from .models import *
 from rest_framework.views import Response, Http404
 import urllib.parse
+from django.contrib.auth import authenticate
+import json
 
 
 # Custom token authentication to allow the id to be returned alongside the token
@@ -39,6 +41,8 @@ class UserViewSet(viewsets.ModelViewSet):
                        i][
                           -1])
         if request.user.id is user_id:
+            print(request.user.id)
+            print(user_id)
             return super(UserViewSet, self).destroy(self, request, *args,
                                                   **kwargs)
         else:
@@ -58,7 +62,12 @@ class UserCreate(generics.CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
             if user:
-                return Response(data=serializer.data)
+                authenticate(username=request.data['username'],
+                             password=request.data['password'])
+                token, created = Token.objects.get_or_create(user=user)
+                data = serializer.data
+                data['token'] = token.key
+                return Response(data=data)
         return Response(serializer.errors, status=404)
 
 
