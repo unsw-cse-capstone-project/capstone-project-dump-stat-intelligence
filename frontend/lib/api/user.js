@@ -23,6 +23,9 @@ const UserAPI = {
       console.error(e.response);
     }
   },
+  get: async (userId) => {
+    return api.get(`/user/${userId}/`);
+  },
 };
 
 export default UserAPI;

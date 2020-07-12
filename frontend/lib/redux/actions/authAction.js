@@ -3,7 +3,7 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
-import { getToken, setToken, removeToken } from "../../utils/token";
+import { getUser, setUser, removeUser } from "../../utils/storeUser";
 
 /*
 AUTH
@@ -18,10 +18,8 @@ AUTH
         favourites : [{recipe}, ...],
         owned : [{recipe}, ...]
         userInfo : {
-            first : string,
-            last : string,
+            username : string,
             email : string,
-            phone : string
         }
     }
 
@@ -75,17 +73,16 @@ export const update_password = (old, pwd) => async (dispatch) => {
 };
 
 //NEEDS API
-export const update_details = (first, last, email, phone) => async (
+export const update_details = (username, email, password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
+  console.log(user);
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
 
   let userInfo = {
-    first: first,
-    last: last,
+    username: username,
     email: email,
-    phone: phone,
   };
   dispatch({
     type: types.UPDATE_DEETS,
@@ -100,7 +97,7 @@ export const register = (username, email, password) => async (dispatch) => {
   UserAPI.register(username, email, password)
     .then((res) => {
       let data = res.data;
-      setToken(data.token);
+      setUser({ id: data.id, token: data.token });
 
       dispatch({
         type: types.LOGIN,
@@ -114,12 +111,43 @@ export const register = (username, email, password) => async (dispatch) => {
     });
 };
 
+export const attemptLoginFromLocalStorage = () => async (dispatch) => {
+  let user = getUser(); // this also sets the token
+
+  if (!user) {
+    // obviously not logged in
+    return;
+  }
+
+  UserAPI.get(user.id)
+    .then((res) => {
+      let data = res.data;
+      console.log("login success from localstorage");
+      dispatch({
+        type: types.LOGIN,
+        userInfo: data,
+        uid: data.uid,
+        token: user.token,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      if (err.statusCode == 401) {
+        // Token has expired
+        console.log("Token expired");
+        removeUser();
+        dispatch({ type: types.LOGOUT });
+      }
+    });
+};
+
 export const login = (email, password) => async (dispatch) => {
   console.log("LOGIN ACTION!");
   UserAPI.login(email, password)
     .then((res) => {
       let data = res.data;
-      setToken(data.token);
+
+      setUser({ id: data.id, token: data.token });
 
       dispatch({
         type: types.LOGIN,
@@ -139,7 +167,7 @@ export const logout = () => async (dispatch) => {
   UserAPI.logout()
     .then((res) => {
       console.log("API logout");
-      removeToken();
+      removeUser();
 
       dispatch({
         type: types.LOGOUT,
