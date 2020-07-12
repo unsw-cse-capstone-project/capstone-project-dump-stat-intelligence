@@ -16,7 +16,17 @@ class UserSerializer(serializers.ModelSerializer):
         # Cannot read the password normally, favourites are not needed for
         # user creation
         extra_kwargs = {"favourites": {"required": False},
-                        "password" : {"write_only" : True}}
+                        "password": {"write_only": True}}
+
+    # Password changes require use of builtin function (as they are hashed by
+    # default, using Modelviewset will cause errors)
+    def update(self, instance, validated_data):
+
+        instance.username = validated_data.get("username", instance.username)
+        instance.email = validated_data.get("email", instance.email)
+        instance.set_password(validated_data.get("password"))
+        instance.save()
+        return instance
 
 
 # Serialiser for user object creation. All fields (excluding id) are required

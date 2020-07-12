@@ -145,10 +145,10 @@ class UserTestCase(TestCase):
 
     # Test checking that a user can update a user's details (not yet
     # implemented to only allow update of self)
-    def test_put_user(self):
+    def test_put_user1(self):
         api_client = APIClient()
-        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
-            'Bob@gmail.com'}
+        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
         user = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
         user_data.pop('email')
@@ -156,14 +156,24 @@ class UserTestCase(TestCase):
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        user_data1 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
+        user_data1 = {'username': 'Cob', 'password': 'Cob1', 'email'
+        : 'Cob@gmail.com'}
         user = api_client.put('/user/1/', json.dumps(user_data1),
                      content_type='application/json')
-        user_data1 = {'username': 'Bob1', 'email'
-        : 'save_a_piece@forme.com'}
+        user_data1 = {'username': 'Cob', 'email'
+        : 'Cob@gmail.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
+        api_client.post('/user/logout/')
+        api_client1 = APIClient()
+        user_data1 = {'username': 'Cob', 'password': 'Cob1'}
+        token = api_client1.post('/user/login/', json.dumps(user_data1),
+               content_type='application/json')
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        self.assertContains(token, '', status_code=200)
+        response = api_client1.get('/user/1/')
+        self.assertContains(response, '', status_code=200)
 
 
 # Tests for ingredient create, retrieve, list, delete and put
