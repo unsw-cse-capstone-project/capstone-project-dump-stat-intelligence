@@ -1,29 +1,32 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
-import Link from 'next/link';
+import Link from "next/link";
 
 import RecipeAPI from "../../lib/api/recipe";
 import Error from "../../components/Error/Error";
 
 import { useDispatch, useSelector } from "react-redux";
-import { add_favourite, remove_favourite } from "../../lib/redux/actions/authAction";
+import {
+  add_favourite,
+  remove_favourite,
+} from "../../lib/redux/actions/authAction";
 import { load_create } from "../../lib/redux/actions/createAction";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
-  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
-  const uid = useSelector(state => state.auth.uid)
+  let isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const uid = useSelector((state) => state.auth.uid);
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [recipe, setRecipe] = useState({
-    id : null,
+    id: null,
     name: "",
     cook_time: "",
     method: "",
     author: { name: "" },
-    isFavourite : false,
+    isFavourite: false,
     diet_req: [],
     meal_cat: [],
     ingredients: [],
@@ -47,12 +50,11 @@ const Recipe = (props) => {
 
   const handleDelete = async (e) => {
     setDeleteLoading(true);
-    const res = await RecipeAPI.delete(recipe.id, ""); // TODO: token authentication
-    console.log(res);
+    const res = await RecipeAPI.delete(recipe.id);
     router.push("/explore");
     setDeleteLoading(false);
   };
-  
+
   if (error) {
     return <Error message={error.statusText} />;
   }
@@ -62,36 +64,55 @@ const Recipe = (props) => {
   }
 
   function addFave() {
-    dispatch(add_favourite({title : recipe.name, src : null,  id : recipe.id}))
+    dispatch(add_favourite({ title: recipe.name, src: null, id: recipe.id }));
     setRecipe({
       ...recipe,
-      isFavourite : true
-    })
+      isFavourite: true,
+    });
   }
 
   function removeFave() {
     dispatch(remove_favourite(recipe.id));
     setRecipe({
       ...recipe,
-      isFavourite : false
-    })
+      isFavourite: false,
+    });
   }
-
 
   let faveButton = null;
   let controlButtons = null;
   if (isLoggedIn && uid === recipe.author.id) {
-    controlButtons = <> 
-      <Link href="/recipe/create">
-        <a onClick={() => dispatch(load_create(recipe.id))} className="button is-light">Edit</a>
-
-      </Link>
-      <a className={`button is-light is-danger ${deleteLoading ? "is-loading" : null}`} onClick={handleDelete}>Delete</a>
-    </>
+    controlButtons = (
+      <>
+        <Link href="/recipe/create">
+          <a
+            onClick={() => dispatch(load_create(recipe.id))}
+            className="button is-light"
+          >
+            Edit
+          </a>
+        </Link>
+        <a
+          className={`button is-light is-danger ${
+            deleteLoading ? "is-loading" : null
+          }`}
+          onClick={handleDelete}
+        >
+          Delete
+        </a>
+      </>
+    );
   } else if (isLoggedIn) {
-    faveButton = recipe.isFavourite ? <a onClick={removeFave} className="button is-light is-warning">UnFavourite</a> : <a onClick={addFave} className="button is-light is-warning">Favourite</a>
+    faveButton = recipe.isFavourite ? (
+      <a onClick={removeFave} className="button is-light is-warning">
+        UnFavourite
+      </a>
+    ) : (
+      <a onClick={addFave} className="button is-light is-warning">
+        Favourite
+      </a>
+    );
   }
-
 
   return (
     <div>
@@ -114,9 +135,8 @@ const Recipe = (props) => {
               ))}
             </div>
             <div className="buttons">
-              
-              { faveButton }
-              { controlButtons }
+              {faveButton}
+              {controlButtons}
             </div>
             <hr />
             <div className="columns">
@@ -133,7 +153,7 @@ const Recipe = (props) => {
               </div>
               <div className="column is-6">
                 <h4 className="title is-4">Method</h4>
-                <p style={{whiteSpace:"pre-wrap"}}>{recipe.method}</p>
+                <p style={{ whiteSpace: "pre-wrap" }}>{recipe.method}</p>
               </div>
             </div>
           </div>
@@ -144,4 +164,3 @@ const Recipe = (props) => {
 };
 
 export default Recipe;
-

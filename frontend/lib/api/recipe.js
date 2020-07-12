@@ -9,7 +9,6 @@ const RecipeAPI = {
     page = 1,
     limit = 10
   ) => {
-    console.log("getting");
     return api.get(`/recipes/`);
   },
   get: async (id) => api.get(`/recipes/${id}/`),
