@@ -1,5 +1,4 @@
-import axios from "axios";
-import { SERVER_URL } from "../utils/constant";
+import api from "./api";
 import paging from "../utils/paging";
 
 const RecipeAPI = {
@@ -11,45 +10,18 @@ const RecipeAPI = {
     limit = 10
   ) => {
     console.log("getting");
-    // return axios.get(
-    //   `${SERVER_URL}/recipes?meal=${meal}&diet=${diet}&ingredients=${ingredients}&${paging(
-    //     limit,
-    //     page
-    //   )}`
-    // );
-    return axios.get(`${SERVER_URL}/recipes/`);
+    return api.get(`/recipes/`);
   },
-  get: async (id) => axios.get(`${SERVER_URL}/recipes/${id}/`),
-  create: async (recipe, token) => {
-    const res = await axios.post(
-      `${SERVER_URL}/recipes/`,
-      JSON.stringify(recipe),
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-          "content-type": "application/json",
-        },
-      }
-    );
+  get: async (id) => api.get(`/recipes/${id}/`),
+  create: async (recipe) => {
+    const res = await api.post(`/recipes/`, JSON.stringify(recipe));
     return res;
   },
-  update: async (id, recipe, token) => {
-    const res = await axios.put(
-      `${SERVER_URL}/recipes/${id}`,
-      JSON.stringify(recipe),
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-          "content-type": "application/json",
-        },
-      }
-    );
+  update: async (id, recipe) => {
+    const res = await api.put(`/recipes/${id}`, JSON.stringify(recipe));
     return res;
   },
-  delete: async (id, token) =>
-    axios.delete(`${SERVER_URL}/recipes/${id}/`, {
-      headers: { Authorization: `Token ${token}` },
-    }),
+  delete: async (id) => api.delete(`/recipes/${id}/`),
 };
 
 export default RecipeAPI;

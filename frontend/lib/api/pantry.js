@@ -1,30 +1,12 @@
-import axios from "axios";
-import { SERVER_URL } from "../utils/constant";
+import api from "./api";
 import paging from "../utils/paging";
 
 const PantryAPI = {
   get: async (limit = 10, page = 1, token) =>
-    await axios.get(`${SERVER_URL}/user/pantry?${paging(limit, page)}`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }),
+    await api.get(`/user/pantry?${paging(limit, page)}`),
   add: async (ingredient, token) =>
-    await axios.post(
-      `${SERVER_URL}/user/pantry`,
-      JSON.stringify({ ingredient }),
-      {
-        headers: {
-          Authorization: `Token ${token}`,
-        },
-      }
-    ),
-  delete: async (id, token) =>
-    await axios.delete(`${SERVER_URL}/user/pantry/${id}`, {
-      headers: {
-        Authorization: `Token ${token}`,
-      },
-    }),
+    await api.post(`/user/pantry`, JSON.stringify({ ingredient })),
+  delete: async (id, token) => await api.delete(`/user/pantry/${id}`, {}),
 };
 
 export default PantryAPI;

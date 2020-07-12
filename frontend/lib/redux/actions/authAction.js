@@ -31,55 +31,54 @@ AUTH
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
 
-  
   //INSERT API, tell backend to remove recipe <id> as favourite from user
 
   dispatch({
     type: types.REMOVE_FAVE,
-    id : id
-  })
-}
+    id: id,
+  });
+};
 
 //NEEDS API
 export const add_favourite = (recipe) => async (dispatch) => {
   let user = store.getState().auth;
 
   //INSERT API, tell backend to add recipe <id> as favourite from user
-  
+
   dispatch({
     type: types.ADD_FAVE,
-    recipe: recipe
-
-  })
-}
+    recipe: recipe,
+  });
+};
 
 //No API, only used for frontend
 export const clear_next = () => async (dispatch) => {
   dispatch({
-    type: types.CLEAR_NEXT
-  })
-}
+    type: types.CLEAR_NEXT,
+  });
+};
 
 //No API, frontend use only
 export const new_next = (next) => async (dispatch) => {
   dispatch({
     type: types.NEW_NEXT,
-    next: next
-  })
-}
+    next: next,
+  });
+};
 
 //NEEDS API
 export const update_password = (old, pwd) => async (dispatch) => {
   let user = store.getState().auth;
-  //INSERT API, no frontend change but tell backend to update password for user  
+  //INSERT API, no frontend change but tell backend to update password for user
 };
 
-
 //NEEDS API
-export const update_details = (first, last, email, phone) => async (dispatch) => {
+export const update_details = (first, last, email, phone) => async (
+  dispatch
+) => {
   let user = store.getState().auth;
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
-  
+
   let userInfo = {
     first: first,
     last: last,
@@ -93,14 +92,14 @@ export const update_details = (first, last, email, phone) => async (dispatch) =>
 };
 
 //NEEDS API
-export const register = (first, last, email, phone, pwd) => async (dispatch) => {
+export const register = (first, last, email, phone, pwd) => async (
+  dispatch
+) => {
   //INSERT API, register new user with backend
 
-  
-  
   UserAPI.register(`{first} {last}`, email, pwd)
-  .then((res) => {
-    // TODO: do something with token here that comes back from response
+    .then((res) => {
+      // TODO: do something with token here that comes back from response
       let userInfo = {
         first: first,
         last: last,
@@ -108,11 +107,13 @@ export const register = (first, last, email, phone, pwd) => async (dispatch) => 
         phone: phone,
       };
 
+      // TODO: store token in localstorage / axios token
+
       dispatch({
         type: types.LOGIN,
         userInfo: userInfo,
         uid: 0,
-        token: null
+        token: null,
       });
     })
     .catch((err) => {
@@ -120,24 +121,23 @@ export const register = (first, last, email, phone, pwd) => async (dispatch) => 
     });
 };
 
-
-//NEEDS API
 export const login = (email, pwd) => async (dispatch) => {
-  
-  //INSET API, login and return token TODO: NOT SET UP WITH REDUX YET
   UserAPI.login(email, pwd)
-  .then((res) => {
-    // TODO: do something with token here that comes back from response
+    .then((res) => {
       let userInfo = {
         email: email,
         phone: null,
+        token: res.token,
+        id: res.id,
       };
+
+      // TODO: store token in localstorage / axios token
 
       dispatch({
         type: types.LOGIN,
         userInfo: userInfo,
         uid: 3,
-        token : null
+        token: null,
       });
     })
     .catch((err) => {
@@ -145,11 +145,18 @@ export const login = (email, pwd) => async (dispatch) => {
     });
 };
 
-
-//NEEDS API
 export const logout = () => async (dispatch) => {
-  //INSERT API, tell backend to invalidate the session token
-  dispatch({
-    type: types.LOGOUT,
-  });
+  UserAPI.logout()
+    .then((res) => {
+      console.log("API logout");
+
+      // TODO: remove token from localstorage / axios token
+
+      dispatch({
+        type: types.LOGOUT,
+      });
+    })
+    .catch((err) => {
+      console.error(err.response);
+    });
 };
