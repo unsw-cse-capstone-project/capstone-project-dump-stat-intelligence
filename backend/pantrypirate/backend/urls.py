@@ -15,7 +15,7 @@ router.register(r'ingredients', IngredientViewSet)
 urlpatterns = [
 
     # User Related Paths - put in first to take priority over the user viewset
-    path('user/login/', views.obtain_auth_token),
+    path('user/login/', CustomObtainAuthToken.as_view()),
     path('user/register/', UserCreate.as_view()),
     path('user/logout/', UserLogout.as_view()),
 
