@@ -13,12 +13,10 @@ const RecipeAPI = {
   },
   get: async (id) => api.get(`/recipes/${id}/`),
   create: async (recipe) => {
-    const res = await api.post(`/recipes/`, JSON.stringify(recipe));
-    return res;
+    return await api.post(`/recipes/`, recipe);
   },
   update: async (id, recipe) => {
-    const res = await api.put(`/recipes/${id}`, JSON.stringify(recipe));
-    return res;
+    return await api.put(`/recipes/${id}`, recipe);
   },
   delete: async (id) => api.delete(`/recipes/${id}/`),
 };

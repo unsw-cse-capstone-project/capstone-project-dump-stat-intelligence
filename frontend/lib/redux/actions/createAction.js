@@ -48,9 +48,9 @@ export const add_ingredient = (ingredient) => async (dispatch) => {
   dispatch({
     type: types.UPDATE_CREATE,
     category: "ingredients",
-    newVal: ingredients
-  })
-}
+    newVal: ingredients,
+  });
+};
 
 //NO API, frontend only
 export const remove_ingredient = (idx) => async (dispatch) => {
@@ -75,12 +75,12 @@ export const update_create = (category, newVal) => async (dispatch) => {
 //NEEDS API
 export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
-  //INSERT API, send to backend to add recipe
-  console.log("save_create action occured");
-  RecipeAPI.create(recipe, "")
+  let user = store.getState().auth;
+
+  RecipeAPI.create({ ...recipe, author: user.uid })
     .then((res) => {
       // do something
-      console.log("created recipe", recipe);
+      console.log("created recipe", { ...recipe, author: user.uid });
     })
     .catch((err) => {
       console.error(err.response);
