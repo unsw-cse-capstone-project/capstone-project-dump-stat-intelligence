@@ -17,10 +17,13 @@ import { recipes_update } from "../../lib/redux/actions/recipesAction";
 const Recipe = (props) => {
   const dispatch = useDispatch();
   let isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  let favourites = useSelector((state) => state.auth.favourites);
   const uid = useSelector((state) => state.auth.uid);
   const router = useRouter();
 
   let [recipe, setRecipe] = useState(null);
+  let [isFavourite, setFavourite] = useState(false);
+
   const recipes = useSelector((state) => state.recipes.recipes);
 
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -32,6 +35,11 @@ const Recipe = (props) => {
       dispatch(recipes_update());
     }
     setRecipe(recipes.filter((r) => r.id == recipeId)[0]);
+
+    // determine if the recipe is a favourite
+    if (favourites.filter((recipe) => recipe.id == recipeId).length > 0) {
+      setFavourite(true);
+    }
   });
 
   const [error, setError] = useState(null);
@@ -53,25 +61,24 @@ const Recipe = (props) => {
 
   function addFave() {
     dispatch(add_favourite({ title: recipe.name, src: null, id: recipe.id }));
-    setRecipe({
-      ...recipe,
-      isFavourite: true,
-    });
+    setFavourite(true);
+    // setRecipe({
+    //   ...recipe,
+    //   isFavourite: true,
+    // });
   }
 
   function removeFave() {
     dispatch(remove_favourite(recipe.id));
-    setRecipe({
-      ...recipe,
-      isFavourite: false,
-    });
+    setFavourite(false);
+    // setRecipe({
+    //   ...recipe,
+    //   isFavourite: false,
+    // });
   }
 
   let faveButton = null;
   let controlButtons = null;
-  console.log("isloggedin", isLoggedIn);
-  console.log("uid", uid);
-  console.log("recipe id", recipe.author.id);
   if (isLoggedIn && uid === recipe.author.id) {
     controlButtons = (
       <>
@@ -94,7 +101,7 @@ const Recipe = (props) => {
       </>
     );
   } else if (isLoggedIn) {
-    faveButton = recipe.isFavourite ? (
+    faveButton = isFavourite ? (
       <a onClick={removeFave} className="button is-light is-warning">
         UnFavourite
       </a>
