@@ -44,6 +44,17 @@ export const create_ingredient = (name, category) => {
 
 
 //NO API, frontend only
+export const add_ingredient = (ingredient) => async (dispatch) => {
+  let ingredients = [...store.getState().create.ingredients];
+  ingredients.push(ingredient);
+  dispatch({
+    type: types.UPDATE_CREATE,
+    category: "ingredients",
+    newVal: ingredients
+  })
+}
+
+//NO API, frontend only
 export const remove_ingredient = (idx) => async (dispatch) => {
   let ingredients = [...store.getState().create.ingredients];
   ingredients.splice(idx, 1);
