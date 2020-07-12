@@ -45,6 +45,7 @@ export default function Pantry() {
       
       <div id="pantry-head" onClick={() => toggleIt("pantry")} className={`${styles.header}`}><div className={styles.title}>The pantry.</div><Arrow name="pantry-icon" /></div>
       
+      <IngredientSearch searcher={searchId} />
       <div id="pantry-box" className={styles.drawer}>
         <br/>
         <form autoComplete="off">
@@ -56,7 +57,6 @@ export default function Pantry() {
               className="input"
               placeholder="Add an item"
             />
-            <IngredientSearch searcher={searchId} />
           </div>
         </form>
         <div className={styles.ingredientSection}>

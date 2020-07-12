@@ -10,6 +10,7 @@ export default function MethodEdit() {
         dispatch(update_create(event.target.name, event.target.value));
     }
     return <div className="field control">
+        <label className="label">Method</label>
         <textarea
         className="textarea input"
         onChange={handleInput}

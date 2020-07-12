@@ -9,38 +9,9 @@ import MethodEdit from "./MethodEdit";
 import IngredientEdit from "./IngredientEdit";
 
 export default function Editor() {
-  const router = useRouter();
   const [active, setActive] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [recipe, setRecipe] = useState({
-    name: "",
-    author: "",
-    cook_time: "",
-    image_url: "",
-    ingredients: [],
-    diet_req: [],
-    meal_cat: [],
-    method: "",
-  });
 
-  const handleInput = ({ target }, field) => {
-    setRecipe((prev) => ({ ...prev, [field]: target.value }));
-  };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    RecipeAPI.create(recipe, "")
-      .then((res) => {
-        console.log("getting this far!");
-        router.push(`/recipe/${res.data.id}/`);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error(err.response);
-        setIsLoading(false);
-      });
-  };
 
   function chooseTab(num) {
     document
@@ -52,39 +23,41 @@ export default function Editor() {
   return (
     <>
       <div id="editor" className={styles.editor}>
-        <div className="tabs">
-          <ul>
-            <li
-              onClick={() => chooseTab(0)}
-              className={active === 0 ? "is-active" : ""}
-            >
-              <a>General</a>
-            </li>
-            <li
-              onClick={() => chooseTab(1)}
-              className={active === 1 ? "is-active" : ""}
-            >
-              <a>Ingredients</a>
-            </li>
-            <li
-              onClick={() => chooseTab(2)}
-              className={active === 2 ? "is-active" : ""}
-            >
-              <a>Method</a>
-            </li>
-          </ul>
-        </div>
-        <div className={styles.onionLayer}>
-          <div id="editBox0" className={`${styles.editBox} ${styles.showBox}`}>
-            <GeneralEdit/>
-          </div>
-          <div id="editBox1" className={styles.editBox}>
-            <IngredientEdit/>
-          </div>
-          <div id="editBox2" className={styles.editBox}>
-            <MethodEdit/>
+        <div className={styles.header}>
+          <div className="tabs">
+            <ul>
+              <li
+                onClick={() => chooseTab(0)}
+                className={active === 0 ? "is-active" : ""}
+              >
+                <a>General</a>
+              </li>
+              <li
+                onClick={() => chooseTab(1)}
+                className={active === 1 ? "is-active" : ""}
+              >
+                <a>Ingredients</a>
+              </li>
+              <li
+                onClick={() => chooseTab(2)}
+                className={active === 2 ? "is-active" : ""}
+              >
+                <a>Method</a>
+              </li>
+            </ul>
           </div>
         </div>
+
+        <div id="editBox0" className={`${styles.editBox} ${styles.showBox}`}>
+          <GeneralEdit/>
+        </div>
+        <div id="editBox1" className={styles.editBox}>
+          <IngredientEdit/>
+        </div>
+        <div id="editBox2" className={styles.editBox}>
+          <MethodEdit/>
+        </div>
+
       </div>
     </>
   );

@@ -5,7 +5,7 @@ import RecipeIcon from "./RecipeIcon";
 import Arrow from "./Arrow";
 
 export default function Favourites() {
-    const owned = useSelector((state) => state.auth.favourites)
+    const owned = useSelector((state) => state.auth.owned)
     function toggleIt(id) {
         document.getElementById(`${id}-icon`).classList.toggle(styles.arrowUp);
         let box = document.getElementById(`${id}-box`)
