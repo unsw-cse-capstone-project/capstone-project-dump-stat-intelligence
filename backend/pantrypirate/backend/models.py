@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+# Name is primary key string
 class DietaryRequirement(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
 
@@ -9,6 +10,7 @@ class DietaryRequirement(models.Model):
         return self.name
 
 
+# Name is primary key string
 class MealCategory(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
 
@@ -16,6 +18,8 @@ class MealCategory(models.Model):
         return self.name
 
 
+# Recipe contains required author field, and optional meal category, dietary
+# requirement and favourites fields
 class Recipe(models.Model):
     name = models.CharField(max_length=50)
     cook_time = models.CharField(max_length=50)
@@ -33,6 +37,7 @@ class Recipe(models.Model):
         return self.name
 
 
+# Name is primary key string
 class IngredientCategory(models.Model):
     name = models.CharField(max_length=50, primary_key=True)
 
@@ -40,6 +45,7 @@ class IngredientCategory(models.Model):
         return self.name
 
 
+# Name is primary key, required category
 class Ingredient(models.Model):
     name = models.CharField(max_length=30, primary_key=True)
     category = models.ForeignKey(IngredientCategory,
@@ -49,6 +55,8 @@ class Ingredient(models.Model):
         return self.name
 
 
+# Adjective field not required, ingredient foreign key will be a string,
+# recipe foreign key will be an id integer
 class RecipeIngredient(models.Model):
     adjective = models.CharField(max_length=30, blank=True, null=True)
     unit = models.CharField(max_length=20)
@@ -61,6 +69,8 @@ class RecipeIngredient(models.Model):
         return self.ingredient.name
 
 
+# Expiry date is optional, could have expiry status calculated here or higher up
+# User foreign key will be an id integer, ingredient will be a string
 class PantryIngredient(models.Model):
     expiry_date = models.DateField(blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

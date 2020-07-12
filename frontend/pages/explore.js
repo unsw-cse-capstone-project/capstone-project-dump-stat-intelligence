@@ -12,9 +12,8 @@ export default function Explore() {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    console.log("get all recipes");
     dispatch(recipes_update());
-  }, []); // See https://reactjs.org/docs/hooks-effect.html#tip-optimizing-performance-by-skipping-effects for why that 2nd "[]" parameter
+  }, []);
 
   return (
     <>
@@ -32,8 +31,7 @@ export default function Explore() {
                 <RecipeCard
                   className="column is-3"
                   src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}
-                  title={recipe.name}
-                  id={recipe.id} // TODO: alter
+                  recipe={recipe}
                 />
               </div>
             ))

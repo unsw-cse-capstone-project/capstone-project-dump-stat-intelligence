@@ -2,7 +2,23 @@ import Head from "next/head";
 import Details from "../components/settings/Details"
 import Password from "../components/settings/Password"
 
+import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+
+
+
 export default function Home() {
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/")
+    }
+  }, [])
+  
+  
   return (
     <div>
       <Head>

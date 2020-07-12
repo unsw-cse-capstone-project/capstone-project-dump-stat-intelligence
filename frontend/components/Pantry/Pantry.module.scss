@@ -27,7 +27,7 @@
 .pantry {
   overflow-y: scroll;
 
-  width: 22rem;
+  width: calc(max(22rem, 40%));
   height: 75vh;
   background-color: white;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
@@ -58,13 +58,15 @@
   position:relative;
   width:100%;
   display:none;
-  z-index:30;
+  height:0px;
 }
 .queryHover {
   background-color:var(--background);
   position:absolute;
+  z-index:38;
   width:100%;
   border-radius : 0.2rem;
+  top:4rem;
 }
 
 .querySearch:active .queryBox,

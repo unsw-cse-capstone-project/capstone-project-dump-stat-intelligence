@@ -1,12 +1,26 @@
 import Head from "next/head";
 import React from "react";
 
+import Preview from "../../components/creator/Preview";
+
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+
+
 import { useSelector, useDispatch } from "react-redux";
 import { update_create } from "../../lib/redux/actions/createAction";
 
 export default function Create(props) {
+  let isLoggedIn = useSelector(state => state.auth.isLoggedIn)
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoggedIn) {
+      router.push("/")
+    }
+  }, [])
+  
   const dispatch = useDispatch();
-  let edit = useSelector(state => state.create);
+  let edit = useSelector((state) => state.create);
   function partialUpdate(event, cat) {
     dispatch(update_create(cat, event.target.value));
   }
@@ -15,22 +29,7 @@ export default function Create(props) {
       <Head>
         <title>Pantry Pirate | Create</title>
       </Head>
-      <div className="container">
-        <div className="columns is-centered">
-          <div className="box column is-10">
-            <h1 className="title">Recipe preview</h1>
-            
-
-            <div className="buttons">
-              <button className="button is-light is-success">
-                Add Recipe
-              </button>
-              <button className="button is-light is-danger">Discard</button>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Preview/>
     </>
   );
 }
-

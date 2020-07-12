@@ -3,6 +3,7 @@ import * as types from '../types';
 const initialState = {
     isLoggedIn : false,
     uid : null,
+    token : null,
     nextPage : null,
     favourites : [],
     owned : [],
@@ -71,7 +72,8 @@ export const authReducer = (state=initialState, action) => {
         case types.LOGOUT:
             return {
                 ...initialState,
-                isLoggedIn : false
+                isLoggedIn : false,
+                token : null
             }
         case types.UPDATE_DEETS:
             return {

@@ -4,15 +4,18 @@ const initialState = {
     ingredients : [],
     filters : {
         meal : {
-            breakfast : false,
-            lunch : false,
-            dinner : false
+            Breakfast : false,
+            Lunch : false,
+            Dinner : false,
+            Snack : false,
+            Dessert : false,
+            Brunch : false
         },
         diet : {
-            vegan : false,
-            vegetarian : false,
-            "gluten free" : false,
-            "dairy free" : false
+            Vegan : false,
+            Vegetarian : false,
+            "Gluten-Free" : false,
+            "Dairy-Free" : false
 
         }
     }

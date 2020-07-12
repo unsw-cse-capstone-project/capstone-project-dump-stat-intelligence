@@ -1,29 +1,22 @@
-import axios from "axios";
-import { SERVER_URL } from "../utils/constant";
-import paging from "../utils/paging";
+import api from "./api";
 
 const UserAPI = {
-  login: async (email, password) => {
-    try {
-      const res = await axios.post(
-        `${SERVER_URL}/user/login`,
-        JSON.stringify({ user: { email, password } })
-      );
-      return res;
-    } catch (e) {
-      return e.response;
-    }
+  login: async (username, password) => {
+    return await api.post(`/user/login/`, { username, password });
   },
-  register: async (name, email, password) => {
-    try {
-      const res = await axios.post(
-        `${SERVER_URL}/user/register`,
-        JSON.stringify({ user: { name, email, password } })
-      );
-      return res;
-    } catch (e) {
-      return e.response;
-    }
+  logout: async () => {
+    return await api.get(`/user/logout/`);
+  },
+  register: async (username, email, password) => {
+    const res = await api.post(`/user/register/`, {
+      username,
+      email,
+      password,
+    });
+    return res;
+  },
+  get: async (userId) => {
+    return api.get(`/user/${userId}/`);
   },
 };
 

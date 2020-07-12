@@ -32,3 +32,8 @@
 - Began connecting frontend to backend API
 - Discussed with Rohan about backend refactoring so that API was explorable using Django-rest-framework
 - Struggled with CORS issues
+
+# Week 6
+
+- Started a new sprint however didn't have much time to complete much.
+- On sunday began serious work on linkup - particular auth and storing tokens in localstorage
