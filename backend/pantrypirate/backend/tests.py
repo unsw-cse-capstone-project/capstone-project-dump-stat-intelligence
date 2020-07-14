@@ -10,82 +10,141 @@ import json
 class UserTestCase(TestCase):
 
     # Test checking users can be created and return correct contents
-    def test_create_user(self):
+    def test_create_user1(self):
+        # Create testing client and expected responses
         c = Client()
+        expected_response = {'id' : '1'}
+
+        # Data for an account
+        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+
+        # Request registration and check response is expected
+        response = c.post('/user/register/', json.dumps(user_data1),
+                      content_type='application/json')
+        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                user_data1.items())
+
+        # Check user exists with correct details
+        user = User.objects.get(pk=1)
+        self.assertIsNotNone(user)
+
+    # Test checking users cannot create account if logged in
+    def test_create_user2(self):
+        # Create testing client and expected responses
+        api_client = APIClient()
+        expected_response = {'id': 1}
+
+        # Data for the two accounts
         user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
         user_data2 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        user = c.post('/user/register/', json.dumps(user_data1),
+        : 'save_a_piece1@forme.com'}
+
+        # Request registration and check response is expected
+        token = api_client.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
-        user_data1 = {'username': 'Bob', 'email' : 'save_a_piece@forme.com'}
-        self.assertGreaterEqual(json.loads(user.content).items(),
-                                user_data1.items())
-        user = c.post('/user/register/', json.dumps(user_data2),
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        self.assertGreaterEqual(json.loads(token.content).items(),
+                                expected_response.items())
+
+        # Attempt to register again and verify not allowed
+        response = api_client.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
-        user_data2 = {'username': 'Bob1', 'email' : 'save_a_piece@forme.com'}
-        self.assertGreaterEqual(json.loads(user.content).items(),
-                                user_data2.items())
-        user = User.objects.get(pk=1)
-        self.assertIsNotNone(user)
+        self.assertContains(response, '', status_code=401)
 
     # Test checking that users can log in with their username and password
     # and have a token returned to frontend
     def test_login_user1(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        # Create testing client
+        api_client = APIClient()
+
+        # Data for the account
+        user_data = {'username': 'Bob', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
-        user = c.post('/user/register/', json.dumps(user_data1),
+
+        # Register account but do not authorise
+        _ = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data1.pop('email')
-        response = c.post('/user/login/', json.dumps(user_data1),
+        user_data.pop('email')
+
+        # Log in and authorise
+        token = api_client.post('/user/login/', json.dumps(user_data),
                        content_type='application/json')
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '1')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Test authorisation successful
+        self.assertEqual(token.status_code, 200)
+        self.assertContains(token, '1')
+        self.assertIsNotNone(json.loads(token.content)['token'])
 
     # Test checking that incorrect username will make login unsuccessful
     def test_login_user2(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        # Create testing client
+        api_client = APIClient()
+
+        # Data for the account
+        user_data = {'username': 'Bob', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
-        user = c.post('/user/register/', json.dumps(user_data1),
+        wrong_login = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
+        : 'save_a_piece@forme.com'}
+
+        # Register account but do not authorise
+        _ = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data1 = {'username': 'Bob1', 'password': 'extra_cheese', 'email'
-        : 'save_a_piece@forme.com'}
-        user_data1.pop('email')
-        response = c.post('/user/login/', json.dumps(user_data1),
+        user_data.pop('email')
+
+        # Attempt to log in with wrong details
+        response = api_client.post('/user/login/', json.dumps(wrong_login),
                        content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     # Test checking that incorrect password will make login unsuccessful
     def test_login_user3(self):
-        c = Client()
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese', 'email'
+        # Create testing client
+        api_client = APIClient()
+
+        # Data for the account
+        user_data = {'username': 'Bob', 'password': 'extra_cheese', 'email'
         : 'save_a_piece@forme.com'}
-        user = c.post('/user/register/', json.dumps(user_data1),
+        wrong_login = {'username': 'Bob', 'password': 'extra_cheese1', 'email'
+        : 'save_a_piece@forme.com'}
+
+        # Register account but do not authorise
+        _ = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data1 = {'username': 'Bob', 'password': 'extra_cheese1', 'email'
-        : 'save_a_piece@forme.com'}
-        user_data1.pop('email')
-        response = c.post('/user/login/', json.dumps(user_data1),
+        user_data.pop('email')
+
+        # Attempt to log in with wrong details
+        response = api_client.post('/user/login/', json.dumps(wrong_login),
                        content_type='application/json')
         self.assertEqual(response.status_code, 400)
 
     # Test checking that logout destroys the token permission for the
     # previously logged in user
     def test_logout_user(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        user = api_client.post('/user/register/', json.dumps(user_data),
+        ingredient_data = {'user': "1", "ingredient": "potato"}
+
+        # Register account and log in
+        _ = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
         user_data.pop('email')
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
+
+        # Attempt to log out
         response = api_client.post('/user/logout/')
-        ingredient_data = {'user': "1", "ingredient": "potato"}
         r = api_client.post('/user/pantry/', json.dumps(ingredient_data),
                      content_type='application/json')
         self.assertEqual(response.status_code, 405)
@@ -127,8 +186,7 @@ class UserTestCase(TestCase):
         users = api_client1.get('/user/')
         self.assertContains(users, text='', status_code=403)
 
-    # Test checking that a user can delete a user (not yet implemented to
-    # only allow deletion of self)
+    # Test checking that a user can delete a user
     def test_delete_user1(self):
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
@@ -168,40 +226,38 @@ class UserTestCase(TestCase):
         user = api_client1.get('/user/2/')
         self.assertContains(user, '', status_code=404)
 
-    # Test checking that a user can update a user's details (not yet
-    # implemented to only allow update of self)
+    # Test checking that a user can update a user's details
     def test_put_user1(self):
         api_client = APIClient()
         user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
             'Cob@gmail.com'}
-        user = api_client.post('/user/register/', json.dumps(user_data),
+        token = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data.pop('email')
-        token = api_client.post('/user/login/', json.dumps(user_data),
-               content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        user_data1 = {'username': 'Cob', 'password': 'Cob1', 'email'
+        user_data1 = {'username': 'Cob1', 'password': 'Cob', 'email'
         : 'Cob@gmail.com'}
         user = api_client.put('/user/1/', json.dumps(user_data1),
                      content_type='application/json')
-        user_data1 = {'username': 'Cob', 'email'
+        user_data1 = {'username': 'Cob1', 'email'
         : 'Cob@gmail.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
                                 user_data1.items())
         api_client.post('/user/logout/')
         api_client1 = APIClient()
-        user_data1 = {'username': 'Cob', 'password': 'Cob1'}
+        user_data1 = {'username': 'Cob1', 'password': 'Cob'}
         token = api_client1.post('/user/login/', json.dumps(user_data1),
                content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
         self.assertContains(token, '', status_code=200)
         response = api_client1.get('/user/1/')
+        user_data1 = {'username': 'Cob1', 'email' : 'Cob@gmail.com'}
         self.assertContains(response, '', status_code=200)
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                user_data1.items())
 
-    # Test checking that a user can update a user's details (not yet
-    # implemented to only allow update of self)
+    # Test checking that a user can only update their details
     def test_put_user2(self):
         api_client1 = APIClient()
         user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
@@ -222,9 +278,22 @@ class UserTestCase(TestCase):
         user = api_client2.put('/user/1/', json.dumps(user_data),
                      content_type='application/json')
         user_data.pop('password')
-        # self.assertContains(user, '', status_code=401)
+        self.assertContains(user, '', status_code=401)
         response = api_client1.get('/user/1/')
         self.assertContains(response, '', status_code=200)
+        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        user_data.pop('password')
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                user_data.items())
+        user_data = {'username' : 'Cob1', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        user = api_client1.put('/user/1/', json.dumps(user_data),
+                     content_type='application/json')
+        user_data.pop('password')
+        response = api_client1.get('/user/1/')
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                user_data.items())
 
 
 # Tests for ingredient create, retrieve, list, delete and put
