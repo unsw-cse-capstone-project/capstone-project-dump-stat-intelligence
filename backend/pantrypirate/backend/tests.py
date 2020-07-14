@@ -143,180 +143,224 @@ class UserTestCase(TestCase):
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
 
-        # Attempt to log out
-        response = api_client.post('/user/logout/')
-        r = api_client.post('/user/pantry/', json.dumps(ingredient_data),
+        # Attempt to log out and verify permissions revoked
+        _ = api_client.post('/user/logout/')
+        response = api_client.post('/user/pantry/', json.dumps(ingredient_data),
                      content_type='application/json')
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 400)
 
     # Test checking that a user can retrieve the details of a user
     def test_get_user(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        user = api_client.post('/user/register/', json.dumps(user_data),
+        test_data = {'username': 'Bob', 'email' : 'Bob@gmail.com'}
+
+        # Register account and log in
+        token = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data.pop('email')
-        token = api_client.post('/user/login/', json.dumps(user_data),
-               content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
+
+        # Fetch user instance and check data is correct
         user = api_client.get('/user/1/')
-        user_data1 = {'username': 'Bob', 'email' : 'Bob@gmail.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
-                                user_data1.items())
+                                test_data.items())
 
     # Test checking that a user cannot access the full list of users
     def test_get_users(self):
+        # Create testing client
         api_client1 = APIClient()
+
+        # Data for the account and testing
         user_data1 = {'username' : 'Bob1', 'password' : 'Bob', 'email':
             'Bob1@gmail.com'}
-        user = api_client1.post('/user/register/', json.dumps(user_data1),
+        token = api_client1.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
-        user_data1.pop('email')
-        token = api_client1.post('/user/login/', json.dumps(user_data1),
-               content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        api_client2 = APIClient()
-        user_data2 = {'username': 'Bob2', 'password': 'extra_cheese', 'email'
-        : 'Bob2@forme.com'}
-        user = api_client2.post('/user/register/', json.dumps(user_data2),
-                      content_type='application/json')
+
+        # Fetch user instances and check access forbidden
         users = api_client1.get('/user/')
         self.assertContains(users, text='', status_code=403)
 
     # Test checking that a user can delete a user
     def test_delete_user1(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        user = api_client.post('/user/register/', json.dumps(user_data),
+        token = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
-        user_data.pop('email')
-        token = api_client.post('/user/login/', json.dumps(user_data),
-               content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        api_client.delete('/user/1/')
+
+        # Delete user instance and verify deleted/logged out
+        response = api_client.delete('/user/1/')
+        self.assertContains(response, '', status_code=204)
         user = api_client.get('/user/1/')
         self.assertContains(user, '', status_code=401)
 
     # Test checking that a user can delete only themselves
     def test_delete_user2(self):
+        # Create testing clients
         api_client1 = APIClient()
-        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+        api_client2 = APIClient()
+
+        # Data for the accounts and testing
+        user_data1 = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        token = api_client1.post('/user/register/', json.dumps(user_data),
+        user_data2 = {'username' : 'Bob1', 'password' : 'Bob1', 'email':
+            'Bob1@gmail.com'}
+
+        # Register and log in users
+        token = api_client1.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        api_client2 = APIClient()
-        user_data1 = {'username' : 'Bob1', 'password' : 'Bob1', 'email':
-            'Bob1@gmail.com'}
-        token = api_client2.post('/user/register/', json.dumps(user_data1),
+        token = api_client2.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
         api_client2.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
+
+        # Attempt to delete other user and verify forbidden
         response = api_client2.delete('/user/1/')
         self.assertContains(response, '', status_code=401)
+
+        # Verify user still exists
         user = api_client2.get('/user/1/')
         self.assertContains(user, '', status_code=200)
-        response = api_client2.delete('/user/2/')
+
+        # Attempt to delete self
+        _ = api_client2.delete('/user/2/')
+
+        # Verify user does not exist
         user = api_client1.get('/user/2/')
         self.assertContains(user, '', status_code=404)
 
     # Test checking that a user can update a user's details
     def test_put_user1(self):
+        # Create testing clients
         api_client = APIClient()
+        api_client1 = APIClient()
+
+        # Data for the accounts and testing
         user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
             'Cob@gmail.com'}
+        change_data = {'username': 'Cob1', 'password': 'Cob', 'email'
+        : 'Cob@gmail.com'}
+        test_data = {'username': 'Cob1', 'email'
+        : 'Cob@gmail.com'}
+        new_user_data = {'username': 'Cob1', 'password': 'Cob'}
+
+        # Register and log in user
         token = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        user_data1 = {'username': 'Cob1', 'password': 'Cob', 'email'
-        : 'Cob@gmail.com'}
-        user = api_client.put('/user/1/', json.dumps(user_data1),
+
+        # Attempt to change details and verify returned are correct
+        user = api_client.put('/user/1/', json.dumps(change_data),
                      content_type='application/json')
-        user_data1 = {'username': 'Cob1', 'email'
-        : 'Cob@gmail.com'}
         self.assertGreaterEqual(json.loads(user.content).items(),
-                                user_data1.items())
+                                test_data.items())
+
+        # Log user out and log in again and verify they are logged in
         api_client.post('/user/logout/')
-        api_client1 = APIClient()
-        user_data1 = {'username': 'Cob1', 'password': 'Cob'}
-        token = api_client1.post('/user/login/', json.dumps(user_data1),
+        token = api_client1.post('/user/login/', json.dumps(new_user_data),
                content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
         self.assertContains(token, '', status_code=200)
+
+        # Attempt to retrieve user details and verify they are correct
         response = api_client1.get('/user/1/')
-        user_data1 = {'username': 'Cob1', 'email' : 'Cob@gmail.com'}
         self.assertContains(response, '', status_code=200)
         self.assertGreaterEqual(json.loads(response.content).items(),
-                                user_data1.items())
+                                test_data.items())
 
     # Test checking that a user can only update their details
     def test_put_user2(self):
+        # Create testing clients
         api_client1 = APIClient()
-        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+        api_client2 = APIClient()
+
+        # Data for the accounts and testing
+        user_data1 = {'username' : 'Cob', 'password' : 'Cob', 'email':
             'Cob@gmail.com'}
-        token = api_client1.post('/user/register/', json.dumps(user_data),
+        user_data2 = {'username' : 'Tob', 'password' : 'Tob', 'email':
+            'Tob@gmail.com'}
+        change_data1 = {'username' : 'Cob1', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        test_data1 = {'username' : 'Cob', 'email': 'Cob@gmail.com'}
+        test_data2 = {'username' : 'Cob1', 'email': 'Cob@gmail.com'}
+
+        # Register and log in users
+        token = api_client1.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
         api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        api_client2 = APIClient()
-        user_data = {'username' : 'Tob', 'password' : 'Tob', 'email':
-            'Tob@gmail.com'}
-        token = api_client2.post('/user/register/', json.dumps(user_data),
+        token = api_client2.post('/user/register/', json.dumps(user_data2),
                       content_type='application/json')
         api_client2.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        user_data = {'username' : 'Cob1', 'password' : 'Cob', 'email':
-            'Cob@gmail.com'}
-        user = api_client2.put('/user/1/', json.dumps(user_data),
+
+        # Attempt to change another user's details and verify forbidden
+        user = api_client2.put('/user/1/', json.dumps(change_data1),
                      content_type='application/json')
-        user_data.pop('password')
         self.assertContains(user, '', status_code=401)
+
+        # Get own user details and verify they aren't changed
         response = api_client1.get('/user/1/')
         self.assertContains(response, '', status_code=200)
-        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
-            'Cob@gmail.com'}
-        user_data.pop('password')
         self.assertGreaterEqual(json.loads(response.content).items(),
-                                user_data.items())
-        user_data = {'username' : 'Cob1', 'password' : 'Cob', 'email':
-            'Cob@gmail.com'}
-        user = api_client1.put('/user/1/', json.dumps(user_data),
+                                test_data1.items())
+
+        # Attempt to change own data
+        _ = api_client1.put('/user/1/', json.dumps(change_data1),
                      content_type='application/json')
-        user_data.pop('password')
         response = api_client1.get('/user/1/')
         self.assertGreaterEqual(json.loads(response.content).items(),
-                                user_data.items())
+                                test_data2.items())
 
 
 # Tests for ingredient create, retrieve, list, delete and put
 class IngredientTest(TestCase):
     def setUp(self) -> None:
-        cat = IngredientCategory.objects.create(name='grain')
-        cat = IngredientCategory.objects.create(name='vegetable')
+        # Create ingredient categories to allow ingredient creation
+        _ = IngredientCategory.objects.create(name='grain')
+        _ = IngredientCategory.objects.create(name='vegetable')
+
+        # Create user for testing purposes
         api_client = APIClient()
         user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
-        user = api_client.post('/user/register/', json.dumps(user_data),
+        _ = api_client.post('/user/register/', json.dumps(user_data),
                       content_type='application/json')
+        _ = api_client.post('/user/logout/')
 
     # Test that a user is able to create a new ingredient (necessary for
     # expansion of ingredient database)
     def test_create_ingredient1(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Attempt to create ingredient and verify the return is correct
         ing = api_client.post('/ingredients/', json.dumps(ingredient_data),
                      content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
@@ -324,14 +368,21 @@ class IngredientTest(TestCase):
 
     # Test that a new ingredient can be made with a new category
     def test_create_ingredient2(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name':
+                                                              'not_grain'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data = {'name': 'potato', 'category': {'name':
-                                                              'not_grain'}}
+
+        # Attempt to create ingredient and verify the return is correct
         ing = api_client.post('/ingredients/', json.dumps(ingredient_data),
                      content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
@@ -339,13 +390,21 @@ class IngredientTest(TestCase):
 
     # Test that a user can retrieve a specific ingredient by name
     def test_get_ingredient(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Attempt to create and retrieve ingredient and verify the return is
+        # correct
         api_client.post('/ingredients/', json.dumps(ingredient_data),
                content_type='application/json')
         ing = api_client.get('/ingredients/potato/')
@@ -355,14 +414,22 @@ class IngredientTest(TestCase):
     # Test that a user can retrieve a list of all ingredients and their
     # categories
     def test_get_ingredients(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data1 = {'name': 'potato', 'category': {'name': 'grain'}}
+        ingredient_data2 = {'name': 'beef', 'category': {'name': 'grain'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data1 = {'name': 'potato', 'category': {'name': 'grain'}}
-        ingredient_data2 = {'name': 'beef', 'category': {'name': 'grain'}}
+
+        # Attempt to create and retrieve ingredients and verify the return is
+        # correct
         api_client.post('/ingredients/', json.dumps(ingredient_data1),
                content_type='application/json')
         api_client.post('/ingredients/', json.dumps(ingredient_data2),
@@ -376,13 +443,21 @@ class IngredientTest(TestCase):
     # Test that a user can delete an ingredient type (probably should be
     # restricted to ones they've added)
     def test_delete_ingredient(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Attempt to create, delete retrieve ingredients and verify there is
+        # no ingredient
         api_client.post('/ingredients/', json.dumps(ingredient_data),
                content_type='application/json')
         api_client.delete('/ingredients/potato/')
@@ -391,21 +466,29 @@ class IngredientTest(TestCase):
 
     # Test that a user can update an ingredient's category if misplaced
     def test_put_ingredient(self):
+        # Create testing client
         api_client = APIClient()
+
+        # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        update_data = {'name': 'potato', 'category': {'name':
+                                                              'vegetable'}}
+
+        # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
                content_type='application/json')
         api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
             'token'])
-        ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+
+        # Attempt to create and update an ingredient and verify return is
+        # correct
         api_client.post('/ingredients/', json.dumps(ingredient_data),
                content_type='application/json')
-        ingredient_data = {'name': 'potato', 'category': {'name':
-                                                              'vegetable'}}
-        ing = api_client.put('/ingredients/potato/', json.dumps(ingredient_data),
+        ing = api_client.put('/ingredients/potato/', json.dumps(update_data),
                     content_type='application/json')
         self.assertGreaterEqual(json.loads(ing.content).items(),
-                                ingredient_data.items())
+                                update_data.items())
 
 
 # Test for create, get, list, delete and put for recipes
