@@ -1,20 +1,12 @@
-import axios from "axios";
-import { SERVER_URL } from "../utils/constant";
+import api from "./api";
 import paging from "../utils/paging";
 
 const RecipeAPI = {
   search: async (name, page, limit = 10) =>
-    axios.get(
-      `${SERVER_URL}/ingredients?search=${name}&${paging(limit, page)}`
-    ),
-  get: async (id) => axios.get(`${SERVER_URL}/ingredients/${id}`),
-  create: async (ingredient) => {
-    const res = await axios.post(
-      `${SERVER_URL}/ingredients`,
-      JSON.stringify({ ingredient })
-    );
-    return res;
-  },
+    api.get(`/ingredients/?search=${name}&${paging(limit, page)}`),
+  get: async (id) => api.get(`/ingredients/${id}/`),
+  create: async (ingredient) =>
+    await api.post(`/ingredients/`, JSON.stringify({ ingredient })),
 };
 
 export default RecipeAPI;

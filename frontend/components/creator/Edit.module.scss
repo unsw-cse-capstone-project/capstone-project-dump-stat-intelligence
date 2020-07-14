@@ -1,110 +1,121 @@
 .editButton {
-    width:3rem;
-    height: 3rem;
-    position:fixed;
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    bottom:2rem;
-    right:2rem;
-    background-color:var(--primary);
-    z-index:38;
-    border-radius:3rem;
-    box-shadow:0 4px 12px 0 rgba(0,0,0,0.5);
-    cursor: pointer;
-    transition: all 0.2s ease-in-out;
-    &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 12px 0 rgba(0, 0, 0, 0.4);
-    }
+  width: 3rem;
+  height: 3rem;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 2rem;
+  right: 2rem;
+  background-color: var(--primary);
+  z-index: 38;
+  border-radius: 3rem;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 12px 0 rgba(0, 0, 0, 0.4);
+  }
 }
 
-
 .editor {
-    width: calc(max(22rem, 40%));
-    height:75vh;
-    background-color:white;
-    box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    z-index: 38;
-    position: fixed;
-    right: 2rem;
-    bottom: 7rem;
-    padding: 12px;
-    padding-top:4rem;
-    transform:scale(0);
-    opacity:0;
-    transition: 300ms ease;
-    overflow-y: scroll;
+  width: calc(max(22rem, 40%));
+  height: 75vh;
+  background-color: white;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  z-index: 38;
+  position: fixed;
+  right: 2rem;
+  bottom: 7rem;
+  padding: 12px;
+  padding-top: 4rem;
+  transform: scale(0);
+  opacity: 0;
+  transition: 300ms ease;
+  overflow-y: scroll;
 }
 
 .header {
-    position:absolute;
-    top:12px;
-    display:flex;
-    justify-content: start;
+  position: absolute;
+  top: 12px;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .editorShow {
-    transform:scale(1);
-    opacity:1;
+  transform: scale(1);
+  opacity: 1;
 }
 
-
-
 .iconBox {
-    width:2rem;
-    height:2rem;
-    fill:white !important;
+  width: 2rem;
+  height: 2rem;
+  fill: white !important;
 }
 
 .editBox {
-    display:none;
-    width:100%;
-    height:100%;
+  display: none;
+  width: 100%;
+  height: 100%;
 }
 
 .showBox {
-    display:block;
+  display: block;
 }
 
 .wideTag {
-    width:100%;
-    font-size:1rem !important;
+  width: 100%;
+  font-size: 1rem !important;
 }
 
-
 .wrap {
-    white-space:pre-wrap;
+  white-space: pre-wrap;
 }
 
 .ingredient {
-    font-size:1rem !important;
-    height:auto !important;
-    white-space:pre-line !important;
+  font-size: 1rem !important;
+  height: auto !important;
+  white-space: pre-line !important;
 }
 
-
-
-.querySearch:active .queryBox,
-.querySearch:hover .queryBox {
-  display:block;
+.formCon {
+  flex-wrap: wrap;
+  justify-content: space-around !important;
 }
 
 .queryBox {
-    position:relative;
-    width:100%;
-    display:none;
+  position: relative;
+  width: 100%;
+  display: none;
+  height: 0px;
 }
 .queryHover {
-    background-color:var(--background);
-    position:absolute;
-    width:100%;
-    border-radius : 0.2rem;
+  background-color: var(--background);
+  position: absolute;
+  z-index: 38;
+  width: 100%;
+  border-radius: 0.2rem;
 }
-  
 
-.formCon {
-    flex-wrap:wrap;
-    justify-content: space-around !important;
+.querySearch:active .queryBox,
+.querySearch:hover .queryBox {
+  display: block;
+}
+
+.queryIngredient {
+  padding: 0.2rem;
+
+  &:hover {
+    cursor: pointer;
+    background-color: white;
+  }
+}
+
+.alert {
+  white-space: pre-line !important;
+  height: auto !important;
+  padding: 0.75em;
+  font-size: 0.8rem !important;
 }

@@ -3,6 +3,8 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
+import { getUser, setUser, removeUser } from "../../utils/localstorage";
+
 /*
 AUTH
 
@@ -16,10 +18,8 @@ AUTH
         favourites : [{recipe}, ...],
         owned : [{recipe}, ...]
         userInfo : {
-            first : string,
-            last : string,
+            username : string,
             email : string,
-            phone : string
         }
     }
 
@@ -31,60 +31,58 @@ AUTH
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
 
-  
   //INSERT API, tell backend to remove recipe <id> as favourite from user
 
   dispatch({
     type: types.REMOVE_FAVE,
-    id : id
-  })
-}
+    id: id,
+  });
+};
 
 //NEEDS API
 export const add_favourite = (recipe) => async (dispatch) => {
   let user = store.getState().auth;
 
   //INSERT API, tell backend to add recipe <id> as favourite from user
-  
+
   dispatch({
     type: types.ADD_FAVE,
-    recipe: recipe
-
-  })
-}
+    recipe: recipe,
+  });
+};
 
 //No API, only used for frontend
 export const clear_next = () => async (dispatch) => {
   dispatch({
-    type: types.CLEAR_NEXT
-  })
-}
+    type: types.CLEAR_NEXT,
+  });
+};
 
 //No API, frontend use only
 export const new_next = (next) => async (dispatch) => {
   dispatch({
     type: types.NEW_NEXT,
-    next: next
-  })
-}
+    next: next,
+  });
+};
 
 //NEEDS API
 export const update_password = (old, pwd) => async (dispatch) => {
   let user = store.getState().auth;
-  //INSERT API, no frontend change but tell backend to update password for user  
+  //INSERT API, no frontend change but tell backend to update password for user
 };
 
-
 //NEEDS API
-export const update_details = (first, last, email, phone) => async (dispatch) => {
+export const update_details = (username, email, password) => async (
+  dispatch
+) => {
   let user = store.getState().auth;
+  console.log(user);
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
-  
+
   let userInfo = {
-    first: first,
-    last: last,
+    username: username,
     email: email,
-    phone: phone,
   };
   dispatch({
     type: types.UPDATE_DEETS,
@@ -93,26 +91,19 @@ export const update_details = (first, last, email, phone) => async (dispatch) =>
 };
 
 //NEEDS API
-export const register = (first, last, email, phone, pwd) => async (dispatch) => {
+export const register = (username, email, password) => async (dispatch) => {
   //INSERT API, register new user with backend
-
-  
-  
-  UserAPI.register(`{first} {last}`, email, pwd)
-  .then((res) => {
-    // TODO: do something with token here that comes back from response
-      let userInfo = {
-        first: first,
-        last: last,
-        email: email,
-        phone: phone,
-      };
+  console.log("REGISTER EVENT!");
+  UserAPI.register(username, email, password)
+    .then((res) => {
+      let data = res.data;
+      setUser({ id: data.id, token: data.token });
 
       dispatch({
         type: types.LOGIN,
-        userInfo: userInfo,
-        uid: 0,
-        token: null
+        userInfo: data,
+        uid: data.id,
+        token: data.token,
       });
     })
     .catch((err) => {
@@ -120,36 +111,69 @@ export const register = (first, last, email, phone, pwd) => async (dispatch) => 
     });
 };
 
+export const attemptLoginFromLocalStorage = () => async (dispatch) => {
+  let user = getUser(); // this also sets the token
 
-//NEEDS API
-export const login = (email, pwd) => async (dispatch) => {
-  
-  //INSET API, login and return token TODO: NOT SET UP WITH REDUX YET
-  UserAPI.login(email, pwd)
-  .then((res) => {
-    // TODO: do something with token here that comes back from response
-      let userInfo = {
-        email: email,
-        phone: null,
-      };
+  if (!user) {
+    // obviously not logged in
+    return;
+  }
 
+  UserAPI.get(user.id)
+    .then((res) => {
+      let data = res.data;
+      console.log("login success from localstorage");
       dispatch({
         type: types.LOGIN,
-        userInfo: userInfo,
-        uid: 3,
-        token : null
+        userInfo: data,
+        uid: data.id,
+        token: user.token,
       });
     })
     .catch((err) => {
-      console.error(err);
+      console.log(err);
+      if (err.statusCode == 401) {
+        // Token has expired
+        console.log("Token expired");
+        removeUser();
+        dispatch({ type: types.LOGOUT });
+      }
     });
 };
 
+export const login = (email, password) => async (dispatch) => {
+  console.log("LOGIN ACTION!");
+  UserAPI.login(email, password)
+    .then((res) => {
+      let data = res.data;
 
-//NEEDS API
+      setUser({ id: data.id, token: data.token });
+
+      dispatch({
+        type: types.LOGIN,
+        userInfo: data,
+        uid: data.id,
+        token: data.token,
+      });
+    })
+    .catch((err) => {
+      console.log("redux error");
+      console.error(err);
+      console.error(err.response);
+    });
+};
+
 export const logout = () => async (dispatch) => {
-  //INSERT API, tell backend to invalidate the session token
-  dispatch({
-    type: types.LOGOUT,
-  });
+  UserAPI.logout()
+    .then((res) => {
+      console.log("API logout");
+      removeUser();
+
+      dispatch({
+        type: types.LOGOUT,
+      });
+    })
+    .catch((err) => {
+      console.error(err.response);
+    });
 };

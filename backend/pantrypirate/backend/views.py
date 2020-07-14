@@ -31,7 +31,7 @@ class UserViewSet(viewsets.ModelViewSet):
     # Currently, user list is set to admin only access so that users cannot
     # get a list of users. If needed I can change.
     def get_permissions(self):
-        if self.action is 'list':
+        if self.action == "list":
             self.permission_classes = [IsAdminUser]
         return super(UserViewSet, self).get_permissions()
 
@@ -61,7 +61,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class UserCreate(generics.CreateAPIView):
     queryset = User.objects.all().order_by("-id")
     serializer_class = CreateUser
-    permission_classes = (AllowAny, )
+    permission_classes = (AllowAny,)
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer
@@ -98,7 +98,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     # Make general and specific recipe get anonymous allowable
     def get_permissions(self):
-        if self.action == 'list' or self.action == 'retrieve':
+        if self.action == "list" or self.action == "retrieve":
             permission_classes = [AllowAny]
         else:
             permission_classes = [IsAuthenticated]
@@ -109,17 +109,18 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
         # print(request.GET.get('meal'))
 
-        string = urllib.parse.parse_qs(request.META['QUERY_STRING'],
-                                       keep_blank_values=True)
+        string = urllib.parse.parse_qs(
+            request.META["QUERY_STRING"], keep_blank_values=True
+        )
         # print(string)
         if not string:
-            queryset = Recipe.objects.all().order_by('name')
+            queryset = Recipe.objects.all().order_by("name")
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
 
-        meals = string['meal'][0].split()
-        diets = string['diet'][0].split()
-        running_list = string['ingredients'][0].split()
+        meals = string["meal"][0].split()
+        diets = string["diet"][0].split()
+        running_list = string["ingredients"][0].split()
         # print(running_list)
 
         recipes = Recipe.objects.none()
@@ -128,7 +129,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             pIngredient = PantryIngredient.objects.get(pk=item)
             ingredient = pIngredient.ingredient
             for rec_ingredient in RecipeIngredient.objects.filter(
-                    ingredient=ingredient):
+                ingredient=ingredient
+            ):
                 name = rec_ingredient.recipe
                 recipes |= Recipe.objects.filter(name=name)
 
@@ -177,9 +179,9 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            queryset = PantryIngredient.objects.filter(
-                user=request.user).order_by('ingredient__category__name',
-                'ingredient__name')
+            queryset = PantryIngredient.objects.filter(user=request.user).order_by(
+                "ingredient__category__name", "ingredient__name"
+            )
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         else:
