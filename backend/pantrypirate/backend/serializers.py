@@ -144,11 +144,9 @@ class RecipeSerializer(serializers.ModelSerializer):
             "author",
             "meal_cat",
             "diet_req",
-            "favourites",
             "ingredients",
         ]
         extra_kwargs = {
-            "favourites": {"required": False},
             "meal_cat": {"required": False},
             "diet_req": {"required": False},
         }
@@ -157,10 +155,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     # not create new meal_cats or diet_reqs, will need to be added by admin
     def create(self, validated_data):
         recipe_ing_data = validated_data.pop("ingredients", [])
-        # fav = validated_data.pop("favourites") # Idk what favourites are for but it is buggering the frontend
-        # -- Response --
-        # Favourites are the users who favourite the recipes, currently not
-        # really implemented but should be sent in the post as empty list
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
         recipe = Recipe.objects.create(**validated_data)
@@ -234,6 +228,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response["author"] = UserSerializer(instance.author).data
+        response["author"].pop('favourites')
         return response
 
 

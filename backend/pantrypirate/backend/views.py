@@ -204,3 +204,32 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(status=404)
+
+    # Make deletion only compatible for our account
+    def destroy(self, request, *args, **kwargs):
+        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
+                       i][-1])
+        if request.user.id is user_id:
+            return super(PantryIngredientViewSet, self).destroy(request, *args,
+                                                  **kwargs)
+        else:
+            return Response(status=401)
+
+    # Make partial_update
+    def partial_update(self, request, *args, **kwargs):
+        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
+                       i][-1])
+        if request.user.id is user_id:
+            return super(PantryIngredientViewSet, self).partial_update(request, *args,
+                                                    **kwargs)
+        else:
+            return Response(status=401)
+
+    def update(self, request, *args, **kwargs):
+        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
+                       i][-1])
+        if request.user.id is user_id:
+            return super(PantryIngredientViewSet, self).update(request, *args,
+                                                  **kwargs)
+        else:
+            return Response(status=401)
