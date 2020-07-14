@@ -29,7 +29,6 @@ class UserTestCase(TestCase):
         user = User.objects.get(pk=1)
         self.assertIsNotNone(user)
 
-
     # Test checking that users can log in with their username and password
     # and have a token returned to frontend
     def test_login_user1(self):
@@ -223,10 +222,8 @@ class UserTestCase(TestCase):
         user = api_client2.put('/user/1/', json.dumps(user_data),
                      content_type='application/json')
         user_data.pop('password')
-        print(user.content)
         # self.assertContains(user, '', status_code=401)
         response = api_client1.get('/user/1/')
-        print(response.content)
         self.assertContains(response, '', status_code=200)
 
 

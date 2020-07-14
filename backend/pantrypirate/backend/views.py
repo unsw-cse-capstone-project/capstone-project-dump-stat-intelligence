@@ -48,8 +48,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def partial_update(self, request, *args, **kwargs):
         user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][
-                          -1])
+                       i][-1])
         if request.user.id is user_id:
             return super(UserViewSet, self).update(self, request, *args, **kwargs)
         else:
