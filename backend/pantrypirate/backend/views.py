@@ -121,9 +121,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # print(request.GET.get('meal'))
 
         # Parse the query string
-        string = urllib.parse.parse_qs(
-            request.META["QUERY_STRING"], keep_blank_values=True
-        )
+        string = urllib.parse.parse_qs(request.META["QUERY_STRING"], keep_blank_values=True)
 
         # If the query string does not exist, order by name and return
         if not string:
@@ -137,15 +135,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if ingredients were provided, if so filter based on matching,
         # otherwise take all recipes
-        if string["ingredients"] is not '':
+        if string.get("ingredients") is not '' or None:
             running_list = string["ingredients"][0].split()
 
             # For each ingredient, add recipes that contain it to the queryset
             for item in running_list:
                 ingredient = Ingredient.objects.get(pk=item)
-                for rec_ingredient in RecipeIngredient.objects.filter(
-                    ingredient=ingredient
-                ):
+                for rec_ingredient in RecipeIngredient.objects.filter(ingredient=ingredient):
                     name = rec_ingredient.recipe
                     recipes |= Recipe.objects.filter(name=name)
         else:
@@ -156,7 +152,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if dietary requirements were provided, if so filter based on
         # matching
-        if string["diet"] is not '':
+        if string.get("diet") is not '' or None:
             diets = string["diet"][0].split()
 
             # Filter the queryset by dietary requirement (AND relationship)
@@ -165,7 +161,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     f = f.filter(diet_req__pk=requirement)
 
         # Check if meal categories were provided, if so filter based on matching
-        if string["meal"] is not '':
+        if string.get("meal") is not '' or None:
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
