@@ -1145,7 +1145,7 @@ class SearchTestCase(TestCase):
         vegetable.save()
         tomato = Ingredient(name="tomato", category=vegetable)
         tomato.save()
-        carrot = Ingredient(name="cgit checarrot", category=vegetable)
+        carrot = Ingredient(name="carrot", category=vegetable)
         carrot.save()
 
         r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=fruit_salad)
@@ -1176,15 +1176,8 @@ class SearchTestCase(TestCase):
     def test_search(self):
         c = Client()
 
-        # extract pantry items
-        p_apple = PantryIngredient.objects.get(pk=1)
-        p_pear = PantryIngredient.objects.get(pk=2)
-        p_carrot = PantryIngredient.objects.get(pk=3)
-
-        running_list = {p_apple.ingredient.name : p_apple.pk, p_pear.ingredient.name : p_pear.pk, p_carrot.ingredient.name : p_carrot.pk}
-
-        response = c.get('/recipes/?ingredients=1+2+3&meal=dinner+lunch&diet=vegan&limit=10&offset=21/',
-                         header=json.dumps(running_list),
+        response = c.get('/recipes/?ingredients=apple+pear+carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=21/',
                          content_type="application/json")
         expected_response = ['Garden salad', 'Mixed salad']
+        
         self.assertEqual(json.loads(response.content), expected_response)

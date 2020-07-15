@@ -165,18 +165,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
+                e = Recipe.objects.none()  # need an empty set to build OR relationship from
                 for category in meals:
-                    f |= f.filter(meal_cat__pk=category)
+                    e |= f.filter(meal_cat__pk=category)
+                f = e   # rename back to f
 
         # remove duplicates
         f = f.distinct()
 
-        # temporarily returning list of matching recipe names
-        lst = []
-        for it in f:
-            lst.append(it.name)
+        # return list of matching recipe names
+        match = []
+        for rec in f:
+            match.append(rec.name)
 
-        return Response(lst)
+        return Response(match)
 
 
 # Supports create, retrieve, put, list and delete
