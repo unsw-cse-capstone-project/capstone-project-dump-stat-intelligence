@@ -165,8 +165,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
+                e = Recipe.objects.none()  # need an empty set to build OR relationship from
                 for category in meals:
-                    f |= f.filter(meal_cat__pk=category)
+                    e |= f.filter(meal_cat__pk=category)
+                f = e   # rename back to f
 
         # remove duplicates
         f = f.distinct()
@@ -233,3 +235,35 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
                                                   **kwargs)
         else:
             return Response(status=401)
+
+
+
+class CookbookViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            print("User ID:", request.user.id)
+            queryset = Recipe.objects.filter(favourites__pk=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(Http404)
+
+
+class MyRecipesViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+    print("check")
+
+    def list(self, request, *args, **kwargs):
+        print("check 2")
+        if request.user.is_authenticated:
+            print("User ID:", request.user.id)
+            queryset = Recipe.objects.filter(author__pk=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(Http404)
