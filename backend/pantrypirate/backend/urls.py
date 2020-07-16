@@ -12,7 +12,7 @@ router.register(r'user', UserViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'ingredients', IngredientViewSet)
 router.register(r'user/cookbook', CookbookViewSet, basename='cookbook')
-router.register(r'user/myrecipes', MyRecipesViewSet, basename='myrecipes')
+router.register(r'user/myrecipes', MyRecipesViewSet)
 
 urlpatterns = [
 

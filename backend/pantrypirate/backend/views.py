@@ -173,12 +173,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # remove duplicates
         f = f.distinct()
 
-        # temporarily returning list of matching recipe names
-        lst = []
-        for it in f:
-            lst.append(it.name)
+        # return list of matching recipe names
+        match = []
+        for rec in f:
+            match.append(rec.name)
 
-        return Response(lst)
+        return Response(match)
 
 
 # Supports create, retrieve, put, list and delete
@@ -244,7 +244,6 @@ class CookbookViewSet(viewsets.ModelViewSet):
 
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            print("User ID:", request.user.id)
             queryset = Recipe.objects.filter(favourites__pk=request.user.id)
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
@@ -253,15 +252,13 @@ class CookbookViewSet(viewsets.ModelViewSet):
 
 
 class MyRecipesViewSet(viewsets.ModelViewSet):
+    permission_classes = (IsAuthenticated,)
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
-    print("check")
-
     def list(self, request, *args, **kwargs):
-        print("check 2")
+        print("We've hit the list function")
         if request.user.is_authenticated:
-            print("User ID:", request.user.id)
             queryset = Recipe.objects.filter(author__pk=request.user.id)
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)

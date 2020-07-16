@@ -503,10 +503,12 @@ class RecipeTest(TestCase):
         # Create two users
         self.api_client1 = APIClient()
         self.api_client2 = APIClient()
+
         user_data1 = {'username' : 'Bob', 'password' : 'Bob', 'email':
             'Bob@gmail.com'}
         user_data2 = {'username' : 'Tob', 'password' : 'Tob', 'email':
             'Tob@gmail.com'}
+
         token = self.api_client1.post('/user/register/', json.dumps(user_data1),
                       content_type='application/json')
         self.api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
@@ -1306,22 +1308,24 @@ class MyRecipesTest(TestCase):
                            [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
                             {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
                        "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}],
-                       "favourites": []}
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
-        get = self.c1.get('/user/myrecipes/1/')
+        post = self.c1.post('/user/myrecipes/', json.dumps(recipe_data), content_type='application/json')
+        get = self.c1.get('/user/myrecipes/')
 
-        print("RESULT:", get.data)
+        print("GET:", get.data)
 
-        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "2", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}],
-                       "favourites": []}
+        # recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+        #                 "ingredients":
+        #                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+        #                "meal_cat": [{"name": "lunch"}], 
+        #                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c2.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
-        get = self.c1.get('/user/myrecipes/2/')
+        # post = self.c1.post('/user/myrecipes/', json.dumps(recipe_data), content_type='application/json')
 
-        print("RESULT:", get.data)
+        # rec = Recipe.objects.all()
+        # for r in rec:
+        #     print("Recipe author: ", r.author)
+        # get = self.c1.get('/user/myrecipes/')
+
+        # print("GET:", get.data)
