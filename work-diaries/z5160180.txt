@@ -59,6 +59,22 @@ Week 5
 Started working in earnest on search functionality to filter recipes by current ingredients being searched with (in the running list) and by
 meal category and dietary type. In conjunction to this wrote appropriate tests to investigate this functionality. We were able to successfully 
 return any recipe that matches even a single ingredient, although the threshold for this can be changed relatively trivially. Also modified 
-what pantry_ingredient returns with Sam to better integrate with frontend.
+what pantry_ingredient returns with Sam to better integrate with frontend. Additionally, worked on creating a base databse for the demo on Friday.
 
-[In progress]
+Friday's demo went well, with all features in the scope of the sprint accounted for, albeit currently lacking integration with each other. Instead,
+front and backend were demonstrated separately using Postman. Following the demo, our team met for our first restrospective, covering a range of issues.
+Most notably, in this next sprint we'll be trying to make the tasks more granular to better indicated the status of work and collaborate with each other.
+Additionally, I've shifted over from working on backend to more of a flex role with an initial focus on integrating the two halves, to better balance
+the team, since the backend workload didn't warrent three people.
+
+Week 6
+
+Finished creating a fleshed out test database for use in development. In accordance with our retrospective, set-up the frontend on my machine and started
+familarising myself with React and how it interacts with Django-REST systems. This took quite a while, as this was all quite new to me and the layout of the
+frontend was quite tricky to follow, especially when jumping in mid-development. Fixed some minor issues but nothing solid, mostly time spent learning rather
+than writing unfortunately.
+
+Week 7
+
+Following a discussion with Tom it was redefined that I'll work on integration of ingredients, while he handles authentication. To that end, I started began
+implementing ingredient creation and other aspects. Additionally revisited backend search functionality to make it more generalisable. In progress, [will revisit]
