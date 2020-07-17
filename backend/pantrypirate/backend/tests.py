@@ -865,8 +865,7 @@ class PantryIngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": "2020-06-20",
                                  "user": {"id": 1, "username": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
+                                          "email": "Bob@gmail.com"},
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
@@ -892,8 +891,7 @@ class PantryIngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": None,
                                  "user": {"id": 1, "username": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
+                                          "email": "Bob@gmail.com"},
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
@@ -920,8 +918,7 @@ class PantryIngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": None,
                                  "user": {"id": 1, "username": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
+                                          "email": "Bob@gmail.com"},
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
@@ -965,8 +962,7 @@ class PantryIngredientTest(TestCase):
                  "user": {
                      "id": 1,
                      "username": "Bob",
-                     "email": "Bob@gmail.com",
-                     "favourites": []},
+                     "email": "Bob@gmail.com"},
                  "ingredient": {
                      "name": "z",
                      "category": {
@@ -977,8 +973,7 @@ class PantryIngredientTest(TestCase):
                  "user": {
                      "id": 1,
                      "username": "Bob",
-                     "email": "Bob@gmail.com",
-                     "favourites": []},
+                     "email": "Bob@gmail.com"},
                  "ingredient": {
                      "name": "chick",
                      "category": {
@@ -989,8 +984,7 @@ class PantryIngredientTest(TestCase):
                      None,
                  "user": {"id": 1,
                           "username": "Bob",
-                          "email": "Bob@gmail.com",
-                          "favourites": []},
+                          "email": "Bob@gmail.com"},
                  "ingredient": {
                      "name": "pea",
                      "category": {
@@ -1001,8 +995,7 @@ class PantryIngredientTest(TestCase):
                  "user": {
                      "id": 1,
                      "username": "Bob",
-                     "email": "Bob@gmail.com",
-                     "favourites": []},
+                     "email": "Bob@gmail.com"},
                  "ingredient": {
                      "name": "potato",
                      "category": {
@@ -1013,8 +1006,7 @@ class PantryIngredientTest(TestCase):
                  "user": {
                      "id": 1,
                      "username": "Bob",
-                     "email": "Bob@gmail.com",
-                     "favourites": []},
+                     "email": "Bob@gmail.com"},
                  "ingredient": {
                      "name": "x",
                      "category": {
@@ -1093,8 +1085,7 @@ class PantryIngredientTest(TestCase):
         self.assertGreaterEqual(json.loads(ing.content).items(),
                                 {"expiry_date": "2020-06-20",
                                  "user": {"id": 1, "username": "Bob",
-                                          "email": "Bob@gmail.com",
-                                          "favourites": []},
+                                          "email": "Bob@gmail.com"},
                                  "ingredient": {"name": "potato", "category": {
                                      "name": "vegetable"}}}.items())
 
