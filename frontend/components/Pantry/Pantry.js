@@ -49,7 +49,7 @@ export default function Pantry() {
       <div id="pantry-box" className={styles.drawer}>
         <br/>
         <form autoComplete="off">
-          <div onFocus={() => document.getElementById("pantry-query").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("pantry-query").classList.remove(styles.show), 100)} className={`control ${styles.querySearch}`}>
+          <div onFocus={() => document.getElementById("pantry-query").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("pantry-query").classList.remove(styles.show), 200)} className={`control ${styles.querySearch}`}>
             <input
               id={searchId}
               name="search"

@@ -1,6 +1,6 @@
 import styles from "./Pantry.module.scss";
 import { useDispatch } from 'react-redux';
-
+import { load_expiry } from "../../lib/redux/actions/expiryAction";
 
 export default function PantryIngredient(props) {
     const dispatch = useDispatch();
@@ -12,17 +12,22 @@ export default function PantryIngredient(props) {
     const now = new Date();
     
     if (props.expiry) {
-        console.log(props.expiry)
-        if ((props.expiry - now) / (1000 * 60 * 60 * 24) < 7) {
+        let expires = new Date(props.expiry);
+        console.log((expires - now) / (1000 * 60 * 60 * 24))
+        if ((expires - now) / (1000 * 60 * 60 * 24) < 7) {
 
             close = true;
         }
     }
 
+    function openEdit() {
+        document.getElementById("expiry-edit").classList.toggle("is-active");
+        dispatch(load_expiry(props.ingredient, props.category, props.expiry));
+    }
 
-    return <span key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"}`}>
+    return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"}`}>
         {props.ingredient}
-        <button onClick={() => {document.getElementById("expiry-edit").classList.toggle("is-active")/*cya(props.ingredient, props.category)*/}} className="delete is-small"/>
+        <button onClick={() => {cya(props.ingredient, props.category)}} className="delete is-small"/>
     </span>
 
 

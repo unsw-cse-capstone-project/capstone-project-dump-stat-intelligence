@@ -7,6 +7,20 @@ const initialState = {
 
 export const pantryReducer = (state = initialState, action) => {
     switch (action.type) {
+        case types.PANTRY_CHANGE:
+            let newOne = state;
+            if (newOne[action.category]) {
+                for (let j = 0; j < newOne[action.category].length; j++) {
+                    if (newOne[action.category][j].name === action.ingredient) {
+                        newOne[action.category][j].expiry = action.expiry;
+                        return {
+                            ...newOne,
+                        }
+                    }
+                }
+            }
+            return state
+            
         case types.PANTRY_GET:
             return {
                 ...action.pantry
