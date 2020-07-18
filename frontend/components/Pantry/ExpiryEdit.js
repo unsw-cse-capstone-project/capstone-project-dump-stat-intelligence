@@ -4,6 +4,8 @@ import Modal from "../modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
 import { change_expiry, clear_expiry } from "../../lib/redux/actions/expiryAction";
 import { change } from "../../lib/redux/actions/pantryAction";
+import { remove } from "../../lib/redux/actions/pantryAction";
+
 
 export default function ExpiryEdit() {
     const dispatch = useDispatch();
@@ -13,8 +15,14 @@ export default function ExpiryEdit() {
         event.preventDefault();
         dispatch(change_expiry(event.target.elements.expiry.value))
         dispatch((change(curr.name, curr.category, event.target.elements.expiry.value)))
-        event.target.elements.expiry.value = undefined
+        event.target.elements.expiry.value = null
         toggleForm();
+    }
+
+    function handleDelete(event) {
+        dispatch(remove({ingredient : curr.name, category : curr.category}));
+        dispatch(clear_expiry());
+        document.getElementById("expiry-edit").classList.toggle("is-active");
     }
     
     function toggleForm() {
@@ -42,7 +50,7 @@ export default function ExpiryEdit() {
     let content = <div>
             <h3 className="title is-3">Ingredient - {curr.name}</h3>
             {
-                alert ? <div className={`notification ${days < 0 ? "is-danger" : "is-danger"} ${styles.expiryAlert}`}>
+                alert ? <div className={`notification is-light ${days < 0 ? "is-danger" : "is-danger"} ${styles.expiryAlert}`}>
                     {alert}
                 </div> 
                 : ""
@@ -52,6 +60,7 @@ export default function ExpiryEdit() {
                 <span className="title is-5">Expiry date - {curr.expiry ? curr.expiry : <i>Not set</i>}</span>
                 &nbsp;&nbsp;&nbsp;<a onClick={toggleForm} className={`is-link`}>Update expiry</a>
             </p>
+            
             <form id="expiry-form" className={styles.expiryForm} onSubmit={handleSubmit}>
                 <div className="form">
                     <hr/>
@@ -71,8 +80,14 @@ export default function ExpiryEdit() {
                             </button>
                         </div>
                     </div>
+                    <hr/>
                 </div>
             </form>
+            <div className={styles.expiryDelete}>
+                <button onClick={handleDelete} className={`button is-primary ${styles.deleteButton}`}>
+                    Delete ingredient
+                </button>
+            </div>
         </div>
     return <Modal id="expiry-edit" content={content} func={clear_expiry}/>
 }

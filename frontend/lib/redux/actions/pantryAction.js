@@ -58,7 +58,6 @@ export const remove = (ingredient) => async (dispatch) => {
     // TODO: error handle
     //await PantryAPI.delete(ingredient.ingredient, "");
   }
-
   let toRemove = {
     category: ingredient.category,
     ingredient: ingredient.ingredient,

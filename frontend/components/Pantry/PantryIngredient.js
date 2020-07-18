@@ -26,7 +26,11 @@ export default function PantryIngredient(props) {
 
     return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"} ${styles.tag}`}>
         {props.ingredient}
-        <button onClick={(e) => {e.stopPropagation(); cya(props.ingredient, props.category)}} className="delete is-small"/>
+        {
+            props.del ? 
+            <button onClick={(e) => {e.stopPropagation(); cya(props.ingredient, props.category)}} className="delete is-small"/>
+            : ""
+        }
     </span>
 
 
