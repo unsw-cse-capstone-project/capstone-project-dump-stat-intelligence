@@ -14,15 +14,31 @@ export default function ExpiryEdit() {
         dispatch(change_expiry(event.target.elements.expiry.value))
         dispatch((change(curr.name, curr.category, event.target.elements.expiry.value)))
         event.target.elements.expiry.value = undefined
-        document.getElementById("expiry-edit").classList.toggle("is-active")
+        toggleForm();
     }
-    console.log(curr.expiry)
+    
+    function toggleForm() {
+        let form = document.getElementById("expiry-form");
+        if (form.style.maxHeight) {
+            form.style.maxHeight = form.scrollHeight + 'px';
+            setTimeout(() => form.style.maxHeight = null, 5);
+        } else {
+            form.style.maxHeight = form.scrollHeight + 'px';
+            setTimeout(() => form.style.maxHeight = 'none', 305);
+        }
+    }
+    
+    
+    
     let content = <div>
             <h3 className="title is-3">Ingredient - {curr.name}</h3>
             <h4 className="title is-5">Category - {curr.category}</h4>
-            { curr.expiry ? <h4 className="title is-5">Expiry date - {curr.expiry}</h4> : ""}
+            <p>
+                <span className="title is-5">Expiry date - {curr.expiry ? curr.expiry : <i>Not set</i>}</span>
+                &nbsp;&nbsp;&nbsp;<a onClick={toggleForm} className={`is-link`}>Update expiry</a>
+            </p>
             <hr/>
-            <form onSubmit={handleSubmit}>
+            <form id="expiry-form" className={styles.expiryForm} onSubmit={handleSubmit}>
                 <div className="form">
                     <label className="label">Update Expiry Date</label>
                     <div className="field control">
@@ -35,7 +51,7 @@ export default function ExpiryEdit() {
                             </button>
                         </div>
                         <div className="control">
-                            <button onClick={(e) => {e.preventDefault(); document.getElementById("expiry-edit").classList.toggle("is-active")}} type="submit" className="button">
+                            <button onClick={(e) => {e.preventDefault(); toggleForm()}} type="submit" className="button">
                                 Cancel
                             </button>
                         </div>

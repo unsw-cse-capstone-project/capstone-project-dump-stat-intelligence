@@ -140,3 +140,10 @@
 .tag {
   cursor: pointer;
 }
+
+.expiryForm {
+  display:flex;
+  overflow: hidden;
+  max-height:0;
+  transition: max-height ease 0.5s;
+}
