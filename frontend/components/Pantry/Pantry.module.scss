@@ -128,3 +128,11 @@
 .arrowUp {
   transform:rotate(180deg) !important;
 }
+
+
+.box {
+  background-color:var(--background);
+  padding:2rem;
+  border-radius:2rem;
+  z-index:40;
+}

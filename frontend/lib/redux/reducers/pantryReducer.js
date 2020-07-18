@@ -17,10 +17,20 @@ export const pantryReducer = (state = initialState, action) => {
             if (action.newIngredient.category in state) {
                 currCat = state[action.newIngredient.category];
             }
-            currCat.push({
-                name : action.newIngredient.name,
-                expiry : action.newIngredient.expiry
-            })
+            //Making sure ingredient isn't already in pantry
+            let found = false;
+            for (let i = 0; i < currCat.length; i++) {
+                if (currCat[i].name == action.newIngredient.name) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                currCat.push({
+                    name : action.newIngredient.name,
+                    expiry : action.newIngredient.expiry
+                })
+            } 
             let newState = state;
             newState[action.newIngredient.category] = currCat;
             return {

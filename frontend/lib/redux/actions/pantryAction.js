@@ -22,7 +22,7 @@ export const add = (ingredient) => async (dispatch) => {
     // TODO: token auth
     // TODO: is ingredient.ingredient the primary key of
     // TODO: error handle
-    await PantryAPI.add(ingredient.ingredient, "");
+    //await PantryAPI.add(ingredient.ingredient, "");
   }
   let newIngredient = {
     category: ingredient.category,
@@ -45,7 +45,7 @@ export const remove = (ingredient) => async (dispatch) => {
     // TODO: token auth
     // TODO: is ingredient.ingredient the primary key of
     // TODO: error handle
-    await PantryAPI.delete(ingredient.ingredient, "");
+    //await PantryAPI.delete(ingredient.ingredient, "");
   }
 
   let toRemove = {
