@@ -27,6 +27,23 @@ AUTH
 
 */
 
+export const trial = (email, password) => {
+  return (dispatch) => {
+    return UserAPI.login(email, password)
+    .then(res => {
+      let data = res.data;
+      setUser({ id: data.id, token: data.token });
+      return dispatch({
+        type: types.LOGIN,
+        userInfo: data,
+        uid: data.id,
+        token: data.token
+      });
+    }).catch(res => dispatch({type:types.NULL}))
+
+  }
+}
+
 //NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
@@ -141,27 +158,28 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
     });
 };
 
-export const login = (email, password) => async (dispatch) => {
-  console.log("LOGIN ACTION!");
-  UserAPI.login(email, password)
-    .then((res) => {
+export const login = (email, password) => {
+  return (dispatch) => {
+    return UserAPI.login(email, password)
+    .then(res => {
       let data = res.data;
-
       setUser({ id: data.id, token: data.token });
 
-      dispatch({
+      return dispatch({
         type: types.LOGIN,
         userInfo: data,
         uid: data.id,
         token: data.token,
+        success: true
       });
     })
-    .catch((err) => {
-      console.log("redux error");
-      console.error(err);
-      console.error(err.response);
-    });
-};
+    .catch(err => {
+      return dispatch({type : types.NULL, success : false})
+    })
+  }
+}
+
+
 
 export const logout = () => async (dispatch) => {
   UserAPI.logout()

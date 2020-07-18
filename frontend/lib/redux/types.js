@@ -6,6 +6,7 @@ export const NEW_NEXT = 'NEW_NEXT'; //new redirect page for login modals
 export const CLEAR_NEXT = 'CLEAR_NEXT'; //clear redirect page for login modals
 export const ADD_FAVE = 'ADD_FAVE'; //add a fave recipe
 export const REMOVE_FAVE = 'REMOVE_FAVE' //remove fave recipe
+export const NULL = 'NULL' // used for bad logins
 
 //Recipes
 export const RECIPES_CLEAR = 'RECIPES_CLEAR'; //clear the recipes shown in explore page
