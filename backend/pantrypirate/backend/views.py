@@ -9,7 +9,23 @@ from .models import *
 from rest_framework.views import Response, Http404
 import urllib.parse
 from django.contrib.auth import authenticate
+from django.db.models import Max
 import json
+
+
+# View that requests the most commonly searched ingredient queries, maximum 3
+# ingredients
+class MetaSearch(generics.GenericAPIView):
+    queryset = MetaSearch.objects.all().order_by("count")
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            result = MetaSearch.objects.all().aggregate(Max('count'))
+            serializer = self.get_serializer(result, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(status=401)
+
 
 
 # Custom token authentication to allow the id to be returned alongside the token
@@ -178,7 +194,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
         for rec in f:
             match.append(rec.name)
 
+        self.update_search(string, full_match=1)
+
         return Response(match)
+
+    # Takes boolean for full match and ingredients string from running list
+    # input
+    def update_search(self, list_string, full_match=0):
+        # Update meta search model for query
+        running_list = sorted(list_string["ingredients"][0].split()).join("|")
+        if len(running_list) <= 3:
+            search = MetaSearch.objects.get_or_create(search=running_list)
+            if not full_match:
+                search.count += 1
+            elif search.count > 1:
+                search.count -= 1
+            search.save()
 
 
 # Supports create, retrieve, put, list and delete
