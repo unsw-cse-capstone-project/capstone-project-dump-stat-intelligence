@@ -133,8 +133,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     # Search for recipes given the running list input and filters
     def list(self, request, *args, **kwargs):
-        # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
-        # print(request.GET.get('meal'))
+        # query string looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
 
         # Parse the query string
         string = urllib.parse.parse_qs(request.META["QUERY_STRING"], keep_blank_values=True)
@@ -189,14 +188,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # remove duplicates
         f = f.distinct()
 
-        # return list of matching recipe names
-        match = []
-        for rec in f:
-            match.append(rec.name)
+        # return matching recipes with the ingredients each recipe is missing
+        # recipes returned in descending order of match %
+        # then alphabetically
+        # return looks like:
+        #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
+        #    {"recipe2" : ...}]
+        f = f.order_by("name")
+        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
+        unordered_results = []
 
-        self.update_search(string, full_match=1)
+        for rec in recipe_list:
+            matching_ingredients = 0
+            missing_ingredients = []
 
-        return Response(match)
+            for ing in Recipe.objects.get(pk=rec['id']).ingredients.all():
+                if ing.ingredient.name in running_list:
+                    matching_ingredients += 1
+                else:
+                    missing_ingredients.append(ing.ingredient.name)
+
+            match_percentage = matching_ingredients / len(Recipe.objects.get(pk=rec['id']).ingredients.all())
+            new_dict = {"recipe" : rec, "match_percentage" : match_percentage, "missing_ing" : missing_ingredients}
+            unordered_results.append(new_dict)
+
+        ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
+        
+        # self.update_search(string, full_match=1)
+
+        return Response(ordered_results)
 
     # Takes boolean for full match and ingredients string from running list
     # input
