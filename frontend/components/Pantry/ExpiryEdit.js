@@ -17,7 +17,7 @@ export default function ExpiryEdit() {
         document.getElementById("expiry-edit").classList.toggle("is-active")
     }
     console.log(curr.expiry)
-    let content = ( <div>
+    let content = <div>
             <h3 className="title is-3">Ingredient - {curr.name}</h3>
             <h4 className="title is-5">Category - {curr.category}</h4>
             { curr.expiry ? <h4 className="title is-5">Expiry date - {curr.expiry}</h4> : ""}
@@ -43,6 +43,5 @@ export default function ExpiryEdit() {
                 </div>
             </form>
         </div>
-    )
     return <Modal id="expiry-edit" content={content} func={clear_expiry}/>
 }
