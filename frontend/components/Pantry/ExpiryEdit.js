@@ -62,7 +62,7 @@ export default function ExpiryEdit() {
             </p>
             
             <form id="expiry-form" className={styles.expiryForm} onSubmit={handleSubmit}>
-                <div className="form">
+                <div style={{width:"100%"}} className="form">
                     <hr/>
                     <label className="label">Update Expiry Date</label>
                     <div className="field control">
