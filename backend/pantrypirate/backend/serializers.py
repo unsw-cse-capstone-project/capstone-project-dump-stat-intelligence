@@ -154,7 +154,6 @@ class RecipeSerializer(serializers.ModelSerializer):
     # Creates recipe ingredients, adds meal_cat and diet_req. Notably does
     # not create new meal_cats or diet_reqs, will need to be added by admin
     def create(self, validated_data):
-        print("Creating recipe: ", validated_data['name'])
         recipe_ing_data = validated_data.pop("ingredients", [])
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
