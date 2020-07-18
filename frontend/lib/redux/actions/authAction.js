@@ -78,7 +78,6 @@ export const update_details = (username, email, password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
-  console.log(user);
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
 
   let userInfo = {
@@ -112,26 +111,6 @@ export const register = (username, email, password) => {
 }
 
 
-/*
-export const register = (username, email, password) => async (dispatch) => {
-  //INSERT API, register new user with backend
-  console.log("REGISTER EVENT!");
-  UserAPI.register(username, email, password)
-    .then((res) => {
-      let data = res.data;
-      setUser({ id: data.id, token: data.token });
-
-      dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: data.token,
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-};*/
 
 export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   let user = getUser(); // this also sets the token
