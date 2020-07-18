@@ -7,8 +7,7 @@ import { create_ingredient } from "../../lib/redux/actions/createAction";
 export default function NewIngredient(props) {
     const newIn = (e) => {
         e.preventDefault();
-        create_ingredient(e.target.elements.name.value, e.target.elements.category.value);
-        e.target.elements.name.value = "";
+        create_ingredient(e.target.elements.name.value, {name: e.target.elements.category.value})
         document.getElementById(props.id).classList.toggle("is-active");
     }
     let content = <form onSubmit={newIn}>

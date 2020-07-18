@@ -31,7 +31,6 @@ export const recipes_update = () => async (dispatch) => {
 
   // get all recipes
   const recipes = await RecipeAPI.getAll();
-
   dispatch({
     type: types.RECIPES_UPDATE,
     recipes: recipes.data,
