@@ -6,7 +6,7 @@ const IngredientAPI = {
     api.get(`/ingredients/?search=${name}&${paging(limit, page)}`),
   get: async (id) => api.get(`/ingredients/${id}/`),
   create: async (ingredient) =>
-    await api.post(`/ingredients/`, JSON.stringify({ingredient})),
+    await api.post(`/ingredients/`, ingredient),
 };
 
 export default IngredientAPI;
