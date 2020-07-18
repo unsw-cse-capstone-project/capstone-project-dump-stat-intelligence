@@ -92,6 +92,27 @@ export const update_details = (username, email, password) => async (
 };
 
 //NEEDS API
+export const register = (username, email, password) => {
+  return (dispatch) => {
+    return UserAPI.register(username, email, password).then(res => {
+      let data = res.data;
+      setUser({id : data.id, token : data.token});
+
+      dispatch({
+        type: types.LOGIN,
+        userInfo: data,
+        uid: data.id,
+        token: data.token,
+      });
+      return true;
+    }).catch(err => {
+      return false;
+    })
+  }
+}
+
+
+/*
 export const register = (username, email, password) => async (dispatch) => {
   //INSERT API, register new user with backend
   console.log("REGISTER EVENT!");
@@ -110,7 +131,7 @@ export const register = (username, email, password) => async (dispatch) => {
     .catch((err) => {
       console.error(err);
     });
-};
+};*/
 
 export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   let user = getUser(); // this also sets the token
@@ -149,16 +170,16 @@ export const login = (email, password) => {
       let data = res.data;
       setUser({ id: data.id, token: data.token });
 
-      return dispatch({
+      dispatch({
         type: types.LOGIN,
         userInfo: data,
         uid: data.id,
-        token: data.token,
-        success: true
+        token: data.token
       });
+      return {success : true};
     })
     .catch(err => {
-      return dispatch({type : types.NULL, success : false})
+      return {success : false};
     })
   }
 }
