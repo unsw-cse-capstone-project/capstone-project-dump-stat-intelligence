@@ -86,7 +86,7 @@ class UserCreate(generics.CreateAPIView):
                 data = serializer.data
                 data['token'] = token.key
                 return Response(data=data)
-        return Response(serializer.errors, status=404)
+        return Response(serializer.errors, status=403)
 
 
 # Removes the authentication token from the user, logging them out
