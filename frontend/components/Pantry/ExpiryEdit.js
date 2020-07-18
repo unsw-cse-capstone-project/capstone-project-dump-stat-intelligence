@@ -24,22 +24,37 @@ export default function ExpiryEdit() {
             setTimeout(() => form.style.maxHeight = null, 5);
         } else {
             form.style.maxHeight = form.scrollHeight + 'px';
-            setTimeout(() => form.style.maxHeight = 'none', 305);
+            setTimeout(() => form.style.maxHeight = 'none', 405);
         }
     }
     
-    
+    let alert = null;
+    let days = null;
+    if (curr.expiry) {
+        days = (new Date(curr.expiry) - new Date()) / (1000 * 60 * 60 * 24);
+        if (days < 0) {
+            alert = "This ingredient has expired :("
+        } else if (days < 7) {
+            alert = "This ingredient is about to expire"
+        } 
+    }
     
     let content = <div>
             <h3 className="title is-3">Ingredient - {curr.name}</h3>
+            {
+                alert ? <div className={`notification ${days < 0 ? "is-danger" : "is-danger"} ${styles.expiryAlert}`}>
+                    {alert}
+                </div> 
+                : ""
+            }
             <h4 className="title is-5">Category - {curr.category}</h4>
             <p>
                 <span className="title is-5">Expiry date - {curr.expiry ? curr.expiry : <i>Not set</i>}</span>
                 &nbsp;&nbsp;&nbsp;<a onClick={toggleForm} className={`is-link`}>Update expiry</a>
             </p>
-            <hr/>
             <form id="expiry-form" className={styles.expiryForm} onSubmit={handleSubmit}>
                 <div className="form">
+                    <hr/>
                     <label className="label">Update Expiry Date</label>
                     <div className="field control">
                         <input required={true} name="expiry" className="input" type="date"/>

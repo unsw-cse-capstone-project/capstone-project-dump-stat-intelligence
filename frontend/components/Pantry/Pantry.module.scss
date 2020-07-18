@@ -145,5 +145,9 @@
   display:flex;
   overflow: hidden;
   max-height:0;
-  transition: max-height ease 0.5s;
+  transition: max-height ease 0.4s;
+}
+
+.expiryAlert {
+  padding:0.5rem;
 }
