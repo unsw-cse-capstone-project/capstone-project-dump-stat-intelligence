@@ -54,3 +54,10 @@ maintaining as the next sprint progresses. Worked on implementing
 token-based authentication and authorization. Small changes to 
 formatting for login, as well as beginning to implement restrictions of 
 editing based on user id.
+
+Week 7
+
+Worked on implementing a meta data model for running list search queries 
+to facilitate suggesting ingredients missing recipes. Heavily updated 
+the test suite and made it far more readable for others to use (they act 
+as API examples).
