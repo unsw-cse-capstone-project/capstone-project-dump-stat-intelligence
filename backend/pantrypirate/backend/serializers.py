@@ -244,4 +244,5 @@ class PantryIngredientSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response["ingredient"] = IngredientSerializer(instance.ingredient).data
         response["user"] = UserSerializer(instance.user).data
+        response["user"].pop('favourites')
         return response
