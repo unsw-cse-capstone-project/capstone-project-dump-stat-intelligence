@@ -1310,22 +1310,22 @@ class MyRecipesTest(TestCase):
                        "meal_cat": [{"name": "lunch"}], 
                        "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c1.post('/user/myrecipes/', json.dumps(recipe_data), content_type='application/json')
-        get = self.c1.get('/user/myrecipes/')
+        post = self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        # get = self.c1.get('/user/myrecipes/')
 
-        print("GET:", get.data)
+        # print("GET:", get.data)
 
-        # recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
-        #                 "ingredients":
-        #                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-        #                "meal_cat": [{"name": "lunch"}], 
-        #                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "2", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        # post = self.c1.post('/user/myrecipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c2.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
 
         # rec = Recipe.objects.all()
         # for r in rec:
         #     print("Recipe author: ", r.author)
-        # get = self.c1.get('/user/myrecipes/')
+        get = self.c1.get('/user/myrecipes/')
 
-        # print("GET:", get.data)
+        print("GET:", get.data)

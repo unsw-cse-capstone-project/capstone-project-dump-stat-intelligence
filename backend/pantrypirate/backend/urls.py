@@ -8,11 +8,13 @@ from django.contrib.auth import views as auth
 # appropriate views
 router = routers.DefaultRouter()
 router.register(r'user/pantry', PantryIngredientViewSet, basename='pantry')
+router.register(r'user/myrecipes', MyRecipesViewSet)
+router.register(r'user/cookbook', CookbookViewSet, basename='cookbook')
 router.register(r'user', UserViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'ingredients', IngredientViewSet)
-router.register(r'user/cookbook', CookbookViewSet, basename='cookbook')
-router.register(r'user/myrecipes', MyRecipesViewSet)
+
+
 
 urlpatterns = [
 

@@ -174,6 +174,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         f = f.distinct()
 
         # return list of matching recipe names
+        # change to --
+        #   {"id": ["missing ing", "missing ing"], "id": ..} ??
         match = []
         for rec in f:
             match.append(rec.name)
@@ -252,14 +254,13 @@ class CookbookViewSet(viewsets.ModelViewSet):
 
 
 class MyRecipesViewSet(viewsets.ModelViewSet):
-    permission_classes = (IsAuthenticated,)
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
 
     def list(self, request, *args, **kwargs):
         print("We've hit the list function")
         if request.user.is_authenticated:
-            queryset = Recipe.objects.filter(author__pk=request.user.id)
+            queryset = Recipe.objects.filter(author=request.user.id)
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         else:
