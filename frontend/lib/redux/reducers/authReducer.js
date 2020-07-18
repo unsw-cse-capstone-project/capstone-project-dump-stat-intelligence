@@ -82,8 +82,6 @@ export const authReducer = (state=initialState, action) => {
                     ...action.userInfo
                 }
             }
-        case types.NULL:
-            return state
         default:
             return state
     }

@@ -5,6 +5,7 @@ import { queryReducer } from './queryReducer';
 import { exploreReducer } from './exploreReducer';
 import { recipesReducer } from './recipesReducer'
 import { createReducer } from './createReducer';
+import { expiryReducer } from './expiryReducer';
 
 export default combineReducers({
     auth : authReducer,
@@ -12,6 +13,7 @@ export default combineReducers({
     query : queryReducer,
     explore : exploreReducer,
     recipes : recipesReducer,
-    create : createReducer
+    create : createReducer,
+    expiry : expiryReducer,
 
 });

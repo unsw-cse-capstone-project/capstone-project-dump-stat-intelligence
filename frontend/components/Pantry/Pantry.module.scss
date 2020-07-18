@@ -69,8 +69,7 @@
   top:4rem;
 }
 
-.querySearch:active .queryBox,
-.querySearch:hover .queryBox {
+.show {
   display:block;
 }
 
@@ -128,4 +127,16 @@
 
 .arrowUp {
   transform:rotate(180deg) !important;
+}
+
+
+.box {
+  background-color:var(--background);
+  padding:2rem;
+  border-radius:2rem;
+  z-index:40;
+}
+
+.tag {
+  cursor: pointer;
 }

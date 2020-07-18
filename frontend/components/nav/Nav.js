@@ -10,6 +10,7 @@ import NavLogin from "./NavLogin";
 import Login from "../authentication/Login";
 import Logout from "../authentication/Logout";
 import Register from "../authentication/Register";
+import ExpiryEdit from "../Pantry/ExpiryEdit";
 
 import { useSelector } from "react-redux";
 
@@ -67,6 +68,7 @@ export default function Nav() {
       <Login login="auth-login" register="auth-register" />
       <Logout logout="auth-logout" />
       <Register login="auth-login" register="auth-register" />
+      <ExpiryEdit/>
     </>
   );
 }

@@ -14,6 +14,17 @@ PANTRY
 
 */
 
+//NO API, frontend only
+export const change = (ingredient, category, expiry) => async (dispatch) => {
+  dispatch({
+    type : types.PANTRY_CHANGE,
+    ingredient : ingredient, 
+    category : category,
+    expiry : expiry,
+  })
+}
+
+
 //NEEDS API
 export const add = (ingredient) => async (dispatch) => {
   let auth = store.getState().auth;
@@ -22,7 +33,7 @@ export const add = (ingredient) => async (dispatch) => {
     // TODO: token auth
     // TODO: is ingredient.ingredient the primary key of
     // TODO: error handle
-    await PantryAPI.add(ingredient.ingredient, "");
+    //await PantryAPI.add(ingredient.ingredient, "");
   }
   let newIngredient = {
     category: ingredient.category,
@@ -45,7 +56,7 @@ export const remove = (ingredient) => async (dispatch) => {
     // TODO: token auth
     // TODO: is ingredient.ingredient the primary key of
     // TODO: error handle
-    await PantryAPI.delete(ingredient.ingredient, "");
+    //await PantryAPI.delete(ingredient.ingredient, "");
   }
 
   let toRemove = {
