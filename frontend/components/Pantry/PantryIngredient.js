@@ -22,7 +22,7 @@ export default function PantryIngredient(props) {
 
     return <span key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"}`}>
         {props.ingredient}
-        <button onClick={() => {cya(props.ingredient, props.category)}} className="delete is-small"/>
+        <button onClick={() => {document.getElementById("expiry-edit").classList.toggle("is-active")/*cya(props.ingredient, props.category)*/}} className="delete is-small"/>
     </span>
 
 
