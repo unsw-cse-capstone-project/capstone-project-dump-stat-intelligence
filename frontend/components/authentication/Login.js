@@ -2,7 +2,7 @@ import styles from "./Auth.module.scss";
 
 import Modal from "../modal/Modal";
 import { useDispatch, useSelector } from "react-redux";
-import { login, clear_next, trial } from "../../lib/redux/actions/authAction";
+import { login, clear_next } from "../../lib/redux/actions/authAction";
 import { get_pantry } from "../../lib/redux/actions/pantryAction";
 import { useRouter } from "next/router";
 
@@ -20,12 +20,6 @@ export default function Login(props) {
   }
   function inn(event) {
     event.preventDefault();
-    // dispatch(
-    //   trial(
-    //     event.target.elements.username.value,
-    //     event.target.elements.password.value
-    //   )
-    //   ).then(res => console.log(res));
     dispatch(
       login(
         event.target.elements.username.value,

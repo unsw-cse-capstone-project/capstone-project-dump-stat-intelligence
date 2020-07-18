@@ -27,22 +27,6 @@ AUTH
 
 */
 
-export const trial = (email, password) => {
-  return (dispatch) => {
-    return UserAPI.login(email, password)
-    .then(res => {
-      let data = res.data;
-      setUser({ id: data.id, token: data.token });
-      return dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: data.token
-      });
-    }).catch(res => dispatch({type:types.NULL}))
-
-  }
-}
 
 //NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
