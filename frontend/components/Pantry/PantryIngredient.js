@@ -13,7 +13,6 @@ export default function PantryIngredient(props) {
     
     if (props.expiry) {
         let expires = new Date(props.expiry);
-        console.log((expires - now) / (1000 * 60 * 60 * 24))
         if ((expires - now) / (1000 * 60 * 60 * 24) < 7) {
 
             close = true;
@@ -25,9 +24,9 @@ export default function PantryIngredient(props) {
         dispatch(load_expiry(props.ingredient, props.category, props.expiry));
     }
 
-    return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"}`}>
+    return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"} ${styles.tag}`}>
         {props.ingredient}
-        <button onClick={() => {cya(props.ingredient, props.category)}} className="delete is-small"/>
+        <button onClick={(e) => {e.stopPropagation(); cya(props.ingredient, props.category)}} className="delete is-small"/>
     </span>
 
 
