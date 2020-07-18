@@ -38,8 +38,7 @@ export const remove_category = (name, category) => async (dispatch) => {
 
 //NEEDS API
 export const create_ingredient = (name, category) => {
-  // IngredientAPI.create({ name: name, category: category })
-  console.log("ADDING ", name, category);
+  IngredientAPI.create({name, category})
 };
 
 //NO API, frontend only

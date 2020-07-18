@@ -26,32 +26,27 @@ export default function Register(props) {
         event.target.elements.email.value,
         event.target.elements.password.value
       )
-    );
+    ).then(res => {
+      if (res) {
+        document.getElementById(alertName).innerHTML = "";
+        document.getElementById(alertName).classList.remove(styles.show);
+        close(props.login);
+        //LOGIN SUCCEEDED, GET PANTRY
+        dispatch(get_pantry());
+        if (next) {
+          router.push(next);
+          dispatch(clear_next());
+        }
+      } else {
+        document.getElementById(alertName).innerHTML =
+        "Failed to register. Please make sure you are not already registered and the email is valid.";
+        document.getElementById(alertName).classList.add(styles.show);
+      }
+    });
     //Either way, should reset form
     event.target.elements.username.value = "";
     event.target.elements.email.value = "";
     event.target.elements.password.value = "";
-    //If succeeded, login and close
-
-    // router.push("/explore");
-
-    //ONLY IF LOGIN SUCCEEDED, CLOSE MODAL AND EMPTY VALS
-    if (true) {
-      document.getElementById(alertName).innerHTML = "";
-      document.getElementById(alertName).classList.remove(styles.show);
-      close(props.login);
-      //LOGIN SUCCEEDED, GET PANTRY
-      dispatch(get_pantry());
-      if (next) {
-        router.push(next);
-        dispatch(clear_next());
-      }
-    } else {
-      document.getElementById(alertName).innerHTML =
-        "Incorrect login details. Please try again.";
-      document.getElementById(alertName).classList.add(styles.show);
-      //NEED TO DISPLAY ERROR MESSAGE HERE
-    }
   }
   let content = (
     <>
