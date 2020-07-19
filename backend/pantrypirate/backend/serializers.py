@@ -5,6 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
+class MetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetaSearch
+        fields = ["search", "references"]
+        order_by = ["references"]
+
+
 # Django authentication model for user, no corresponding model in the
 # models.py file as it is by constructed by default. Has several
 # corresponding methods attached to it which make authentication easy

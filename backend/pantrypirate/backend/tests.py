@@ -1278,6 +1278,327 @@ class SearchTestCase(TestCase):
         self.assertEqual(json.loads(response.content), expected_response)
 
 
+# Testing searching
+class MetaSearchTestCase(TestCase):
+    def setUp(self):
+        # set up meal categories and dietary requirements
+        breakfast = MealCategory.objects.create(name="breakfast")
+        lunch = MealCategory.objects.create(name="lunch")
+        dessert = MealCategory.objects.create(name="dessert")
+        vegan = DietaryRequirement.objects.create(name="vegan")
+        dairy_free = DietaryRequirement.objects.create(name="dairy-free")
+
+        # set up user
+        jess = User.objects.create(username="Jess", email="jess@gmail.com",
+                                   password="1234")
+
+        # set up recipes
+        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes",
+                             method="Yummy yummy", author=jess)
+        fruit_salad.save()
+        fruit_salad.meal_cat.add(breakfast)
+        fruit_salad.diet_req.add(vegan)
+        fruit_salad.diet_req.add(dairy_free)
+
+        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes",
+                              method="Crunch crunch", author=jess)
+        garden_salad.save()
+        garden_salad.meal_cat.add(lunch)
+        garden_salad.diet_req.add(vegan)
+        garden_salad.diet_req.add(dairy_free)
+
+        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes",
+                             method="Yummy crunch?", author=jess)
+        mixed_salad.save()
+        mixed_salad.meal_cat.add(lunch)
+        mixed_salad.diet_req.add(vegan)
+        mixed_salad.diet_req.add(dairy_free)
+
+        # set up recipe ingredients
+        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit.save()
+        apple = Ingredient(name="apple", category=fruit)
+        apple.save()
+        pear = Ingredient(name="pear", category=fruit)
+        pear.save()
+
+        vegetable = IngredientCategory.objects.create(name="vegetable")
+        vegetable.save()
+        tomato = Ingredient(name="tomato", category=vegetable)
+        tomato.save()
+        carrot = Ingredient(name="carrot", category=vegetable)
+        carrot.save()
+        potato = Ingredient(name="potato", category=vegetable)
+        potato.save()
+
+        r_apple = RecipeIngredient(adjective="chopped", unit="whole",
+                                   amount="3", ingredient=apple,
+                                   recipe=fruit_salad)
+        r_apple.save()
+        r_pear = RecipeIngredient(adjective="chopped", unit="whole", amount="3",
+                                  ingredient=pear, recipe=fruit_salad)
+        r_pear.save()
+
+        r_tomato = RecipeIngredient(adjective="chopped", unit="whole",
+                                    amount="3", ingredient=tomato,
+                                    recipe=garden_salad)
+        r_tomato.save()
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole",
+                                    amount="3", ingredient=carrot,
+                                    recipe=garden_salad)
+        r_carrot.save()
+
+        r_mixed_apple = RecipeIngredient(adjective="chopped", unit="whole",
+                                         amount="3", ingredient=apple,
+                                         recipe=mixed_salad)
+        r_mixed_apple.save()
+        r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole",
+                                          amount="3", ingredient=carrot,
+                                          recipe=mixed_salad)
+        r_mixed_carrot.save()
+
+        # make pantry ingredients
+        p_apple = PantryIngredient(expiry_date="2020-07-29", user=jess,
+                                   ingredient=apple)
+        p_apple.save()
+        p_pear = PantryIngredient(expiry_date="2020-07-29", user=jess,
+                                  ingredient=pear)
+        p_pear.save()
+        p_carrot = PantryIngredient(expiry_date="2020-07-29", user=jess,
+                                    ingredient=carrot)
+        p_carrot.save()
+        p_tomato = PantryIngredient(expiry_date="2020-07-29", user=jess,
+                                    ingredient=tomato)
+        p_tomato.save()
+
+    # Test that a full match creates a new MetaSearch object with value 0
+    def test_meta_search1(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 0)
+
+    # Test that a full match gets an old MetaSearch object with value 0
+    def test_meta_search2(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 0)
+
+    # Test that no full match creates a new MetaSearch object with value 1
+    def test_meta_search3(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10'
+            '&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 1)
+
+    # Test that no full match update an old MetaSearch object with value + 1
+    def test_meta_search4(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 2)
+
+    # Test that meta search returns highest reference count
+    def test_meta_search5(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=pear&meal=dinner+lunch&diet=vegan&limit=10'
+            '&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=pear&meal=dinner+lunch&diet=vegan&limit=10'
+            '&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 2)
+        self.assertEqual(json.loads(response.content)['search'], 'pear')
+
+    # Test that references cannot go below zero
+    def test_meta_search6(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Create recipe simulating user doing so
+        author = User.objects.get(username='Jess')
+        carrot_rec = Recipe(name="Carrot", cook_time="30 minutes",
+                             method="Carrotty", author=author)
+        carrot_rec.save()
+
+        carrot = Ingredient.objects.get(name="carrot")
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole",
+                                    amount="3", ingredient=carrot,
+                                    recipe=carrot_rec)
+        r_carrot.save()
+
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 0)
+        self.assertEqual(json.loads(response.content)['search'], 'carrot')
+
+    # Test that different running list order does not create new meta
+    # searches for same query
+    def test_meta_search7(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=carrot+potato&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        response = c.get(
+            '/recipes/?ingredients=potato+carrot&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Create recipe simulating user doing so
+        response = c.get('/meta/')
+
+        self.assertEqual(json.loads(response.content)['references'], 2)
+        self.assertEqual(json.loads(response.content)['search'],
+                         'carrot|potato')
+
 
 # class CookbookTest(TestCase):
 #     def setUp(self) -> None:
