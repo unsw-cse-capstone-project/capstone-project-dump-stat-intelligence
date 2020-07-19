@@ -295,7 +295,6 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             return Response(status=401)
 
 
-
 class CookbookViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -314,7 +313,6 @@ class MyRecipesViewSet(viewsets.ModelViewSet):
     serializer_class = RecipeSerializer
 
     def list(self, request, *args, **kwargs):
-        print("We've hit the list function")
         if request.user.is_authenticated:
             queryset = Recipe.objects.filter(author=request.user.id)
             serializer = self.get_serializer(queryset, many=True)
