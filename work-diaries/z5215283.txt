@@ -18,3 +18,4 @@ Week 6
 Start of new sprint this week. For me, that meant a whole lot of new frontend elements to work on. Given it was flex week, I wanted to get as much as possible done. I fully created the cookbook, as well as recipe edit and creation capabilities. I also worked on improving the dynamic nature of a whole bunch of different elements like button interaction and favouriting.
 
 Week 7
+Bit of a quieter week for me. Had done a lot the previous week and got to the point where I needed to wait until some of the frontend was properly linked to the backend. Once some of that was done, I got the asynchronous nature of the logins working, and set up the interaction for looking at and displaying ingredients.  

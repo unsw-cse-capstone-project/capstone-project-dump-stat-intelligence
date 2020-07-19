@@ -69,8 +69,7 @@
   top:4rem;
 }
 
-.querySearch:active .queryBox,
-.querySearch:hover .queryBox {
+.show {
   display:block;
 }
 
@@ -128,4 +127,36 @@
 
 .arrowUp {
   transform:rotate(180deg) !important;
+}
+
+
+.box {
+  background-color:var(--background);
+  padding:2rem;
+  border-radius:2rem;
+  z-index:40;
+}
+
+.tag {
+  cursor: pointer;
+}
+
+.expiryForm {
+  display:flex;
+  overflow: hidden;
+  max-height:0;
+  transition: max-height ease 0.4s;
+  width:100%;
+}
+
+.expiryAlert {
+  padding:0.5rem;
+}
+
+.expiryDelete {
+  padding-top:1rem;
+}
+
+.deleteButton {
+  width:100%;
 }

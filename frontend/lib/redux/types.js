@@ -24,6 +24,7 @@ export const FILTER_CLEAR = 'FILTER_CLEAR'; //set an filter item back to false
 export const PANTRY_GET = 'PANTRY_GET'; //user probably just logged in, retrieve their pantry
 export const PANTRY_ADD = 'PANTRY_ADD'; //add item to pantry
 export const PANTRY_REMOVE = 'PANTRY_REMOVE'; //remove item from pantry
+export const PANTRY_CHANGE = 'PANTRY_CHANGE'; //Update expiry in a pantry ingredient
 
 
 //Ingredient 
@@ -37,6 +38,11 @@ export const SAVE_CREATE = 'SAVE_CREATE'; //save recipe and commit to database
 export const UPDATE_CREATE = 'UPDATE_CREATE'; //update an element of the recipe
 export const CAT_ADD_CREATE = 'CAT_ADD_CREATE'; // add a category to recipe
 export const CAT_REMOVE_CREATE = 'CAT_REMOVE_CREATE'; // remove a category from recipe
+
+//Expiry
+export const CLEAR_EXPIRY = 'CLEAR_EXPIRY'; //Remove expiry info
+export const LOAD_EXPIRY = 'LOAD_EXPIRY'; //Load expiry info
+export const CHANGE_EXPIRY = 'CHANGE_EXPIRY'; //Update expiry date for ingredient 
 
 
 

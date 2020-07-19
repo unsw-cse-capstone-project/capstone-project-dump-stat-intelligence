@@ -27,6 +27,7 @@ AUTH
 
 */
 
+
 //NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
@@ -77,7 +78,6 @@ export const update_details = (username, email, password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
-  console.log(user);
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
 
   let userInfo = {
@@ -91,13 +91,11 @@ export const update_details = (username, email, password) => async (
 };
 
 //NEEDS API
-export const register = (username, email, password) => async (dispatch) => {
-  //INSERT API, register new user with backend
-  console.log("REGISTER EVENT!");
-  UserAPI.register(username, email, password)
-    .then((res) => {
+export const register = (username, email, password) => {
+  return (dispatch) => {
+    return UserAPI.register(username, email, password).then(res => {
       let data = res.data;
-      setUser({ id: data.id, token: data.token });
+      setUser({id : data.id, token : data.token});
 
       dispatch({
         type: types.LOGIN,
@@ -105,11 +103,14 @@ export const register = (username, email, password) => async (dispatch) => {
         uid: data.id,
         token: data.token,
       });
+      return true;
+    }).catch(err => {
+      return false;
     })
-    .catch((err) => {
-      console.error(err);
-    });
-};
+  }
+}
+
+
 
 export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   let user = getUser(); // this also sets the token
@@ -141,27 +142,28 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
     });
 };
 
-export const login = (email, password) => async (dispatch) => {
-  console.log("LOGIN ACTION!");
-  UserAPI.login(email, password)
-    .then((res) => {
+export const login = (email, password) => {
+  return (dispatch) => {
+    return UserAPI.login(email, password)
+    .then(res => {
       let data = res.data;
-
       setUser({ id: data.id, token: data.token });
 
       dispatch({
         type: types.LOGIN,
         userInfo: data,
         uid: data.id,
-        token: data.token,
+        token: data.token
       });
+      return {success : true};
     })
-    .catch((err) => {
-      console.log("redux error");
-      console.error(err);
-      console.error(err.response);
-    });
-};
+    .catch(err => {
+      return {success : false};
+    })
+  }
+}
+
+
 
 export const logout = () => async (dispatch) => {
   UserAPI.logout()

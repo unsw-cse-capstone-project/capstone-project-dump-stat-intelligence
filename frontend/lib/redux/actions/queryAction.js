@@ -22,7 +22,7 @@ export const update_query = (query) => async dispatch => {
     //currently for testing, it just has more options as the string gets longer...
     //prestige bootleg 
     let prac = [
-        {name : "one", category : "meh", expiry : new Date()},
+        {name : "one", category : "meh", expiry : "2020-07-20"},
         {name : "2", category : "meh"},
         {name : "3", category : "meh"},
         {name : "4", category : "meh"},
@@ -30,7 +30,7 @@ export const update_query = (query) => async dispatch => {
         {name : "6", category : "meh"},
         {name : "7", category : "meh"},
         {name : "8", category : "meh"},
-        {name : "real;lysuperlongmassive black hole", category : "meh", expiry : new Date()}
+        {name : "real;lysuperlongmassive black hole", category : "meh"}
     ]
     
     

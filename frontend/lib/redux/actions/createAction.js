@@ -2,6 +2,7 @@ import * as types from "../types";
 
 import store from "../store";
 import RecipeAPI from "../../api/recipe";
+import IngredientAPI from "../../api/ingredient";
 
 /*
 CREATE
@@ -37,8 +38,7 @@ export const remove_category = (name, category) => async (dispatch) => {
 
 //NEEDS API
 export const create_ingredient = (name, category) => {
-  //INSERT API, add ingredient to databse
-  console.log("ADDING ", name, category);
+  IngredientAPI.create({name, category})
 };
 
 //NO API, frontend only
