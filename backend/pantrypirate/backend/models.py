@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Meta data for search queries
 class MetaSearch(models.Model):
     search = models.CharField(max_length=200, primary_key=True)
-    count = models.IntegerField()
+    references = models.IntegerField(default=0)
 
 
 # Name is primary key string

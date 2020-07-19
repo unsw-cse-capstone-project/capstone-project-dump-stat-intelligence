@@ -15,13 +15,13 @@ import json
 
 # View that requests the most commonly searched ingredient queries, maximum 3
 # ingredients
-class MetaSearch(generics.GenericAPIView):
-    queryset = MetaSearch.objects.all().order_by("count")
+class MetaSearchView(generics.ListAPIView):
+    serializer_class = MetaSerializer
 
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            result = MetaSearch.objects.all().aggregate(Max('count'))
-            serializer = self.get_serializer(result, many=True)
+            result = MetaSearch.objects.all().order_by('-references')
+            serializer = self.get_serializer(result[0])
             return Response(serializer.data)
         else:
             return Response(status=401)
@@ -213,23 +213,30 @@ class RecipeViewSet(viewsets.ModelViewSet):
             unordered_results.append(new_dict)
 
         ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
-        
-        # self.update_search(string, full_match=1)
+
+
+        # Update query string based on whether a match has been found
+        full_match = 0
+        if len(ordered_results) > 0 and ordered_results[0]['match_percentage'] \
+                == 1.0:
+            full_match = 1
+        self.update_search(string, full_match=full_match)
 
         return Response(ordered_results)
 
     # Takes boolean for full match and ingredients string from running list
     # input
-    def update_search(self, list_string, full_match=0):
+    def update_search(self, list_string, full_match):
         # Update meta search model for query
-        running_list = sorted(list_string["ingredients"][0].split()).join("|")
+        running_list = sorted(list_string["ingredients"][0].split())
         if len(running_list) <= 3:
+            running_list = '|'.join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
             if not full_match:
-                search.count += 1
-            elif search.count > 1:
-                search.count -= 1
-            search.save()
+                search[0].references += 1
+            elif search[0].references > 0:
+                search[0].references -= 1
+            search[0].save()
 
 
 # Supports create, retrieve, put, list and delete

@@ -18,6 +18,7 @@ urlpatterns = [
     path('user/login/', CustomObtainAuthToken.as_view()),
     path('user/register/', UserCreate.as_view()),
     path('user/logout/', UserLogout.as_view()),
+    path('meta/', MetaSearchView.as_view()),
 
     # Auto routes and API routes
     path('', include(router.urls)),
