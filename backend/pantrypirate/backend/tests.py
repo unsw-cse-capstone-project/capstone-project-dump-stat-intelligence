@@ -1276,3 +1276,150 @@ class SearchTestCase(TestCase):
                             "missing_ing": ["tomato"]}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
+
+
+
+# class CookbookTest(TestCase):
+#     def setUp(self) -> None:
+#         # set up meal categories and dietary requirements
+#         breakfast = MealCategory.objects.create(name="breakfast")
+#         lunch = MealCategory.objects.create(name="lunch")
+#         dessert = MealCategory.objects.create(name="dessert")
+#         vegan = DietaryRequirement.objects.create(name="vegan")
+#         dairy_free = DietaryRequirement.objects.create(name="dairy-free")
+
+#         # set up users
+#         self.c1 = APIClient()
+#         user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
+#         user = self.c1.post('/user/register/', json.dumps(user_data), content_type='application/json')
+#         user_data.pop('email')      
+#         token = self.c1.post('/user/login/', json.dumps(user_data), content_type='application/json')
+#         self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+#         self.c2 = APIClient()
+#         user_data = {'username' : 'reece', 'email' : 'reece@gmail.com', 'password' : '2222'}
+#         user = self.c2.post('/user/register/', json.dumps(user_data), content_type='application/json')
+#         user_data.pop('email')      
+#         token = self.c2.post('/user/login/', json.dumps(user_data), content_type='application/json')
+#         self.c2.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])  
+
+#         self.c3 = APIClient()
+#         user_data = {'username' : 'callum', 'email' : 'callum@gmail.com', 'password' : '3333'}
+#         user = self.c3.post('/user/register/', json.dumps(user_data), content_type='application/json')
+#         user_data.pop('email')  
+#         token = self.c3.post('/user/login/', json.dumps(user_data), content_type='application/json')
+#         self.c3.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+        # # set up recipe
+        # fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=self.jess)
+        # fruit_salad.save()
+        # fruit_salad.meal_cat.add(lunch)
+        # fruit_salad.diet_req.add(vegan)
+        # fruit_salad.diet_req.add(dairy_free)
+
+        # set up recipe ingredients
+    #     fruit = IngredientCategory.objects.create(name="fruit")
+    #     fruit.save()
+
+    #     ingredient = IngredientSerializer(data={"name": "apple", "category": {"name": "fruit"}})
+    #     ingredient.is_valid()
+    #     ingredient.save()
+
+    #     ingredient = IngredientSerializer(data={"name": "pear", "category": {"name": "fruit"}})
+    #     ingredient.is_valid()
+    #     ingredient.save()
+
+    # def test_cookbook(self):
+    #      # enter recipe data
+    #     recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
+    #                     "ingredients":
+    #                        [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+    #                         {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+    #                    "meal_cat": [{"name": "lunch"}], 
+    #                    "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}],
+    #                    "favourites": [{"id" : "2"}, {"id" : "3"}]}
+    #     print("Posting...")
+    #     self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+    #     # login user 2 and view cookbook
+    #     response = self.c2.get('/user/cookbook/')
+    #     print("RESPONSE:", response)
+
+
+
+        # api_client = APIClient()
+        # user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        # token = api_client.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        # api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+        # ingredient_data = {'name': 'potato', 'category': {'name': 'grain'}}
+        # api_client.post('/ingredients/', json.dumps(ingredient_data), content_type='application/json')
+        # ing = api_client.get('/ingredients/potato/')
+        # self.assertGreaterEqual(json.loads(ing.content).items(), ingredient_data.items())
+
+
+
+# Test for create, get, list, delete and put for recipes
+class MyRecipesTest(TestCase):
+    def setUp(self) -> None:
+        # set up meal categories and dietary requirements
+        breakfast = MealCategory.objects.create(name="breakfast")
+        lunch = MealCategory.objects.create(name="lunch")
+        dessert = MealCategory.objects.create(name="dessert")
+        vegan = DietaryRequirement.objects.create(name="vegan")
+        dairy_free = DietaryRequirement.objects.create(name="dairy-free")
+
+        # set up users
+        self.c1 = APIClient()
+        user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
+        user = self.c1.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user_data.pop('email')      
+        token = self.c1.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+        self.c2 = APIClient()
+        user_data = {'username' : 'reece', 'email' : 'reece@gmail.com', 'password' : '2222'}
+        user = self.c2.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user_data.pop('email')      
+        token = self.c2.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        self.c2.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])  
+
+        # set up recipe ingredients
+        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit.save()
+
+        ingredient = IngredientSerializer(data={"name": "apple", "category": {"name": "fruit"}})
+        ingredient.is_valid()
+        ingredient.save()
+
+        ingredient = IngredientSerializer(data={"name": "pear", "category": {"name": "fruit"}})
+        ingredient.is_valid()
+        ingredient.save()
+
+    # Tests that users recipes are correctly returned
+    def test_my_recipes(self):
+        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        post = self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        # get = self.c1.get('/user/myrecipes/')
+
+        # print("GET:", get.data)
+
+        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "2", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        post = self.c2.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        # rec = Recipe.objects.all()
+        # for r in rec:
+        #     print("Recipe author: ", r.author)
+        get = self.c1.get('/user/myrecipes/')
+
+        print("GET:", get.data)
