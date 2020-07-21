@@ -25,9 +25,9 @@ export const update_query = (query) => async dispatch => {
     let match = [];
 
     var i;
-    for(i = 0; i < ingredients.data.count; i++) {
-        if (ingredients.data.results[i].name.startsWith(query))
-            match.push({name: ingredients.data.results[i].name});
+    for(i = 0; i < ingredients.data.length; i++) {
+        if (ingredients.data[i].name.startsWith(query))
+            match.push({name: ingredients.data[i].name});
     }
 
     dispatch({
