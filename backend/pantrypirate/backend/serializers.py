@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
 
 
 class MetaSerializer(serializers.ModelSerializer):
@@ -62,7 +62,7 @@ class MealCatSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
 # Requires a unique string to make, will return said string
@@ -70,7 +70,7 @@ class DietReqSerializer(serializers.ModelSerializer):
     class Meta:
         model = DietaryRequirement
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
 # Currently not used or implemented ## Ignore for now ##
@@ -85,7 +85,7 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
 # Serialiser for ingredient, creation requires category object currently (

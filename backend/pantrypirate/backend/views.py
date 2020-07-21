@@ -235,7 +235,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if not full_match:
                 search[0].references += 1
             elif search[0].references > 0:
-                search[0].references -= 1
+                search[0].references = 0
             search[0].save()
 
 

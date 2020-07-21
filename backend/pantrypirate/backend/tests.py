@@ -329,6 +329,15 @@ class UserTestCase(TestCase):
                                 test_data2.items())
 
 
+class IngredientCategoryTest(TestCase):
+    # Test that ingredient categories can contain spaces
+    def test_create_ingredient_category(self):
+        _ = IngredientCategory.objects.create(name='spices and seasoning')
+        cat = IngredientCategory.objects.filter(name='spices and seasoning')
+        if not cat:
+            self.assertIsNone(1)
+
+
 # Tests for ingredient create, retrieve, list, delete and put
 class IngredientTest(TestCase):
     def setUp(self) -> None:
@@ -1598,7 +1607,6 @@ class MetaSearchTestCase(TestCase):
         self.assertEqual(json.loads(response.content)['references'], 2)
         self.assertEqual(json.loads(response.content)['search'],
                          'carrot|potato')
-
 
 
 # Tests for displaying a user's added recipes
