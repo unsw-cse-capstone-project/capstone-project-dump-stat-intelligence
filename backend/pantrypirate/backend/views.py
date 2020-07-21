@@ -296,17 +296,31 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             return Response(status=401)
 
 
-# class CookbookViewSet(viewsets.ModelViewSet):
-#     queryset = Recipe.objects.all()
-#     serializer_class = RecipeSerializer
+class CookbookViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
 
-#     def list(self, request, *args, **kwargs):
-#         if request.user.is_authenticated:
-#             queryset = Recipe.objects.filter(favourites__pk=request.user.id)
-#             serializer = self.get_serializer(queryset, many=True)
-#             return Response(serializer.data)
-#         else:
-#             return Response(Http404)
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            queryset = Recipe.objects.filter(favourites=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(401)
+
+    def post(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = User.objects.get(request.user.id)
+            user.favourites.add(request.data['id'])
+        else:
+            return Response(401)
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = User.objects.get(request.user.id)
+            user.favourites.remove(request.data['id'])
+
+
 
 
 class MyRecipesViewSet(viewsets.ModelViewSet):

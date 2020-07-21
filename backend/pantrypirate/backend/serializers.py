@@ -77,7 +77,10 @@ class DietReqSerializer(serializers.ModelSerializer):
 class FavouritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "recipe"]
+        fields = ["id", "favourites"]
+
+    def update(self, instance, validated_data):
+        instance.favourites = validated_data('id')
 
 
 # Requires a unique string to make, will return said string
