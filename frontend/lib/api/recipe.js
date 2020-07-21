@@ -19,6 +19,9 @@ const RecipeAPI = {
     return await api.put(`/recipes/${id}`, recipe);
   },
   delete: async (id) => api.delete(`/recipes/${id}/`),
+  discover: async () => {
+    return await api.get('/meta/');
+  }
 };
 
 export default RecipeAPI;
