@@ -61,3 +61,8 @@ Worked on implementing a meta data model for running list search queries
 to facilitate suggesting ingredients missing recipes. Heavily updated 
 the test suite and made it far more readable for others to use (they act 
 as API examples).
+
+Week 8
+
+Updated meal categories, dietary requirements and ingredient categories 
+to allow space in names.
