@@ -9,7 +9,23 @@ from .models import *
 from rest_framework.views import Response, Http404
 import urllib.parse
 from django.contrib.auth import authenticate
+from django.db.models import Max
 import json
+
+
+# View that requests the most commonly searched ingredient queries, maximum 3
+# ingredients
+class MetaSearchView(generics.ListAPIView):
+    serializer_class = MetaSerializer
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            result = MetaSearch.objects.all().order_by('-references')
+            serializer = self.get_serializer(result[0])
+            return Response(serializer.data)
+        else:
+            return Response(status=401)
+
 
 
 # Custom token authentication to allow the id to be returned alongside the token
@@ -86,7 +102,7 @@ class UserCreate(generics.CreateAPIView):
                 data = serializer.data
                 data['token'] = token.key
                 return Response(data=data)
-        return Response(serializer.errors, status=404)
+        return Response(serializer.errors, status=403)
 
 
 # Removes the authentication token from the user, logging them out
@@ -117,8 +133,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     # Search for recipes given the running list input and filters
     def list(self, request, *args, **kwargs):
-        # looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
-        # print(request.GET.get('meal'))
+        # query string looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
 
         # Parse the query string
         string = urllib.parse.parse_qs(request.META["QUERY_STRING"], keep_blank_values=True)
@@ -173,12 +188,55 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # remove duplicates
         f = f.distinct()
 
-        # return list of matching recipe names
-        match = []
-        for rec in f:
-            match.append(rec.name)
+        # return matching recipes with the ingredients each recipe is missing
+        # recipes returned in descending order of match %
+        # then alphabetically
+        # return looks like:
+        #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
+        #    {"recipe2" : ...}]
+        f = f.order_by("name")
+        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
+        unordered_results = []
 
-        return Response(match)
+        for rec in recipe_list:
+            matching_ingredients = 0
+            missing_ingredients = []
+
+            for ing in Recipe.objects.get(pk=rec['id']).ingredients.all():
+                if ing.ingredient.name in running_list:
+                    matching_ingredients += 1
+                else:
+                    missing_ingredients.append(ing.ingredient.name)
+
+            match_percentage = matching_ingredients / len(Recipe.objects.get(pk=rec['id']).ingredients.all())
+            new_dict = {"recipe" : rec, "match_percentage" : match_percentage, "missing_ing" : missing_ingredients}
+            unordered_results.append(new_dict)
+
+        ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
+
+
+        # Update query string based on whether a match has been found
+        full_match = 0
+        if len(ordered_results) > 0 and ordered_results[0]['match_percentage'] \
+                == 1.0:
+            full_match = 1
+        self.update_search(string, full_match=full_match)
+
+        return Response(ordered_results)
+
+    # Takes boolean for full match and ingredients string from running list
+    # input
+    def update_search(self, list_string, full_match):
+        # Update meta search model for query
+        running_list = sorted(list_string["ingredients"][0].split())
+        if len(running_list) <= 3:
+            running_list = '|'.join(running_list)
+            search = MetaSearch.objects.get_or_create(search=running_list)
+            if not full_match:
+                search[0].references += 1
+            elif search[0].references > 0:
+                search[0].references -= 1
+            search[0].save()
 
 
 # Supports create, retrieve, put, list and delete
@@ -235,3 +293,29 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
                                                   **kwargs)
         else:
             return Response(status=401)
+
+
+# class CookbookViewSet(viewsets.ModelViewSet):
+#     queryset = Recipe.objects.all()
+#     serializer_class = RecipeSerializer
+
+#     def list(self, request, *args, **kwargs):
+#         if request.user.is_authenticated:
+#             queryset = Recipe.objects.filter(favourites__pk=request.user.id)
+#             serializer = self.get_serializer(queryset, many=True)
+#             return Response(serializer.data)
+#         else:
+#             return Response(Http404)
+
+
+class MyRecipesViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            queryset = Recipe.objects.filter(author=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(Http404)

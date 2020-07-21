@@ -5,6 +5,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
+class MetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetaSearch
+        fields = ["search", "references"]
+        order_by = ["references"]
+
+
 # Django authentication model for user, no corresponding model in the
 # models.py file as it is by constructed by default. Has several
 # corresponding methods attached to it which make authentication easy
@@ -70,7 +77,7 @@ class DietReqSerializer(serializers.ModelSerializer):
 class FavouritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username"]
+        fields = ["id", "recipe"]
 
 
 # Requires a unique string to make, will return said string
@@ -158,17 +165,21 @@ class RecipeSerializer(serializers.ModelSerializer):
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
         recipe = Recipe.objects.create(**validated_data)
+
         for diet_data in diet_req:
             cat = DietaryRequirement.objects.get(name=diet_data.get("name"))
             recipe.diet_req.add(cat)
+
         for cat_data in meal_cat:
             cat = MealCategory.objects.get(name=cat_data.get("name"))
             recipe.meal_cat.add(cat)
+
         for ing_data in recipe_ing_data:
             ing_data["recipe"] = recipe
             ing_data["ingredient"] = Ingredient.objects.get(
                 name=ing_data.get("ingredient")
             )
+
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)
 
@@ -244,4 +255,5 @@ class PantryIngredientSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response["ingredient"] = IngredientSerializer(instance.ingredient).data
         response["user"] = UserSerializer(instance.user).data
+        response["user"].pop('favourites')
         return response

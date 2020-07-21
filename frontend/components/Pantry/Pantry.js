@@ -45,11 +45,11 @@ export default function Pantry() {
       
       <div id="pantry-head" onClick={() => toggleIt("pantry")} className={`${styles.header}`}><div className={styles.title}>The pantry.</div><Arrow name="pantry-icon" /></div>
       
-      <IngredientSearch searcher={searchId} />
+      <IngredientSearch id={"pantry-query"} searcher={searchId} />
       <div id="pantry-box" className={styles.drawer}>
         <br/>
         <form autoComplete="off">
-          <div className={`control ${styles.querySearch}`}>
+          <div onFocus={() => document.getElementById("pantry-query").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("pantry-query").classList.remove(styles.show), 200)} className={`control ${styles.querySearch}`}>
             <input
               id={searchId}
               name="search"
@@ -70,6 +70,7 @@ export default function Pantry() {
                       <PantryIngredient
                         func={remove}
                         idx={j}
+                        key={j}
                         ingredient={ingredient.name}
                         category={category}
                         expiry={ingredient.expiry}
@@ -102,7 +103,7 @@ export default function Pantry() {
         : 
           <div className={styles.raidBox}>
             <br/>
-            <form onSubmit={(event) => {event.preventDefault(); dispatch(explore_add(event.target.elements.choice.value));}} autocomplete="false">
+            <form onSubmit={(event) => {event.preventDefault(); dispatch(explore_add(event.target.elements.choice.value));}} autoComplete="false">
               <div className="control">
                 <label className="label">Choose an ingredient to cook with</label>
                 <div className={`field is-grouped ${styles.formCon}`}>
@@ -143,6 +144,7 @@ export default function Pantry() {
                 {chosen.map((ingredient, idx) => (
                   <PantryIngredient
                     idx={idx}
+                    del={true}
                     func={explore_remove}
                     ingredient={ingredient}
                   />
