@@ -242,6 +242,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 # Supports create, retrieve, put, list and delete
 # Refer to serialiser or test for format
 class IngredientViewSet(viewsets.ModelViewSet):
+    pagination_class = None
     permission_classes = (IsAuthenticated,)
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
