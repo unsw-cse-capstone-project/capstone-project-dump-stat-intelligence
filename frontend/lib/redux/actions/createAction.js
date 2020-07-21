@@ -36,7 +36,6 @@ export const remove_category = (name, category) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const create_ingredient = (name, category) => {
   IngredientAPI.create({name, category})
 };
