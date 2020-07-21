@@ -20,15 +20,21 @@ export const update_query = (query) => async dispatch => {
 
     //INSERT API, take query param and turn into list of possible ingredients
     
+    console.log('here')
+
     const ingredients = await IngredientAPI.getAll();
+
+    console.log(ingredients)
 
     let match = [];
 
     var i;
-    for(i = 0; i < ingredients.data.count; i++) {
-        if (ingredients.data.results[i].name.startsWith(query))
-            match.push({name: ingredients.data.results[i].name});
+    for(i = 0; i < ingredients.data.length; i++) {
+        if (ingredients.data[i].name.startsWith(query))
+            match.push({name: ingredients.data[i].name});
     }
+
+    console.log(ingredients.data, match)
 
     dispatch({
         type : types.QUERY,
