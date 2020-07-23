@@ -9,10 +9,11 @@ import Searcher from "./Searcher";
 
 export default function IngredientEdit() {
   const dispatch = useDispatch();
+  const searchId = "searcher";
   const initalIngredient = {
     name: "ingredient",
     category: "",
-    qty: 0,
+    qty: null,
     adj: "",
     unit: "",
   };
@@ -55,11 +56,21 @@ export default function IngredientEdit() {
         },
       };
       dispatch(add_ingredient(newIngred));
+      clearIng();
     }
   }
 
+  function clearIng() {
+    let box = document.getElementById("ing-edit-form");
+    box.elements.qty.value = null;    
+    box.elements.adj.value = "";
+    box.elements.unit.value = "";
+    document.getElementById(searchId).value = "";
+    setNewOne({...initalIngredient});
+  }
+
   let ingredients = useSelector((state) => state.create.ingredients);
-  let searchId = "searcher";
+  
   return (
     <div>
       <div className="tags">
@@ -94,7 +105,7 @@ export default function IngredientEdit() {
         <Searcher searcher={searchId} func={fillIngredient} />
       </div>
 
-      <form onSubmit={addIngredient} autoComplete="false">
+      <form id="ing-edit-form" onSubmit={addIngredient} autoComplete="false">
         <div className="control">
           <div className="field control">
             <input
@@ -133,10 +144,7 @@ export default function IngredientEdit() {
           </div>
           <div className="field control">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                setNewOne(initalIngredient);
-              }}
+              onClick={(e) => {e.preventDefault(); clearIng();}}
               style={{ width: "100%" }}
               className="button"
             >
@@ -147,7 +155,7 @@ export default function IngredientEdit() {
             <label className="label">Preview</label>
             <div className="tags">
               <span className={`tag ${styles.wideTag}`}>
-                {`${newOne.qty === 0 ? "" : newOne.qty} ${
+                {`${newOne.qty === null ? "" : newOne.qty} ${
                   newOne.unit === "" ? "" : newOne.unit
                 } ${newOne.adj === "" ? "" : newOne.adj} ${newOne.name}`}
               </span>

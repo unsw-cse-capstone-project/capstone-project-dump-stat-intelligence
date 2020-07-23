@@ -18,10 +18,14 @@ export const clear_expiry = () => async (dispatch) => {
     })
 }
 
+
+
 //NEEDS API
 export const change_expiry = (expiry) => async (dispatch) => {
     let ingredient = store.getState().expiry;
-    //INSERT API, TELL BACKEND TO UPDATE INGREDIENT
+    // INSERT API, TELL BACKEND TO UPDATE INGREDIENT
+    // /user/pantry/<id>
+    // user, expiry_date, name (ingredient primary key) 
     
     dispatch({
         type : types.CHANGE_EXPIRY,
