@@ -74,6 +74,12 @@ export const update_create = (category, newVal) => async (dispatch) => {
 //NEEDS API
 export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
+  let tmp;
+  let i;
+  for(i=0; i < recipe.ingredients.length; i++) {
+    tmp = recipe.ingredients[i]["ingredient"]["name"]
+    recipe.ingredients[i]["ingredient"] = tmp
+  }
   let user = store.getState().auth;
 
   RecipeAPI.create({ ...recipe, author: user.uid })
