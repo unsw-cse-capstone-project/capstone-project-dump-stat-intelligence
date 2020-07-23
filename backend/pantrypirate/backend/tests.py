@@ -344,6 +344,7 @@ class IngredientTest(TestCase):
         # Create ingredient categories to allow ingredient creation
         _ = IngredientCategory.objects.create(name='grain')
         _ = IngredientCategory.objects.create(name='vegetable')
+        _ = IngredientCategory.objects.create(name='not vegetable')
 
         # Create user for testing purposes
         api_client = APIClient()
@@ -384,6 +385,29 @@ class IngredientTest(TestCase):
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
         ingredient_data = {'name': 'potato', 'category': {'name':
                                                               'not_grain'}}
+
+        # Log in and authorise user
+        token = api_client.post('/user/login/', json.dumps(user_data),
+               content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to create ingredient and verify the return is correct
+        ing = api_client.post('/ingredients/', json.dumps(ingredient_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(ing.content).items(),
+                                ingredient_data.items())
+
+    # Test that a new ingredient can be made with an old category with a
+    # space in it
+    def test_create_ingredient3(self):
+        # Create testing client
+        api_client = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob'}
+        ingredient_data = {'name': 'potato', 'category': {'name':
+                                                              'not vegetable'}}
 
         # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
@@ -1183,7 +1207,9 @@ class SearchTestCase(TestCase):
     def test_search1(self):
         c = Client()
 
-        response = c.get('/recipes/?ingredients=apple+pear+carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+        response = c.get('/recipes/?ingredients=apple,'
+                         'pear,'
+                         'carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
                          content_type="application/json")
 
         expected_response = [{"recipe": 
@@ -1253,7 +1279,8 @@ class SearchTestCase(TestCase):
     def test_search3(self):
         c = Client()
 
-        response = c.get('/recipes/?ingredients=apple+carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+        response = c.get('/recipes/?ingredients=apple,'
+                         'carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
                          content_type="application/json")
 
         expected_response = [{"recipe": 
@@ -1408,7 +1435,7 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '/recipes/?ingredients=apple,carrot&meal=dinner+lunch&diet=vegan'
             '&limit=10&offset=0/',
             content_type="application/json")
 
@@ -1416,6 +1443,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 0)
+        self.assertEqual(json.loads(response.content)['search'], 'apple|carrot')
 
     # Test that a full match gets an old MetaSearch object with value 0
     def test_meta_search2(self):
@@ -1434,12 +1462,12 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '/recipes/?ingredients=apple,carrot&meal=dinner+lunch&diet=vegan'
             '&limit=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=apple+carrot&meal=dinner+lunch&diet=vegan'
+            '/recipes/?ingredients=apple,carrot&meal=dinner+lunch&diet=vegan'
             '&limit=10&offset=0/',
             content_type="application/json")
 
@@ -1447,6 +1475,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 0)
+        self.assertEqual(json.loads(response.content)['search'], 'apple|carrot')
 
     # Test that no full match creates a new MetaSearch object with value 1
     def test_meta_search3(self):
@@ -1473,6 +1502,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 1)
+        self.assertEqual(json.loads(response.content)['search'], 'carrot')
 
     # Test that no full match update an old MetaSearch object with value + 1
     def test_meta_search4(self):
@@ -1502,6 +1532,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 2)
+        self.assertEqual(json.loads(response.content)['search'], 'carrot')
 
     # Test that meta search returns highest reference count
     def test_meta_search5(self):
@@ -1603,12 +1634,12 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=carrot+potato&meal=dinner+lunch&diet=vegan'
+            '/recipes/?ingredients=carrot,potato&meal=dinner+lunch&diet=vegan'
             '&limit=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=potato+carrot&meal=dinner+lunch&diet=vegan'
+            '/recipes/?ingredients=potato,carrot&meal=dinner+lunch&diet=vegan'
             '&limit=10&offset=0/',
             content_type="application/json")
 
@@ -1618,6 +1649,34 @@ class MetaSearchTestCase(TestCase):
         self.assertEqual(json.loads(response.content)['references'], 2)
         self.assertEqual(json.loads(response.content)['search'],
                          'carrot|potato')
+
+    # Test that an empty string in query is ignored
+    def test_meta_search8(self):
+        # Create testing client
+        c = APIClient()
+
+        # Data for the account and testing
+        user_data = {'username' : 'Bob', 'password' : 'Bob', 'email':
+            'Bob@gmail.com'}
+
+        # Log in and authorise user
+        token = c.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        c.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to get some recipes
+        response = c.get(
+            '/recipes/?ingredients=&meal=dinner+lunch&diet=vegan'
+            '&limit=10&offset=0/',
+            content_type="application/json")
+
+        # Verify that the metadata was updated appropriately
+        response = c.get('/meta/')
+
+        print(response.content)
+
+        self.assertEqual(json.loads(response.content)['references'], 0)
 
 
 # Tests for displaying a user's added recipes

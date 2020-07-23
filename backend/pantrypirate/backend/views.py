@@ -21,6 +21,9 @@ class MetaSearchView(generics.ListAPIView):
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             result = MetaSearch.objects.all().order_by("-references")
+            if not result:
+                return Response(data={'search': 'No searches have been made '
+                                                'yet', 'references': 0})
             serializer = self.get_serializer(result[0])
             return Response(serializer.data)
         else:
@@ -237,8 +240,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     # input
     def update_search(self, list_string, full_match):
         # Update meta search model for query
-        running_list = sorted(list_string["ingredients"][0].split())
-        if len(running_list) <= 3:
+        running_list = sorted(list_string["ingredients"][0].split(","))
+        if 3 >= len(running_list) and '' not in running_list:
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
             if not full_match:
