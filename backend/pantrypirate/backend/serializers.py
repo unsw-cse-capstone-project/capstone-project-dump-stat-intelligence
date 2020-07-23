@@ -186,7 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         for ing_data in recipe_ing_data:
             ing_data["recipe"] = recipe
-            ing_data["ingredient"] = Ingredient.objects.get(name=ing_data.get("ingredient")).pk
+            ing_data["ingredient"] = Ingredient.objects.get(name=ing_data.get("ingredient"))
 
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)
