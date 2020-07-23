@@ -44,9 +44,25 @@ Implemented filters for dietary requirements and meal types, worked with Michael
 backend code to work better with Rest API, reviewed the changes. Wrote some test data for the demo on Friday, and made up a set of demo requests in Postman
 as our backend and frontend are not currently fully linked.
 
-Demonstrated the backend functionality in Postman for the first sprint during the demo. After the demo, we had our retrospective and I cleaned up and 
-submitted the document.
+Demonstrated the backend functionality in Postman for the first sprint during the demo. After the demo, we had our retrospective.
 
 WEEK 6:
 
-Started off by adding subtasks under user stories in Jira, as discussed in our retrospective and first weekly meeting.
+Started off by adding subtasks under user stories in Jira, as discussed in our retrospective and first weekly meeting. Made sure subtasks were present
+for frontend, backend and integration tasks.
+
+Cleaned up and submitted retrospective A document. Didn't do much coding this week due to personal commitments.
+
+WEEK 7:
+
+Updated search function (list function in recipe viewset) to calculate how many ingredients from the running list match in each recipe as a percentage.
+Search returns recipes in decreasing order of match percentage, as well as the missing ingredients for each recipe.
+
+Started working on viewsets and serialisers for my recipes and cookbook, but had some trouble understanding the refactored backend code so asked Rohan
+for some guidance.
+
+WEEK 8:
+
+Implemented and tested views for 'my recipes' (user's added recipes) and 'cookbook' (user's favourited recipes).
+
+Extended search to also return a suggested ingredient for the running list based on missing ingredients from partially matching recipes.
