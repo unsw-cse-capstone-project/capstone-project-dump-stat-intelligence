@@ -152,6 +152,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "cook_time",
             "method",
             "author",
+            "image_URL",
             "meal_cat",
             "diet_req",
             "ingredients",
@@ -198,6 +199,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.cook_time = validated_data.get("cook_time", instance.cook_time)
         instance.method = validated_data.get("method", instance.method)
         instance.author = validated_data.get("author", instance.author)
+        instance.image_URL = validated_data.get("image_URL", instance.image_URL)
 
         # Remove ingredients that currently exist
         instance.diet_req.clear()

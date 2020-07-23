@@ -321,8 +321,6 @@ class CookbookViewSet(viewsets.ModelViewSet):
             user.favourites.remove(request.data['id'])
 
 
-
-
 class MyRecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
