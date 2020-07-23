@@ -28,8 +28,6 @@ export const recipes_update = () => async (dispatch) => {
   let explore = store.getState().explore;
 
   // TODO: use .get(searchParams) to take into account explore parameters
-  console.log("[Recipes Update]");
-  console.log(explore);
 
   let ingredientStr = explore.ingredients.join(",");
 
@@ -47,13 +45,12 @@ export const recipes_update = () => async (dispatch) => {
   // TODO: backend has changed format to now have match_percentage
   // going to just extract recipes for now
   const recipes = await RecipeAPI.getAll(mealStr, dietStr, ingredientStr);
-
+  console.log(recipes)
   let extractedRecipes = [];
   recipes.data.forEach((r) => {
     extractedRecipes.push(r.recipe);
   });
 
-  console.log("got:", recipes);
   dispatch({
     type: types.RECIPES_UPDATE,
     recipes: extractedRecipes,

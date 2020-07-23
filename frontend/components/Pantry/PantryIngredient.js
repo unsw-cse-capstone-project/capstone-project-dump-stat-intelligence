@@ -20,8 +20,10 @@ export default function PantryIngredient(props) {
     }
 
     function openEdit() {
-        document.getElementById("expiry-edit").classList.toggle("is-active");
-        dispatch(load_expiry(props.ingredient, props.category, props.expiry));
+        if (!props.del) {
+            document.getElementById("expiry-edit").classList.toggle("is-active");
+            dispatch(load_expiry(props.ingredient, props.category, props.expiry));
+        }
     }
 
     return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"} ${styles.tag}`}>

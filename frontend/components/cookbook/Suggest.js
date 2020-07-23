@@ -17,7 +17,14 @@ export default function Suggest() {
 
     useEffect(() => {
         RecipeAPI.discover()
-        .then(res => console.log(res))
+        .then(res => {
+            let ings = res.data.search.split(",");
+            for (let i = 0; i < ings.length; i++) {
+                ings[i] = ings[i].split("|").join(" ")
+            }
+            setIngredients(ings)
+
+        })
         .catch(err => console.log(err))
     }, [])
 
