@@ -19,34 +19,6 @@ export default function Explore() {
     dispatch(recipes_update());
   }, []);
 
-  const getFilteredRecipes = () => {
-    let filtereds = recipes.filter((r) => {
-      for (let meal of Object.keys(filter.meal)) {
-        if (filter.meal[meal]) {
-          if (r.meal_cat.filter((m) => meal == m.name).length == 0) {
-            return false;
-          }
-        }
-      }
-
-      for (let diet of Object.keys(filter.diet)) {
-        if (filter.diet[diet]) {
-          if (r.diet_req.filter((d) => diet == d.name).length == 0) {
-            return false;
-          }
-        }
-      }
-
-      return true;
-    });
-
-    return filtereds;
-  };
-
-  // NOTE: unsure where filtering should really be happening?
-  // Should it happen here or in the actual redux store?
-  // Going to do it here for now
-
   return (
     <>
       <Head>
