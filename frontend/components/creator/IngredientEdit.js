@@ -91,7 +91,7 @@ export default function IngredientEdit() {
         </div>
       )}
 
-      <div className={`field control ${styles.querySearch}`}>
+      <div onFocus={() => document.getElementById("create-search-results").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("create-search-results").classList.remove(styles.show), 200)} className={`field control ${styles.querySearch}`}>
         <input
           onChange={(event) => {
             event.preventDefault();
@@ -102,7 +102,7 @@ export default function IngredientEdit() {
           className="input"
           placeholder="Search item"
         />
-        <Searcher searcher={searchId} func={fillIngredient} />
+        <Searcher id={"create-search-results"} searcher={searchId} func={fillIngredient} />
       </div>
 
       <form id="ing-edit-form" onSubmit={addIngredient} autoComplete="false">
