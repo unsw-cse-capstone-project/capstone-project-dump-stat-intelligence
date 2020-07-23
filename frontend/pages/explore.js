@@ -19,11 +19,6 @@ export default function Explore() {
     dispatch(recipes_update());
   }, []);
 
-  // Reruns on every re-render
-  React.useEffect(() => {
-    // setFilteredRecipes(getFilteredRecipes());
-  });
-
   const getFilteredRecipes = () => {
     let filtereds = recipes.filter((r) => {
       for (let meal of Object.keys(filter.meal)) {
@@ -63,7 +58,7 @@ export default function Explore() {
         <Filter />
         <div className="columns is-multiline">
           {recipes ? (
-            getFilteredRecipes().map((recipe, idx) => (
+            recipes.map((recipe, idx) => (
               <div key={idx} className="column is-3">
                 <RecipeCard
                   className="column is-3"
