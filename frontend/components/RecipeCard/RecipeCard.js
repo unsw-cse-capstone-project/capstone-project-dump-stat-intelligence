@@ -24,8 +24,10 @@ export default function RecipeCard(props) {
           </p>
           <Indicator value={props.recipe.ingredients.length}>
             <ul>
-              {props.recipe.ingredients.forEach((ingredient, idx) => (
-                <li key={idx}>{ingredient}</li>
+              {props.recipe.ingredients.map((ingredient, idx) => (
+                    <li key={idx}>
+                      {ingredient.ingredient.name}
+                    </li>
               ))}
             </ul>
           </Indicator>
