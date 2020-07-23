@@ -20,20 +20,19 @@ class MetaSearchView(generics.ListAPIView):
 
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            result = MetaSearch.objects.all().order_by('-references')
+            result = MetaSearch.objects.all().order_by("-references")
             serializer = self.get_serializer(result[0])
             return Response(serializer.data)
         else:
             return Response(status=401)
 
 
-
 # Custom token authentication to allow the id to be returned alongside the token
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+        token = Token.objects.get(key=response.data["token"])
+        return Response({"token": token.key, "id": token.user_id})
 
 
 # Allows updating of the user accounts, can get a list of all users
@@ -53,30 +52,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
     # Make deletion only compatible for our account
     def destroy(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).destroy(request, *args,
-                                                  **kwargs)
+            return super(UserViewSet, self).destroy(request, *args, **kwargs)
         else:
             return Response(status=401)
 
     # Make partial_update
     def partial_update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).partial_update(request, *args,
-                                                    **kwargs)
+            return super(UserViewSet, self).partial_update(request, *args, **kwargs)
         else:
             return Response(status=401)
 
     def update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).update(request, *args,
-                                                  **kwargs)
+            return super(UserViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
 
@@ -96,11 +89,12 @@ class UserCreate(generics.CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
             if user:
-                authenticate(username=request.data['username'],
-                             password=request.data['password'])
+                authenticate(
+                    username=request.data["username"], password=request.data["password"]
+                )
                 token, created = Token.objects.get_or_create(user=user)
                 data = serializer.data
-                data['token'] = token.key
+                data["token"] = token.key
                 return Response(data=data)
         return Response(serializer.errors, status=403)
 
@@ -136,7 +130,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # query string looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
 
         # Parse the query string
-        string = urllib.parse.parse_qs(request.META["QUERY_STRING"], keep_blank_values=True)
+        string = urllib.parse.parse_qs(
+            request.META["QUERY_STRING"], keep_blank_values=True
+        )
 
         # If the query string does not exist, order by name and return
         if not string:
@@ -150,13 +146,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if ingredients were provided, if so filter based on matching,
         # otherwise take all recipes
-        if string.get("ingredients")[0] is not '' or None:
-            running_list = string["ingredients"][0].split(',')
+        if string.get("ingredients")[0] is not "" or None:
+            running_list = string["ingredients"][0].split(",")
 
             # For each ingredient, add recipes that contain it to the queryset
             for item in running_list:
                 ingredient = Ingredient.objects.get(pk=item)
-                for rec_ingredient in RecipeIngredient.objects.filter(ingredient=ingredient):
+                for rec_ingredient in RecipeIngredient.objects.filter(
+                    ingredient=ingredient
+                ):
                     name = rec_ingredient.recipe
                     recipes |= Recipe.objects.filter(name=name)
         else:
@@ -168,7 +166,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if dietary requirements were provided, if so filter based on
         # matching
-        if string.get("diet") is not '' or None:
+        if string.get("diet") is not "" or None:
             diets = string["diet"][0].split()
 
             # Filter the queryset by dietary requirement (AND relationship)
@@ -177,14 +175,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     f = f.filter(diet_req__pk=requirement)
 
         # Check if meal categories were provided, if so filter based on matching
-        if string.get("meal") is not '' or None:
+        if string.get("meal") is not "" or None:
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
-                e = Recipe.objects.none()  # need an empty set to build OR relationship from
+                e = (
+                    Recipe.objects.none()
+                )  # need an empty set to build OR relationship from
                 for category in meals:
                     e |= f.filter(meal_cat__pk=category)
-                f = e   # rename back to f
+                f = e  # rename back to f
 
         # remove duplicates
         f = f.distinct()
@@ -196,30 +196,38 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
         #    {"recipe2" : ...}]
         f = f.order_by("name")
-        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
+        recipe_list = self.get_serializer(
+            f, many=True
+        ).data  # serialise so that recipe info can be returned later
         unordered_results = []
 
         for rec in recipe_list:
             matching_ingredients = 0
             missing_ingredients = []
 
-            for ing in Recipe.objects.get(pk=rec['id']).ingredients.all():
+            for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
                 else:
                     missing_ingredients.append(ing.ingredient.name)
 
-            match_percentage = matching_ingredients / len(Recipe.objects.get(pk=rec['id']).ingredients.all())
-            new_dict = {"recipe" : rec, "match_percentage" : match_percentage, "missing_ing" : missing_ingredients}
+            match_percentage = matching_ingredients / len(
+                Recipe.objects.get(pk=rec["id"]).ingredients.all()
+            )
+            new_dict = {
+                "recipe": rec,
+                "match_percentage": match_percentage,
+                "missing_ing": missing_ingredients,
+            }
             unordered_results.append(new_dict)
 
-        ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
-
+        ordered_results = sorted(
+            unordered_results, key=lambda k: k["match_percentage"], reverse=True
+        )
 
         # Update query string based on whether a match has been found
         full_match = 0
-        if len(ordered_results) > 0 and ordered_results[0]['match_percentage'] \
-                == 1.0:
+        if len(ordered_results) > 0 and ordered_results[0]["match_percentage"] == 1.0:
             full_match = 1
         self.update_search(string, full_match=full_match)
 
@@ -231,7 +239,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # Update meta search model for query
         running_list = sorted(list_string["ingredients"][0].split())
         if len(running_list) <= 3:
-            running_list = '|'.join(running_list)
+            running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
             if not full_match:
                 search[0].references += 1
@@ -269,30 +277,28 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
     # Make deletion only compatible for our account
     def destroy(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).destroy(request, *args,
-                                                  **kwargs)
+            return super(PantryIngredientViewSet, self).destroy(
+                request, *args, **kwargs
+            )
         else:
             return Response(status=401)
 
     # Make partial_update
     def partial_update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).partial_update(request, *args,
-                                                    **kwargs)
+            return super(PantryIngredientViewSet, self).partial_update(
+                request, *args, **kwargs
+            )
         else:
             return Response(status=401)
 
     def update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).update(request, *args,
-                                                  **kwargs)
+            return super(PantryIngredientViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
 
@@ -312,7 +318,7 @@ class CookbookViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.id)
-            user.favourites.add(request.data['id'])
+            user.favourites.add(request.data["id"])
             return Response(200)
         else:
             return Response(401)
@@ -320,7 +326,9 @@ class CookbookViewSet(viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.id)
-            recipe_id = int([i for i in str(request.META['PATH_INFO']).split('/') if i][-1])
+            recipe_id = int(
+                [i for i in str(request.META["PATH_INFO"]).split("/") if i][-1]
+            )
             user.favourites.remove(recipe_id)
             return Response(200)
         else:

@@ -28,11 +28,34 @@ export const recipes_update = () => async (dispatch) => {
   let explore = store.getState().explore;
 
   // TODO: use .get(searchParams) to take into account explore parameters
+  console.log("[Recipes Update]");
+  console.log(explore);
+
+  let ingredientStr = explore.ingredients.join(",");
+
+  let mealCats = Object.keys(explore.filters.meal)
+    .filter((key) => explore.filters.meal[key])
+    .join("+");
+  let mealStr = mealCats.length > 0 ? mealCats : "";
+
+  let dietCats = Object.keys(explore.filters.diet)
+    .filter((key) => explore.filters.diet[key])
+    .join("+");
+  let dietStr = dietCats.length > 0 ? dietCats : "";
 
   // get all recipes
-  const recipes = await RecipeAPI.getAll();
+  // TODO: backend has changed format to now have match_percentage
+  // going to just extract recipes for now
+  const recipes = await RecipeAPI.getAll(mealStr, dietStr, ingredientStr);
+
+  let extractedRecipes = [];
+  recipes.data.forEach((r) => {
+    extractedRecipes.push(r.recipe);
+  });
+
+  console.log("got:", recipes);
   dispatch({
     type: types.RECIPES_UPDATE,
-    recipes: recipes.data,
+    recipes: extractedRecipes,
   });
 };
