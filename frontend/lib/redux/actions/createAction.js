@@ -84,17 +84,18 @@ export const save_create = () => async (dispatch) => {
 
   RecipeAPI.create({ ...recipe, author: user.uid })
     .then((res) => {
-      // do something
+      dispatch({
+        type: types.LOAD_CREATE,
+        loaded: recipe,
+      });
+      dispatch({
+        type: types.CLEAR_CREATE, //Just removing all left over info
+      });
       console.log("created recipe", { ...recipe, author: user.uid });
     })
     .catch((err) => {
       console.error(err.response);
-    });
-
-  //TODO: might need to update state locally rather than request user's owned reicpes again?
-  dispatch({
-    type: types.CLEAR_CREATE, //Just removing all left over info
-  });
+    });  
 };
 
 //NO API, frontend only
