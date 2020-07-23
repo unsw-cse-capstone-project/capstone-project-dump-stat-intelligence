@@ -179,3 +179,17 @@ export const logout = () => async (dispatch) => {
       console.error(err.response);
     });
 };
+
+
+export const get_owned = () => async (dispatch) => {
+  UserAPI.owned()
+  .then((res => {
+    dispatch({
+      type : types.LOAD_OWNED,
+      owned : res.data,
+    })
+  }))
+  .catch(err => {
+    console.log(err.response)
+  })
+}
