@@ -150,7 +150,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if ingredients were provided, if so filter based on matching,
         # otherwise take all recipes
-        if string.get("ingredients") is not '' or None:
+        if string.get("ingredients")[0] is not '' or None:
             running_list = string["ingredients"][0].split()
 
             # For each ingredient, add recipes that contain it to the queryset
@@ -161,6 +161,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     recipes |= Recipe.objects.filter(name=name)
         else:
             recipes = Recipe.objects.all().order_by("name")
+            running_list = []
 
         # Remove duplicate recipes from the queryset
         f = recipes.distinct()
