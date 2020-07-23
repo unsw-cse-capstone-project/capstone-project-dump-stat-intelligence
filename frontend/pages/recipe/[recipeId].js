@@ -59,6 +59,8 @@ const Recipe = (props) => {
     return <p>Loading</p>;
   }
 
+  console.log(recipe)
+
   function addFave() {
     dispatch(add_favourite({ title: recipe.name, src: null, id: recipe.id }));
     setFavourite(true);
@@ -95,7 +97,7 @@ const Recipe = (props) => {
   } else if (isLoggedIn) {
     faveButton = isFavourite ? (
       <a onClick={removeFave} className="button is-light is-warning">
-        UnFavourite
+        Unfavourite
       </a>
     ) : (
       <a onClick={addFave} className="button is-light is-warning">
