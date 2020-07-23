@@ -160,6 +160,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     recipes |= Recipe.objects.filter(name=name)
         else:
             recipes = Recipe.objects.all().order_by("name")
+            running_list = []
 
         # Remove duplicate recipes from the queryset
         f = recipes.distinct()
