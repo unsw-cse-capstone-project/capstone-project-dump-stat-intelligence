@@ -134,7 +134,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response["ingredient"] = instance.ingredient.pk
+        response["ingredient"] = IngredientSerializer(instance.ingredient).data
         return response
 
 
