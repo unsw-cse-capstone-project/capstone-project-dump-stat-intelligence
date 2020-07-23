@@ -1113,23 +1113,29 @@ class SearchTestCase(TestCase):
         dairy_free = DietaryRequirement.objects.create(name="dairy-free")
 
         # set up user
-        jess = User.objects.create(username="Jess", email="jess@gmail.com",
-                                   password="1234")
+        self.c = APIClient()
+        user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
+        user = self.c.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user_data.pop('email')      
+        token = self.c.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        self.c.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+        user = User.objects.get(pk=1)
 
         # set up recipes
-        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=jess)
+        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=user)
         fruit_salad.save()
         fruit_salad.meal_cat.add(breakfast)
         fruit_salad.diet_req.add(vegan)
         fruit_salad.diet_req.add(dairy_free)
 
-        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", method="Crunch crunch", author=jess)
+        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", method="Crunch crunch", author=user)
         garden_salad.save()
         garden_salad.meal_cat.add(lunch)
         garden_salad.diet_req.add(vegan)
         garden_salad.diet_req.add(dairy_free)
 
-        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", method="Yummy crunch?", author=jess)
+        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", method="Yummy crunch?", author=user)
         mixed_salad.save()
         mixed_salad.meal_cat.add(lunch)
         mixed_salad.diet_req.add(vegan)
@@ -1165,21 +1171,10 @@ class SearchTestCase(TestCase):
         r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=carrot, recipe=mixed_salad)
         r_mixed_carrot.save()
 
-        # make pantry ingredients
-        p_apple = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=apple)
-        p_apple.save()
-        p_pear = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=pear)
-        p_pear.save()
-        p_carrot = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=carrot)
-        p_carrot.save()
-        p_tomato = PantryIngredient(expiry_date="2020-07-29", user=jess, ingredient=tomato)
-        p_tomato.save()
-
     # test with some matching ingredients in running list, should order by percentage
     def test_search1(self):
-        c = Client()
 
-        response = c.get('/recipes/?ingredients=apple+pear+carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+        response = self.c.get('/recipes/?ingredients=apple+pear+carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
                          content_type="application/json")
 
         expected_response = [{"recipe": 
@@ -1204,15 +1199,16 @@ class SearchTestCase(TestCase):
                                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
                             "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]}] 
+                            "missing_ing": ["tomato"]},
+                            
+                            {"suggestion" : "tomato"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # test with some matching ingredients in running list, should order by name (% is equal)
     def test_search2(self):
-        c = Client()
 
-        response = c.get('/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+        response = self.c.get('/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
                          content_type="application/json")
 
         expected_response = [{"recipe": 
@@ -1237,16 +1233,20 @@ class SearchTestCase(TestCase):
                                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
                             "match_percentage": 0.5, 
-                            "missing_ing": ["apple"]}] 
+                            "missing_ing": ["apple"]},
+                            
+                            {"suggestion" : "tomato"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # expand meal_cat filter to include all recipes
     def test_search3(self):
-        c = Client()
 
-        response = c.get('/recipes/?ingredients=apple+carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+        # response = self.c.get('/recipes/?ingredients=apple+carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+        response = self.c.get('/recipes/?ingredients=&meal=lunch&diet=&limit=10&offset=0/',
                          content_type="application/json")
+
+        print("RESPONSE:", response.data)
 
         expected_response = [{"recipe": 
                                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1282,9 +1282,70 @@ class SearchTestCase(TestCase):
                                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
                             "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]}] 
+                            "missing_ing": ["tomato"]},
+                            
+                            {"suggestion" : "pear"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
+
+    # pantry
+    # def test_search4(self):
+
+        # # add things to pantry
+
+        # ingredient_data1 = {'user': "1", "ingredient": "apple"}
+        # ingredient_data2 = {'user': "1", "ingredient": "pear"}
+        # ingredient_data3 = {'user': "1", "ingredient": "tomato"}
+        # ingredient_data4 = {'user': "1", "ingredient": "carrot"}
+
+        # self.c.post('/user/pantry/', json.dumps(ingredient_data1), content_type='application/json')
+        # self.c.post('/user/pantry/', json.dumps(ingredient_data2), content_type='application/json')
+        # self.c.post('/user/pantry/', json.dumps(ingredient_data3), content_type='application/json')
+        # self.c.post('/user/pantry/', json.dumps(ingredient_data4), content_type='application/json')
+        # response = self.c.get('/user/pantry/')
+
+        # print("PANTRY:", response.data)
+
+        # response = c.get('/recipes/?ingredients=apple+carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+        #                  content_type="application/json")
+
+        # expected_response = [{"recipe": 
+        #                         {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+        #                         "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+        #                         "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+        #                         "ingredients": 
+        #                             [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+        #                                 "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+        #                             {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+        #                                 "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+        #                     "match_percentage": 1.0, 
+        #                     "missing_ing": []}, 
+                                
+        #                     {"recipe": 
+        #                         {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+        #                         "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+        #                         "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+        #                         "ingredients": 
+        #                             [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+        #                                 "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+        #                             {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+        #                                 "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+        #                     "match_percentage": 0.5, 
+        #                     "missing_ing": ["pear"]},
+                            
+        #                     {"recipe": 
+        #                         {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+        #                         "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+        #                         "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+        #                         "ingredients": 
+        #                             [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+        #                                 "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+        #                             {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+        #                                 "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+        #                     "match_percentage": 0.5, 
+        #                     "missing_ing": ["tomato"]}] 
+
+        # self.assertEqual(json.loads(response.content), expected_response)
 
 
 # Testing searching
@@ -1921,7 +1982,7 @@ class CookbookTest(TestCase):
                                         'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
                                     {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
                                         'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
-                                        
+
         self.assertEqual(json.loads(response.content), expected_response)
 
 

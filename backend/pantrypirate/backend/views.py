@@ -11,6 +11,7 @@ import urllib.parse
 from django.contrib.auth import authenticate
 from django.db.models import Max
 import json
+from collections import Counter
 
 
 # View that requests the most commonly searched ingredient queries, maximum 3
@@ -150,7 +151,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if ingredients were provided, if so filter based on matching,
         # otherwise take all recipes
-        if string.get("ingredients") is not '' or None:
+        if string.get("ingredients")[0] is not '' or None:
             running_list = string["ingredients"][0].split()
 
             # For each ingredient, add recipes that contain it to the queryset
@@ -161,6 +162,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     recipes |= Recipe.objects.filter(name=name)
         else:
             recipes = Recipe.objects.all().order_by("name")
+            running_list = []
 
         # Remove duplicate recipes from the queryset
         f = recipes.distinct()
@@ -191,12 +193,19 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # return matching recipes with the ingredients each recipe is missing
         # recipes returned in descending order of match %
         # then alphabetically
+        # LAST element in response is suggested ingredient for user to add to their running list
+
         # return looks like:
         #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
-        #    {"recipe2" : ...}]
+        #    {"recipe2" : ...}
+        #        .....
+        #    {"suggestion" : "ing_name"}]
+
         f = f.order_by("name")
         recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
         unordered_results = []
+
+        all_missing_ingredients = []
 
         for rec in recipe_list:
             matching_ingredients = 0
@@ -207,6 +216,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     matching_ingredients += 1
                 else:
                     missing_ingredients.append(ing.ingredient.name)
+                    all_missing_ingredients.append(ing.ingredient.name)
 
             match_percentage = matching_ingredients / len(Recipe.objects.get(pk=rec['id']).ingredients.all())
             new_dict = {"recipe" : rec, "match_percentage" : match_percentage, "missing_ing" : missing_ingredients}
@@ -214,6 +224,40 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
 
+        # now find ingredient to suggest
+        # by default --> take most common unmatched ingredient amongst top 10 matching recipes
+        # if user is logged in --> look through pantry ingredients first
+        # suggest ingredient not in pantry only if there are no suitable pantry ingredients
+        count = Counter(all_missing_ingredients)
+
+        suggested_ingredient = None
+
+        if count.most_common(1):
+            suggested_ingredient = count.most_common(1)[0][0] # most common ingredient by default
+
+        # from pantry if user is logged in
+        if request.user.is_authenticated:
+            # search through pantry
+            found = False
+            for missing_ing in count.most_common():
+                if not found:
+                    for pantry_ing in PantryIngredient.objects.filter(user=request.user):
+                        if pantry_ing.ingredient.name == missing_ing[0]:
+                            suggested_ingredient = missing_ing[0]
+                            found = True
+                            break
+
+        # if somehow no ingredient was found then make it first ingredient not in running list
+        if not suggested_ingredient:
+            suggested_ingredient = Ingredient.objects.exclude(name__in=running_list)[0]
+
+        # if somehow still no ingredient was found then make it first ingredient
+        if not suggested_ingredient:
+            suggested_ingredient = Ingredient.objects.all()[0]
+
+        # add to return
+        # final_return = ordered_results.copy()
+        # final_return.append({"suggestion" : suggested_ingredient})
 
         # Update query string based on whether a match has been found
         full_match = 0
