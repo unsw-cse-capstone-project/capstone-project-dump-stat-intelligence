@@ -27,7 +27,7 @@ export const update_query = (query) => async dispatch => {
     var i;
     for(i = 0; i < ingredients.data.length; i++) {
         if (ingredients.data[i].name.startsWith(query))
-            match.push({name: ingredients.data[i].name});
+            match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
     }
 
     dispatch({

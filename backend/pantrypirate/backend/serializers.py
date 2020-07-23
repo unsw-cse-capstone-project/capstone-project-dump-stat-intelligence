@@ -84,23 +84,29 @@ class FavouritesSerializer(serializers.ModelSerializer):
 
 
 # Requires a unique string to make, will return said string
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [],}}
 
 
 # Serialiser for ingredient, creation requires category object currently (
 # should be changed to string foreign key). Update also requires full
 # category object
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientSerializer(serializers.ModelSerializer):
     category = IngredientCategorySerializer()
 
     class Meta:
         model = Ingredient
         fields = ["name", "category"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [],}}
 
     def create(self, validated_data):
         cat_data = validated_data.pop("category")
@@ -128,7 +134,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response["ingredient"] = IngredientSerializer(instance.ingredient).data
+        response["ingredient"] = instance.ingredient.pk
         return response
 
 
@@ -180,9 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         for ing_data in recipe_ing_data:
             ing_data["recipe"] = recipe
-            ing_data["ingredient"] = Ingredient.objects.get(
-                name=ing_data.get("ingredient")
-            )
+            ing_data["ingredient"] = Ingredient.objects.get(name=ing_data.get("ingredient")).pk
 
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)

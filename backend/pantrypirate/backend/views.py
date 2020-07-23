@@ -308,17 +308,22 @@ class CookbookViewSet(viewsets.ModelViewSet):
         else:
             return Response(401)
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            user = User.objects.get(request.user.id)
+            user = User.objects.get(pk=request.user.id)
             user.favourites.add(request.data['id'])
+            return Response(200)
         else:
             return Response(401)
 
     def destroy(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            user = User.objects.get(request.user.id)
-            user.favourites.remove(request.data['id'])
+            user = User.objects.get(pk=request.user.id)
+            recipe_id = int([i for i in str(request.META['PATH_INFO']).split('/') if i][-1])
+            user.favourites.remove(recipe_id)
+            return Response(200)
+        else:
+            return Response(401)
 
 
 class MyRecipesViewSet(viewsets.ModelViewSet):
