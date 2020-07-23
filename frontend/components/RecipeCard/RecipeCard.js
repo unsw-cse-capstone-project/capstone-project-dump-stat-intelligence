@@ -3,10 +3,7 @@ import styles from "./RecipeCard.module.scss";
 
 import Indicator from "./Indicator";
 
-
-
 export default function RecipeCard(props) {
-  
   return (
     <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
       <div className={"card " + styles.recipe}>
@@ -22,10 +19,24 @@ export default function RecipeCard(props) {
           <p>
             {props.recipe.author.username} | {props.recipe.cook_time}
           </p>
-          <Indicator value={props.recipe.ingredients.length}>
+          <p className="tags">
+            {props.recipe.diet_req.map((req, idx) => (
+              <span key={idx} className="tag is-light">
+                {req.name}
+              </span>
+            ))}
+            {props.recipe.meal_cat.map((req, idx) => (
+              <span key={idx} className="tag is-dark">
+                {req.name}
+              </span>
+            ))}
+          </p>
+          <Indicator value={props.recipe.ingredients.length} color="#0f0">
             <ul>
-              {props.recipe.ingredients.forEach((ingredient, idx) => (
-                <li key={idx}>{ingredient}</li>
+              {props.recipe.ingredients.map((ingredient, idx) => (
+                    <li key={idx}>
+                      {ingredient.ingredient.name}
+                    </li>
               ))}
             </ul>
           </Indicator>

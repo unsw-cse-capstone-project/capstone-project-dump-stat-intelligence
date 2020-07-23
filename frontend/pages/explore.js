@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
 import { recipes_update } from "../lib/redux/actions/recipesAction";
@@ -9,8 +9,12 @@ import Filter from "../components/Pantry/Filter";
 
 export default function Explore() {
   const recipes = useSelector((state) => state.recipes.recipes);
+  const filter = useSelector((state) => state.explore.filters);
   const dispatch = useDispatch();
 
+  const [filteredRecipes, setFilteredRecipes] = useState(recipes);
+
+  // Only occurs once
   React.useEffect(() => {
     dispatch(recipes_update());
   }, []);

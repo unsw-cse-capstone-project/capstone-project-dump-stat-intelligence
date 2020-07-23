@@ -1,4 +1,5 @@
 import * as types from "../types";
+import IngredientAPI from "../../api/ingredient";
 
 /*
 QUERY
@@ -19,25 +20,20 @@ export const update_query = (query) => async dispatch => {
 
     //INSERT API, take query param and turn into list of possible ingredients
     
-    //currently for testing, it just has more options as the string gets longer...
-    //prestige bootleg 
-    let prac = [
-        {name : "one", category : "meh", expiry : "2020-07-20"},
-        {name : "2", category : "meh"},
-        {name : "3", category : "meh"},
-        {name : "4", category : "meh"},
-        {name : "5", category : "meh"},
-        {name : "6", category : "meh"},
-        {name : "7", category : "meh"},
-        {name : "8", category : "meh"},
-        {name : "real;lysuperlongmassive black hole", category : "meh"}
-    ]
-    
-    
+    const ingredients = await IngredientAPI.getAll();
+
+    let match = [];
+
+    var i;
+    for(i = 0; i < ingredients.data.length; i++) {
+        if (ingredients.data[i].name.startsWith(query))
+            match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
+    }
+
     dispatch({
         type : types.QUERY,
         query : query,
-        results : prac.splice(0,query.length)
+        results: match
     })
 }
 

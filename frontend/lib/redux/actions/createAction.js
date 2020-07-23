@@ -36,7 +36,6 @@ export const remove_category = (name, category) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const create_ingredient = (name, category) => {
   IngredientAPI.create({name, category})
 };
@@ -75,21 +74,28 @@ export const update_create = (category, newVal) => async (dispatch) => {
 //NEEDS API
 export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
+  let tmp;
+  let i;
+  for(i=0; i < recipe.ingredients.length; i++) {
+    tmp = recipe.ingredients[i]["ingredient"]["name"]
+    recipe.ingredients[i]["ingredient"] = tmp
+  }
   let user = store.getState().auth;
 
   RecipeAPI.create({ ...recipe, author: user.uid })
     .then((res) => {
-      // do something
+      dispatch({
+        type: types.LOAD_CREATE,
+        loaded: recipe,
+      });
+      dispatch({
+        type: types.CLEAR_CREATE, //Just removing all left over info
+      });
       console.log("created recipe", { ...recipe, author: user.uid });
     })
     .catch((err) => {
       console.error(err.response);
-    });
-
-  //TODO: might need to update state locally rather than request user's owned reicpes again?
-  dispatch({
-    type: types.CLEAR_CREATE, //Just removing all left over info
-  });
+    });  
 };
 
 //NO API, frontend only

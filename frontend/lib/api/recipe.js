@@ -9,7 +9,9 @@ const RecipeAPI = {
     page = 1,
     limit = 10
   ) => {
-    return api.get(`/recipes/`);
+    return api.get(
+      `/recipes/?meal=${meal}&diet=${diet}&ingredients=${ingredients}`
+    );
   },
   get: async (id) => api.get(`/recipes/${id}/`),
   create: async (recipe) => {
@@ -19,6 +21,9 @@ const RecipeAPI = {
     return await api.put(`/recipes/${id}`, recipe);
   },
   delete: async (id) => api.delete(`/recipes/${id}/`),
+  discover: async () => {
+    return await api.get("/meta/");
+  },
 };
 
 export default RecipeAPI;

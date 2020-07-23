@@ -19,6 +19,11 @@ const initialState = {
 
 export const authReducer = (state=initialState, action) => {
     switch (action.type) {
+        case types.LOAD_OWNED:
+            return {
+                ...state,
+                owned : action.owned,
+            }
         case types.ADD_FAVE:
             //do a check to make sure it's not already a fave
             for (let i = 0; i < state.favourites.length; i++) {

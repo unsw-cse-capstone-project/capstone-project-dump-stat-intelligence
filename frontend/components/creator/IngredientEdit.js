@@ -9,10 +9,11 @@ import Searcher from "./Searcher";
 
 export default function IngredientEdit() {
   const dispatch = useDispatch();
+  const searchId = "searcher";
   const initalIngredient = {
     name: "ingredient",
     category: "",
-    qty: 0,
+    qty: null,
     adj: "",
     unit: "",
   };
@@ -39,7 +40,7 @@ export default function IngredientEdit() {
     event.preventDefault();
     if (newOne.category === "") {
       setAlert(
-        "Please select a valid ingredient. If it is not in the databse, create it below."
+        "Please select a valid ingredient. If it is not in the database, create it below."
       );
     } else {
       setAlert("");
@@ -55,11 +56,21 @@ export default function IngredientEdit() {
         },
       };
       dispatch(add_ingredient(newIngred));
+      clearIng();
     }
   }
 
+  function clearIng() {
+    let box = document.getElementById("ing-edit-form");
+    box.elements.qty.value = null;    
+    box.elements.adj.value = "";
+    box.elements.unit.value = "";
+    document.getElementById(searchId).value = "";
+    setNewOne({...initalIngredient});
+  }
+
   let ingredients = useSelector((state) => state.create.ingredients);
-  let searchId = "searcher";
+  
   return (
     <div>
       <div className="tags">
@@ -80,7 +91,7 @@ export default function IngredientEdit() {
         </div>
       )}
 
-      <div className={`field control ${styles.querySearch}`}>
+      <div onFocus={() => document.getElementById("create-search-results").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("create-search-results").classList.remove(styles.show), 200)} className={`field control ${styles.querySearch}`}>
         <input
           onChange={(event) => {
             event.preventDefault();
@@ -91,10 +102,10 @@ export default function IngredientEdit() {
           className="input"
           placeholder="Search item"
         />
-        <Searcher searcher={searchId} func={fillIngredient} />
+        <Searcher id={"create-search-results"} searcher={searchId} func={fillIngredient} />
       </div>
 
-      <form onSubmit={addIngredient} autoComplete="false">
+      <form id="ing-edit-form" onSubmit={addIngredient} autoComplete="false">
         <div className="control">
           <div className="field control">
             <input
@@ -133,10 +144,7 @@ export default function IngredientEdit() {
           </div>
           <div className="field control">
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                setNewOne(initalIngredient);
-              }}
+              onClick={(e) => {e.preventDefault(); clearIng();}}
               style={{ width: "100%" }}
               className="button"
             >
@@ -147,7 +155,7 @@ export default function IngredientEdit() {
             <label className="label">Preview</label>
             <div className="tags">
               <span className={`tag ${styles.wideTag}`}>
-                {`${newOne.qty === 0 ? "" : newOne.qty} ${
+                {`${newOne.qty === null ? "" : newOne.qty} ${
                   newOne.unit === "" ? "" : newOne.unit
                 } ${newOne.adj === "" ? "" : newOne.adj} ${newOne.name}`}
               </span>

@@ -2,7 +2,14 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
-from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
+
+
+class MetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetaSearch
+        fields = ["search", "references"]
+        order_by = ["references"]
 
 
 # Django authentication model for user, no corresponding model in the
@@ -55,7 +62,7 @@ class MealCatSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
 # Requires a unique string to make, will return said string
@@ -63,34 +70,43 @@ class DietReqSerializer(serializers.ModelSerializer):
     class Meta:
         model = DietaryRequirement
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
 # Currently not used or implemented ## Ignore for now ##
 class FavouritesSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["id", "username"]
+        fields = ["id", "favourites"]
+
+    def update(self, instance, validated_data):
+        instance.favourites = validated_data('id')
 
 
 # Requires a unique string to make, will return said string
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [],}}
 
 
 # Serialiser for ingredient, creation requires category object currently (
 # should be changed to string foreign key). Update also requires full
 # category object
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientSerializer(serializers.ModelSerializer):
     category = IngredientCategorySerializer()
 
     class Meta:
         model = Ingredient
         fields = ["name", "category"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [],}}
 
     def create(self, validated_data):
         cat_data = validated_data.pop("category")
@@ -142,6 +158,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "cook_time",
             "method",
             "author",
+            "image_URL",
             "meal_cat",
             "diet_req",
             "ingredients",
@@ -158,17 +175,19 @@ class RecipeSerializer(serializers.ModelSerializer):
         diet_req = validated_data.pop("diet_req", [])
         meal_cat = validated_data.pop("meal_cat", [])
         recipe = Recipe.objects.create(**validated_data)
+
         for diet_data in diet_req:
             cat = DietaryRequirement.objects.get(name=diet_data.get("name"))
             recipe.diet_req.add(cat)
+
         for cat_data in meal_cat:
             cat = MealCategory.objects.get(name=cat_data.get("name"))
             recipe.meal_cat.add(cat)
+
         for ing_data in recipe_ing_data:
             ing_data["recipe"] = recipe
-            ing_data["ingredient"] = Ingredient.objects.get(
-                name=ing_data.get("ingredient")
-            )
+            ing_data["ingredient"] = Ingredient.objects.get(name=ing_data.get("ingredient"))
+
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)
 
@@ -184,6 +203,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.cook_time = validated_data.get("cook_time", instance.cook_time)
         instance.method = validated_data.get("method", instance.method)
         instance.author = validated_data.get("author", instance.author)
+        instance.image_URL = validated_data.get("image_URL", instance.image_URL)
 
         # Remove ingredients that currently exist
         instance.diet_req.clear()

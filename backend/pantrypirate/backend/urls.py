@@ -8,9 +8,13 @@ from django.contrib.auth import views as auth
 # appropriate views
 router = routers.DefaultRouter()
 router.register(r'user/pantry', PantryIngredientViewSet, basename='pantry')
+router.register(r'user/myrecipes', MyRecipesViewSet)
+router.register(r'user/cookbook', CookbookViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'ingredients', IngredientViewSet)
+
+
 
 urlpatterns = [
 
@@ -18,6 +22,7 @@ urlpatterns = [
     path('user/login/', CustomObtainAuthToken.as_view()),
     path('user/register/', UserCreate.as_view()),
     path('user/logout/', UserLogout.as_view()),
+    path('meta/', MetaSearchView.as_view()),
 
     # Auto routes and API routes
     path('', include(router.urls)),

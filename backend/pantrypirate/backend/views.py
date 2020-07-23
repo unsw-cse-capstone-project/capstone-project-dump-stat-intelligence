@@ -15,25 +15,24 @@ import json
 
 # View that requests the most commonly searched ingredient queries, maximum 3
 # ingredients
-class MetaSearch(generics.GenericAPIView):
-    queryset = MetaSearch.objects.all().order_by("count")
+class MetaSearchView(generics.ListAPIView):
+    serializer_class = MetaSerializer
 
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            result = MetaSearch.objects.all().aggregate(Max('count'))
-            serializer = self.get_serializer(result, many=True)
+            result = MetaSearch.objects.all().order_by("-references")
+            serializer = self.get_serializer(result[0])
             return Response(serializer.data)
         else:
             return Response(status=401)
-
 
 
 # Custom token authentication to allow the id to be returned alongside the token
 class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
-        token = Token.objects.get(key=response.data['token'])
-        return Response({'token': token.key, 'id': token.user_id})
+        token = Token.objects.get(key=response.data["token"])
+        return Response({"token": token.key, "id": token.user_id})
 
 
 # Allows updating of the user accounts, can get a list of all users
@@ -53,30 +52,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
     # Make deletion only compatible for our account
     def destroy(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).destroy(request, *args,
-                                                  **kwargs)
+            return super(UserViewSet, self).destroy(request, *args, **kwargs)
         else:
             return Response(status=401)
 
     # Make partial_update
     def partial_update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).partial_update(request, *args,
-                                                    **kwargs)
+            return super(UserViewSet, self).partial_update(request, *args, **kwargs)
         else:
             return Response(status=401)
 
     def update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(UserViewSet, self).update(request, *args,
-                                                  **kwargs)
+            return super(UserViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
 
@@ -96,11 +89,12 @@ class UserCreate(generics.CreateAPIView):
         if serializer.is_valid():
             user = serializer.save()
             if user:
-                authenticate(username=request.data['username'],
-                             password=request.data['password'])
+                authenticate(
+                    username=request.data["username"], password=request.data["password"]
+                )
                 token, created = Token.objects.get_or_create(user=user)
                 data = serializer.data
-                data['token'] = token.key
+                data["token"] = token.key
                 return Response(data=data)
         return Response(serializer.errors, status=403)
 
@@ -136,7 +130,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # query string looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
 
         # Parse the query string
-        string = urllib.parse.parse_qs(request.META["QUERY_STRING"], keep_blank_values=True)
+        string = urllib.parse.parse_qs(
+            request.META["QUERY_STRING"], keep_blank_values=True
+        )
 
         # If the query string does not exist, order by name and return
         if not string:
@@ -150,24 +146,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # Check if ingredients were provided, if so filter based on matching,
         # otherwise take all recipes
-        if string.get("ingredients") is not '' or None:
-            running_list = string["ingredients"][0].split()
+        if string.get("ingredients")[0] is not "" or None:
+            running_list = string["ingredients"][0].split(",")
 
             # For each ingredient, add recipes that contain it to the queryset
             for item in running_list:
                 ingredient = Ingredient.objects.get(pk=item)
-                for rec_ingredient in RecipeIngredient.objects.filter(ingredient=ingredient):
+                for rec_ingredient in RecipeIngredient.objects.filter(
+                    ingredient=ingredient
+                ):
                     name = rec_ingredient.recipe
                     recipes |= Recipe.objects.filter(name=name)
         else:
             recipes = Recipe.objects.all().order_by("name")
+            running_list = []
 
         # Remove duplicate recipes from the queryset
         f = recipes.distinct()
 
         # Check if dietary requirements were provided, if so filter based on
         # matching
-        if string.get("diet") is not '' or None:
+        if string.get("diet") is not "" or None:
             diets = string["diet"][0].split()
 
             # Filter the queryset by dietary requirement (AND relationship)
@@ -176,14 +175,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     f = f.filter(diet_req__pk=requirement)
 
         # Check if meal categories were provided, if so filter based on matching
-        if string.get("meal") is not '' or None:
+        if string.get("meal") is not "" or None:
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
-                e = Recipe.objects.none()  # need an empty set to build OR relationship from
+                e = (
+                    Recipe.objects.none()
+                )  # need an empty set to build OR relationship from
                 for category in meals:
                     e |= f.filter(meal_cat__pk=category)
-                f = e   # rename back to f
+                f = e  # rename back to f
 
         # remove duplicates
         f = f.distinct()
@@ -195,46 +196,62 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
         #    {"recipe2" : ...}]
         f = f.order_by("name")
-        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
+        recipe_list = self.get_serializer(
+            f, many=True
+        ).data  # serialise so that recipe info can be returned later
         unordered_results = []
 
         for rec in recipe_list:
             matching_ingredients = 0
             missing_ingredients = []
 
-            for ing in Recipe.objects.get(pk=rec['id']).ingredients.all():
+            for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
                 else:
                     missing_ingredients.append(ing.ingredient.name)
 
-            match_percentage = matching_ingredients / len(Recipe.objects.get(pk=rec['id']).ingredients.all())
-            new_dict = {"recipe" : rec, "match_percentage" : match_percentage, "missing_ing" : missing_ingredients}
+            match_percentage = matching_ingredients / len(
+                Recipe.objects.get(pk=rec["id"]).ingredients.all()
+            )
+            new_dict = {
+                "recipe": rec,
+                "match_percentage": match_percentage,
+                "missing_ing": missing_ingredients,
+            }
             unordered_results.append(new_dict)
 
-        ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
-        
-        # self.update_search(string, full_match=1)
+        ordered_results = sorted(
+            unordered_results, key=lambda k: k["match_percentage"], reverse=True
+        )
+
+        # Update query string based on whether a match has been found
+        full_match = 0
+        if len(ordered_results) > 0 and ordered_results[0]["match_percentage"] == 1.0:
+            full_match = 1
+        self.update_search(string, full_match=full_match)
 
         return Response(ordered_results)
 
     # Takes boolean for full match and ingredients string from running list
     # input
-    def update_search(self, list_string, full_match=0):
+    def update_search(self, list_string, full_match):
         # Update meta search model for query
-        running_list = sorted(list_string["ingredients"][0].split()).join("|")
+        running_list = sorted(list_string["ingredients"][0].split())
         if len(running_list) <= 3:
+            running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
             if not full_match:
-                search.count += 1
-            elif search.count > 1:
-                search.count -= 1
-            search.save()
+                search[0].references += 1
+            elif search[0].references > 0:
+                search[0].references = 0
+            search[0].save()
 
 
 # Supports create, retrieve, put, list and delete
 # Refer to serialiser or test for format
 class IngredientViewSet(viewsets.ModelViewSet):
+    pagination_class = None
     permission_classes = (IsAuthenticated,)
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
@@ -260,29 +277,72 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
     # Make deletion only compatible for our account
     def destroy(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).destroy(request, *args,
-                                                  **kwargs)
+            return super(PantryIngredientViewSet, self).destroy(
+                request, *args, **kwargs
+            )
         else:
             return Response(status=401)
 
     # Make partial_update
     def partial_update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).partial_update(request, *args,
-                                                    **kwargs)
+            return super(PantryIngredientViewSet, self).partial_update(
+                request, *args, **kwargs
+            )
         else:
             return Response(status=401)
 
     def update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META['PATH_INFO']).split('/') if
-                       i][-1])
+        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
-            return super(PantryIngredientViewSet, self).update(request, *args,
-                                                  **kwargs)
+            return super(PantryIngredientViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
+
+
+class CookbookViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            queryset = Recipe.objects.filter(favourites=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(401)
+
+    def create(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = User.objects.get(pk=request.user.id)
+            user.favourites.add(request.data["id"])
+            return Response(200)
+        else:
+            return Response(401)
+
+    def destroy(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            user = User.objects.get(pk=request.user.id)
+            recipe_id = int(
+                [i for i in str(request.META["PATH_INFO"]).split("/") if i][-1]
+            )
+            user.favourites.remove(recipe_id)
+            return Response(200)
+        else:
+            return Response(401)
+
+
+class MyRecipesViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
+
+    def list(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            queryset = Recipe.objects.filter(author=request.user.id)
+            serializer = self.get_serializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            return Response(Http404)

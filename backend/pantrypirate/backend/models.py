@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 # Meta data for search queries
 class MetaSearch(models.Model):
     search = models.CharField(max_length=200, primary_key=True)
-    count = models.IntegerField()
+    references = models.IntegerField(default=0)
 
 
 # Name is primary key string
@@ -32,6 +32,7 @@ class Recipe(models.Model):
     method = models.CharField(max_length=5000)
     author = models.ForeignKey(User, on_delete=models.CASCADE,
                                related_name="recipes")
+    image_URL = models.CharField(max_length=200, blank=True, null=True)
     meal_cat = models.ManyToManyField(MealCategory,
                                       related_name="recipes", blank=True)
     diet_req = models.ManyToManyField(DietaryRequirement,

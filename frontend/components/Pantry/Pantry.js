@@ -13,12 +13,15 @@ import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { update_query } from "../../lib/redux/actions/queryAction";
 import IngredientSearch from "./IngredientSearch";
 import { explore_all } from "../../lib/redux/actions/exploreAction";
+import { useRouter } from 'next/router';
 
 import Arrow from "./Arrow";
 
 
 
 export default function Pantry() {
+  const router = useRouter();
+  
   function toggleIt(id) {
     document.getElementById(id + "-icon").classList.toggle(styles.arrowUp);
     let box = document.getElementById(id + "-box")
@@ -26,6 +29,15 @@ export default function Pantry() {
       box.style.maxHeight = box.scrollHeight + 'px';
       setTimeout(() => {box.style.maxHeight = null},5);
     } else {
+      box.style.maxHeight = box.scrollHeight + 'px';
+      setTimeout(() => {box.style.maxHeight = 'none'},305)
+    }
+  }
+
+  function openIt(id) {
+    let box = document.getElementById(id + "-box")
+    if (!box.style.maxHeight) {
+      document.getElementById(id + "-icon").classList.toggle(styles.arrowUp);
       box.style.maxHeight = box.scrollHeight + 'px';
       setTimeout(() => {box.style.maxHeight = 'none'},305)
     }
@@ -39,6 +51,9 @@ export default function Pantry() {
   let pantry = useSelector((state) => state.pantry);
   let chosen = useSelector((state) => state.explore.ingredients);
   let searchId = "searcher";
+
+  let isExplore = router.pathname === '/explore'
+
   return (
     <div id="pantry" className={styles.pantry}>
       
@@ -81,13 +96,15 @@ export default function Pantry() {
               );
             }
           })}
-          <br />
-          <button onClick={(event) => basic_dispatch(event, explore_all)} className={`${styles.wideButton} button`}>
-            Explore with whole pantry
-          </button>
+          { isExplore ? <>
+            <br />
+            <button onClick={(event) => {basic_dispatch(event, explore_all); openIt("search")}} className={`${styles.wideButton} button`}>
+              Explore with whole pantry
+            </button>
+          </> : "" }
         </div>
       </div>
-      
+      { isExplore ? <>
       <hr />
           
       <div id="search-head" onClick={() => toggleIt("search")} className={`${styles.header}`}><div className={styles.title}>Raid the pantry</div><Arrow name="search-icon"/></div>
@@ -157,6 +174,7 @@ export default function Pantry() {
           </div>
         }
       </div>
+      </> : "" }
     </div>
   );
 }
