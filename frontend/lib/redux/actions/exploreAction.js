@@ -23,8 +23,6 @@ export const filter_clear = () => async (dispatch) => {
 };
 
 export const filter_update = (category, name, status) => async (dispatch) => {
-  console.log("filter update");
-  console.log(category, name, status);
   dispatch({
     type: types.FILTER_UPDATE,
     category: category,
