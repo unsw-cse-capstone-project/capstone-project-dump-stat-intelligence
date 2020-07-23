@@ -40,7 +40,7 @@ export default function IngredientEdit() {
     event.preventDefault();
     if (newOne.category === "") {
       setAlert(
-        "Please select a valid ingredient. If it is not in the databse, create it below."
+        "Please select a valid ingredient. If it is not in the database, create it below."
       );
     } else {
       setAlert("");
