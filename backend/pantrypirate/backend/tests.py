@@ -628,6 +628,7 @@ class RecipeTest(TestCase):
                  {"id": 1,
                   "username": "Bob",
                   "email": "Bob@gmail.com"},
+             "image_URL": None,
              "meal_cat": [{
                  "name": "dinner"}],
              "diet_req":
@@ -695,6 +696,7 @@ class RecipeTest(TestCase):
                  {"id": 1,
                   "username": "Bob",
                   "email": "Bob@gmail.com"},
+             "image_URL": None,
              "meal_cat": [{
                  "name": "dinner"}],
              "diet_req":
@@ -730,6 +732,7 @@ class RecipeTest(TestCase):
                  {"id": 1,
                   "username": "Bob",
                   "email": "Bob@gmail.com"},
+             "image_URL": None,
              "meal_cat": [{
                  "name": "dinner"}],
              "diet_req":
@@ -798,6 +801,7 @@ class RecipeTest(TestCase):
                                  "method": "Put in water",
                                  "author": {"id": 2, "username": "Tob",
                                             "email": "Tob@gmail.com"},
+                                 "image_URL": None,
                                  "meal_cat": [{"name": "dinner"},
                                               {"name": "lunch"}],
                                  "diet_req": [{"name": "vegetarian"}],
@@ -1184,7 +1188,8 @@ class SearchTestCase(TestCase):
 
         expected_response = [{"recipe": 
                                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
@@ -1196,7 +1201,8 @@ class SearchTestCase(TestCase):
                                 
                             {"recipe": 
                                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
@@ -1217,7 +1223,8 @@ class SearchTestCase(TestCase):
 
         expected_response = [{"recipe": 
                                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
@@ -1229,7 +1236,8 @@ class SearchTestCase(TestCase):
                                 
                             {"recipe": 
                                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
@@ -1250,7 +1258,8 @@ class SearchTestCase(TestCase):
 
         expected_response = [{"recipe": 
                                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
@@ -1262,7 +1271,8 @@ class SearchTestCase(TestCase):
                                 
                             {"recipe": 
                                 {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
@@ -1274,7 +1284,8 @@ class SearchTestCase(TestCase):
                             
                             {"recipe": 
                                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                                "image_URL": None,
                                 "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
                                 "ingredients": 
                                     [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
@@ -1659,7 +1670,8 @@ class MyRecipesTest(TestCase):
         response = self.c1.get('/user/myrecipes/')
 
         expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'}, 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
                                 'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
                                 'ingredients': 
                                     [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
@@ -1689,7 +1701,8 @@ class MyRecipesTest(TestCase):
         # get recipes for user 1
         response = self.c1.get('/user/myrecipes/')
         expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'}, 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
                                 'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
                                 'ingredients': 
                                     [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
@@ -1702,7 +1715,8 @@ class MyRecipesTest(TestCase):
         # get recipes for user 2
         response = self.c2.get('/user/myrecipes/')     
         expected_response = [{'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
-                                'author': {'id': 2, 'username': 'reece', 'email': 'reece@gmail.com'}, 
+                                'author': {'id': 2, 'username': 'reece', 'email': 'reece@gmail.com'},
+                                "image_URL": None,
                                 'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
                                 'ingredients': 
                                     [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
@@ -1736,20 +1750,6 @@ class CookbookTest(TestCase):
         token = self.c2.post('/user/login/', json.dumps(user_data), content_type='application/json')
         self.c2.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
-        self.c3 = APIClient()
-        user_data = {'username' : 'callum', 'email' : 'callum@gmail.com', 'password' : '3333'}
-        user = self.c3.post('/user/register/', json.dumps(user_data), content_type='application/json')
-        user_data.pop('email')
-        token = self.c3.post('/user/login/', json.dumps(user_data), content_type='application/json')
-        self.c3.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
-
-        # set up recipe
-        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=self.jess)
-        fruit_salad.save()
-        fruit_salad.meal_cat.add(lunch)
-        fruit_salad.diet_req.add(vegan)
-        fruit_salad.diet_req.add(dairy_free)
-
         # set up recipe ingredients
         fruit = IngredientCategory.objects.create(name="fruit")
         fruit.save()
@@ -1762,18 +1762,188 @@ class CookbookTest(TestCase):
         ingredient.is_valid()
         ingredient.save()
 
-    def test_cookbook(self):
-         # enter recipe data
+    # test adding recipes to cookbook
+    def test_cookbook1(self):
+        # enter recipe data
         recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
                         "ingredients":
                            [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
                             {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
                        "meal_cat": [{"name": "lunch"}],
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}],
-                       "favourites": [{"id" : "2"}, {"id" : "3"}]}
-        print("Posting...")
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
         self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
 
-        # login user 2 and view cookbook
+        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        # add to user 2's favourites
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+
         response = self.c2.get('/user/cookbook/')
-        print("RESPONSE:", response)
+
+        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
+                                                 
+                            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+    # test deleting recipes from cookbook
+    def test_cookbook2(self):
+        # enter recipe data
+        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                       "meal_cat": [{"name": "lunch"}],
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        # add to user 2's favourites
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+
+        response = self.c2.get('/user/cookbook/')
+
+        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
+                                                 
+                            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+        # delete first recipe from cookbook
+        self.c2.delete('/user/cookbook/1/')
+
+        response = self.c2.get('/user/cookbook/')
+
+        expected_response = [{'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+        # delete other recipe
+        self.c2.delete('/user/cookbook/2/')
+
+        response = self.c2.get('/user/cookbook/')
+        expected_response = []
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+
+        # make sure recipes can be added again
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+
+        response = self.c2.get('/user/cookbook/')
+        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+    # test that users can't access other users' cookbooks
+    def test_cookbook3(self):
+        # enter recipe data
+        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                       "meal_cat": [{"name": "lunch"}],
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        # add to user 2's favourites
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+
+        response = self.c1.get('/user/cookbook/')
+        expected_response = []   
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+    # test that users can add their own recipes to cookbook
+    def test_cookbook4(self):
+        # enter recipe data
+        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                       "meal_cat": [{"name": "lunch"}],
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        # add to user 1's favourites
+        self.c1.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+
+        response = self.c1.get('/user/cookbook/')
+        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                                "image_URL": None,
+                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                                'ingredients': 
+                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
+                                        
+        self.assertEqual(json.loads(response.content), expected_response)
+
+
+
+    
