@@ -31,7 +31,7 @@ export const recipes_update = () => async (dispatch) => {
   console.log("[Recipes Update]");
   console.log(explore);
 
-  let ingredientStr = explore.ingredients.join("+");
+  let ingredientStr = explore.ingredients.join(",");
 
   let mealCats = Object.keys(explore.filters.meal)
     .filter((key) => explore.filters.meal[key])
@@ -44,10 +44,18 @@ export const recipes_update = () => async (dispatch) => {
   let dietStr = dietCats.length > 0 ? dietCats : "";
 
   // get all recipes
+  // TODO: backend has changed format to now have match_percentage
+  // going to just extract recipes for now
   const recipes = await RecipeAPI.getAll(mealStr, dietStr, ingredientStr);
+
+  let extractedRecipes = [];
+  recipes.data.forEach((r) => {
+    extractedRecipes.push(r.recipe);
+  });
+
   console.log("got:", recipes);
   dispatch({
     type: types.RECIPES_UPDATE,
-    recipes: recipes.data,
+    recipes: extractedRecipes,
   });
 };
