@@ -1,16 +1,28 @@
 import styles from "./Filter.module.scss";
-import Check from "./Check";
 import FilterItem from "./FilterItem";
 import { recipes_update } from "../../lib/redux/actions/recipesAction";
-import { filter_update } from "../../lib/redux/actions/exploreAction";
-import PantryIngredient from "./PantryIngredient";
 import { useSelector, useDispatch } from "react-redux";
+import { update_search } from "../../lib/redux/actions/searchAction";
+import FilterSearch from "./FilterSearch";
 
 export default function Filter() {
   const dispatch = useDispatch();
   let filters = useSelector((state) => state.explore.filters);
+  let selections = useSelector(state => state.explore.ingredients)
   return (
-    <div className="form">
+    <div className={`form ${styles.filter}`} autoComplete="off">
+      <div className="field is-grouped">
+        <div className={`control ${styles.searchFormBox}`} onFocus={() => document.getElementById("explore-ing-add").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("explore-ing-add").classList.remove(styles.show), 200)}>
+          <FilterSearch id={"explore-ing-add"} searcher="explore-search"/>
+          <input id="explore-search" placeholder="Add an ingredient" className="input" name="search" onChange={(e => {e.preventDefault(); dispatch(update_search(e.target.value))})}/>
+          
+        </div>
+        <div className="control">
+          <button onClick={e => {e.preventDefault();}} className="button">clear</button>
+        </div>
+      </div>
+      
+      
       <div className="field is-grouped">
         <div className="control">
           <div className="select dropdown is-hoverable">
@@ -75,12 +87,13 @@ export default function Filter() {
               event.preventDefault();
               dispatch(recipes_update());
             }}
-            className="button"
+            className="button is-primary"
           >
-            <span>Filter</span>
+            <span>Search</span>
           </button>
         </div>
       </div>
+      {/** 
       <div className="field tags">
           {Object.keys(filters.meal).map((key, idx) => (
             filters.meal[key] ?  
@@ -99,6 +112,7 @@ export default function Filter() {
             : ""
           ))}
       </div>
+      */}
     </div>
   );
 }

@@ -28,9 +28,14 @@ export const PANTRY_REMOVE = 'PANTRY_REMOVE'; //remove item from pantry
 export const PANTRY_CHANGE = 'PANTRY_CHANGE'; //Update expiry in a pantry ingredient
 
 
-//Ingredient 
+//Query 
 export const QUERY = 'QUERY'; // new key stroke, search for new ingredient
 export const CLEAR_QUERY = 'CLEAR_QUERY'; // set query back to empty
+
+//SEARCH 
+export const SEARCH = 'SEARCH'; // new key stroke, search for new ingredient
+export const CLEAR_SEARCH = 'CLEAR_SEARCH'; // set SEARCH back to empty
+export const SEARCH_TYPE = 'SEARCH_TYPE'; // Change the type of search
 
 //Create
 export const CLEAR_CREATE = 'CLEAR_CREATE'; // clear all the recipe info
