@@ -2,7 +2,7 @@ import styles from "./Filter.module.scss";
 import FilterItem from "./FilterItem";
 import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { useSelector, useDispatch } from "react-redux";
-import { update_search } from "../../lib/redux/actions/searchAction";
+import { update_search, search_type } from "../../lib/redux/actions/searchAction";
 import { explore_remove, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
 import FilterSearch from "./FilterSearch";
 import Check from "./Check";
@@ -36,11 +36,11 @@ export default function Filter() {
             </div>
             <div className="dropdown-menu" id="dropdown-menu4" role="menu">
               <div className="dropdown-content">
-                <a onClick={() => (true)} className="dropdown-item">
+                <a onClick={() => (dispatch(search_type(true)))} className="dropdown-item">
                   <span>Pantry ingredients only</span>
                   { pantryOnly ? <Check/> : ""}
                 </a>
-                <a onClick={() => (true)} className="dropdown-item">
+                <a onClick={() => (dispatch(search_type(false)))} className="dropdown-item">
                   <span>All ingredients</span>
                   { !pantryOnly ? <Check/> : ""}
                 </a>

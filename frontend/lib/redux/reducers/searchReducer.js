@@ -13,7 +13,7 @@ export const searchReducer = (state = initialState, action ) => {
         case types.SEARCH_TYPE:
             return {
                 ...state,
-                pantrOnly : action.pantryOnly
+                pantryOnly : action.pantryOnly
             }
         case types.SEARCH:
             return { 

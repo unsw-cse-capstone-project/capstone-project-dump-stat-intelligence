@@ -1,5 +1,6 @@
 import * as types from "../types";
 import IngredientAPI from "../../api/ingredient";
+import store from "../store";
 
 /*
 SEARCH
@@ -8,7 +9,7 @@ SEARCH
     IMPORTANTLY, can hold results from pantry only and also backend
 
     search : {
-        queryString : "String they are entering",
+        searchString : "String they are entering",
         results : [{ingredient}, {}, {}, ...],
         pantryOnly : bool
     }
@@ -23,16 +24,28 @@ export const search_type = (pantryOnly) => async dispatch => {
 
 
 export const update_search = (query) => async dispatch => {
-
-    
-    const ingredients = await IngredientAPI.getAll();
-
+    const pantryOnly = store.getState().search.pantryOnly;
     let match = [];
+    
+    if (pantryOnly) {
+        const pantryIngredients = store.getState().pantry.meta
+        var val;
+        for (val of pantryIngredients) {
+            if (val.startsWith(query)) {
+                match.push({name : val});
+            }
+        }
+    } else {
 
-    var i;
-    for(i = 0; i < ingredients.data.length; i++) {
-        if (ingredients.data[i].name.startsWith(query))
-            match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
+        const ingredients = await IngredientAPI.getAll();
+    
+        
+    
+        var i;
+        for(i = 0; i < ingredients.data.length; i++) {
+            if (ingredients.data[i].name.startsWith(query))
+                match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
+        }
     }
 
     dispatch({
