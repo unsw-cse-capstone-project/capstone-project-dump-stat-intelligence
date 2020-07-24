@@ -3,14 +3,13 @@ import FilterItem from "./FilterItem";
 import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { useSelector, useDispatch } from "react-redux";
 import { update_search } from "../../lib/redux/actions/searchAction";
-import { explore_remove, explore_clear } from "../../lib/redux/actions/exploreAction";
+import { explore_remove, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
 import FilterSearch from "./FilterSearch";
 
 export default function Filter() {
   const dispatch = useDispatch();
   let filters = useSelector((state) => state.explore.filters);
   let selections = useSelector(state => state.explore.ingredients)
-  console.log(selections)
   return (
     <div className={`form ${styles.filter}`} autoComplete="off">
       <div className="field is-grouped">
@@ -20,20 +19,10 @@ export default function Filter() {
           
         </div>
         <div className="control">
-          <button onClick={e => {e.preventDefault(); dispatch(explore_clear())}} className="button">clear all</button>
+          <button onClick={e => {e.preventDefault(); dispatch(explore_clear()); dispatch(filter_clear())}} className="button">Reset search</button>
         </div>
       </div>
-      <div className="tags">
-        {
-          selections.map((val, idx) => (
-            <span key={idx} className="tag is-dark">
-              {val}
-              <button onClick={() => dispatch(explore_remove({ingredient : val}))} className="delete is_small"></button>
-            </span>
-
-          ))
-        }
-      </div>
+      
       
       
       <div className="field is-grouped">
@@ -106,11 +95,22 @@ export default function Filter() {
           </button>
         </div>
       </div>
-      {/** 
-      <div className="field tags">
+      <div className="tags">
+        {
+          selections.map((val, idx) => (
+            <span key={idx} className="tag is-dark">
+              {val}
+              <button onClick={() => dispatch(explore_remove({ingredient : val}))} className="delete is_small"></button>
+            </span>
+
+          ))
+        }
+      </div>
+      {/**/ 
+      <div className="tags">
           {Object.keys(filters.meal).map((key, idx) => (
             filters.meal[key] ?  
-            <span key={idx} className="tag is-dark">
+            <span key={idx} className="tag is-warning">
                 {key}
                 <button onClick={() => dispatch(filter_update("meal", key, false))} className="delete is_small"></button>
             </span>
@@ -118,14 +118,14 @@ export default function Filter() {
           ))}
           {Object.keys(filters.diet).map((key, idx) => (
             filters.diet[key] ?  
-            <span key={idx} className="tag is-dark">
+            <span key={idx} className="tag is-warning">
                 {key}
                 <button onClick={() => dispatch(filter_update("diet", key, false))} className="delete is_small"></button>
             </span>
             : ""
           ))}
       </div>
-      */}
+      /**/}
     </div>
   );
 }
