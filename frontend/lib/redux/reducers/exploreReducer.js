@@ -14,8 +14,8 @@ const initialState = {
         diet : {
             Vegan : false,
             Vegetarian : false,
-            "Gluten-Free" : false,
-            "Dairy-Free" : false
+            "Gluten-free" : false,
+            "Dairy-free" : false
 
         }
     }

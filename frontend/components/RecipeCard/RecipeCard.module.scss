@@ -2,6 +2,11 @@
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   border-radius: 8px;
 
+  // Make all equal height
+  // display: flex;
+  // flex-direction: column;
+  // height: 100%;
+
   img {
     border-radius: 8px 8px 0 0;
   }
@@ -15,12 +20,11 @@
 
 .indicator {
   border-radius: 100px;
-  background-color: green;
   color: white;
   width: 25px;
   height: 25px;
   text-align: center;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
   transition: all 0.2s ease-in-out, border-radius 0.05s ease-in-out;
 
   &:hover {

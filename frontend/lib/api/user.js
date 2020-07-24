@@ -16,8 +16,11 @@ const UserAPI = {
     return res;
   },
   get: async (userId) => {
-    return api.get(`/user/${userId}/`);
+    return await api.get(`/user/${userId}/`);
   },
+  owned: async () => {
+    return await api.get(`/user/myrecipes/`)
+  }
 };
 
 export default UserAPI;

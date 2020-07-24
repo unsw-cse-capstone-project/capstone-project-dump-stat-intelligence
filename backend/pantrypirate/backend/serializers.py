@@ -84,23 +84,29 @@ class FavouritesSerializer(serializers.ModelSerializer):
 
 
 # Requires a unique string to make, will return said string
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [],}}
 
 
 # Serialiser for ingredient, creation requires category object currently (
 # should be changed to string foreign key). Update also requires full
 # category object
+
+# Validators temporarily removed to allow spaces in category names
+# Will be replaced with a custom validator
 class IngredientSerializer(serializers.ModelSerializer):
     category = IngredientCategorySerializer()
 
     class Meta:
         model = Ingredient
         fields = ["name", "category"]
-        extra_kwargs = {"name": {"validators": [UnicodeUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
     def create(self, validated_data):
         cat_data = validated_data.pop("category")
@@ -152,6 +158,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             "cook_time",
             "method",
             "author",
+            "image_URL",
             "meal_cat",
             "diet_req",
             "ingredients",
@@ -179,9 +186,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
         for ing_data in recipe_ing_data:
             ing_data["recipe"] = recipe
-            ing_data["ingredient"] = Ingredient.objects.get(
-                name=ing_data.get("ingredient")
-            )
+            ing_data["ingredient"] = Ingredient.objects.get(name=ing_data.get("ingredient"))
 
             ing = RecipeIngredient.objects.create(**ing_data)
             recipe.ingredients.add(ing)
@@ -198,6 +203,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         instance.cook_time = validated_data.get("cook_time", instance.cook_time)
         instance.method = validated_data.get("method", instance.method)
         instance.author = validated_data.get("author", instance.author)
+        instance.image_URL = validated_data.get("image_URL", instance.image_URL)
 
         # Remove ingredients that currently exist
         instance.diet_req.clear()

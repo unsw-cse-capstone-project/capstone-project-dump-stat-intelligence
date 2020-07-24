@@ -13,6 +13,9 @@ export default class Indicator extends React.Component {
         onMouseOver={() => this.setState({ hover: true })}
         onMouseLeave={() => this.setState({ hover: false })}
         className={styles.indicator}
+        style={{
+          backgroundColor: this.props.value <= 3 ? "#40b983" : "#ffbd2d",
+        }}
       >
         {!this.state.hover ? (
           this.props.value
