@@ -5,22 +5,50 @@ import { useSelector, useDispatch } from "react-redux";
 import { update_search } from "../../lib/redux/actions/searchAction";
 import { explore_remove, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
 import FilterSearch from "./FilterSearch";
+import Check from "./Check";
 
 export default function Filter() {
   const dispatch = useDispatch();
   let filters = useSelector((state) => state.explore.filters);
-  let selections = useSelector(state => state.explore.ingredients)
+  let selections = useSelector(state => state.explore.ingredients);
+  let pantryOnly = useSelector(state => state.search.pantryOnly);
   return (
     <div className={`form ${styles.filter}`} autoComplete="off">
       <div className="field is-grouped">
         <div className={`control ${styles.searchFormBox}`} onFocus={() => document.getElementById("explore-ing-add").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("explore-ing-add").classList.remove(styles.show), 200)}>
           <FilterSearch id={"explore-ing-add"} searcher="explore-search"/>
-          <input id="explore-search" placeholder="Add an ingredient" className="input" name="search" onChange={(e => {e.preventDefault(); dispatch(update_search(e.target.value))})}/>
+          <input id="explore-search" placeholder="Search an ingredient" className="input" name="search" onChange={(e => {e.preventDefault(); dispatch(update_search(e.target.value))})}/>
           
         </div>
         <div className="control">
-          <button onClick={e => {e.preventDefault(); dispatch(explore_clear()); dispatch(filter_clear())}} className="button">Reset search</button>
+          <div className="select dropdown is-hoverable">
+            <div className="dropdown-trigger">
+              <button
+                className="button"
+                aria-haspopup="true"
+                aria-controls="dropdown-menu4"
+              >
+                <span>Search from</span>
+                <span className="icon is-small">
+                  <i className="fas fa-check" aria-hidden="true"></i>
+                </span>
+              </button>
+            </div>
+            <div className="dropdown-menu" id="dropdown-menu4" role="menu">
+              <div className="dropdown-content">
+                <a onClick={() => (true)} className="dropdown-item">
+                  <span>Pantry ingredients only</span>
+                  { pantryOnly ? <Check/> : ""}
+                </a>
+                <a onClick={() => (true)} className="dropdown-item">
+                  <span>All ingredients</span>
+                  { !pantryOnly ? <Check/> : ""}
+                </a>
+              </div>
+            </div>
+          </div>
         </div>
+        
       </div>
       
       
@@ -82,6 +110,9 @@ export default function Filter() {
               </div>
             </div>
           </div>
+        </div>
+        <div className="control">
+          <button onClick={e => {e.preventDefault(); dispatch(explore_clear()); dispatch(filter_clear())}} className="button">Reset search</button>
         </div>
         <div className="control">
           <button

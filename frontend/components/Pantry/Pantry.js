@@ -55,7 +55,7 @@ export default function Pantry() {
         </form>
         <div className={styles.ingredientSection}>
           {Object.keys(pantry).map((category, i) => {
-            if (pantry[category].length !== 0) {
+            if (pantry[category].length !== 0 && category !== 'meta') {
               return (
                 <div key={i}>
                   <h4>{category}</h4>
