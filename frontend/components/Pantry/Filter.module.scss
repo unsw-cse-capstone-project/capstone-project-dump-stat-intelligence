@@ -1,5 +1,5 @@
 .filter {
-  margin: 2rem 0;
+  margin: 2rem 0 0 0;
 }
 
 
@@ -26,4 +26,17 @@
 }
 .show {
   display:block;
+}
+
+.tags {
+  margin-bottom:0 !important;
+}
+
+.greyTag {
+  border : 1px solid #000000aa;
+  background-color:white !important;
+}
+
+.isIng {
+  border-color : #0DBF37;
 }

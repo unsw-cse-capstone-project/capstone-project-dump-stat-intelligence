@@ -23,7 +23,9 @@ export const searchReducer = (state = initialState, action ) => {
             }
         case types.CLEAR_SEARCH:
             return {
-                ...initialState
+                searchString : "",
+                results : [],
+                ...state
             }
         default:
             return state
