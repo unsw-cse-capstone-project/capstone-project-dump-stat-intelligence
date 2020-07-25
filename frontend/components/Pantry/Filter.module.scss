@@ -51,3 +51,14 @@
 .stopBorder {
   outline : none !important;
 }
+
+.suggestBox {
+  padding:0.7rem;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.suggestion {
+  cursor: pointer;
+}

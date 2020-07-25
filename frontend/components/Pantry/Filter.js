@@ -3,7 +3,7 @@ import FilterItem from "./FilterItem";
 import { recipes_update } from "../../lib/redux/actions/recipesAction";
 import { useSelector, useDispatch } from "react-redux";
 import { update_search, search_type } from "../../lib/redux/actions/searchAction";
-import { explore_remove, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
+import { explore_add, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
 import FilterSearch from "./FilterSearch";
 import FilterIngredient from "./FilterIngredient";
 import Check from "./Check";
@@ -13,6 +13,7 @@ export default function Filter() {
   let filters = useSelector((state) => state.explore.filters);
   let selections = useSelector(state => state.explore.ingredients);
   let pantryOnly = useSelector(state => state.search.pantryOnly);
+  let suggestion = useSelector(state => state.recipes.suggestion);
   return (
     <div className={`form ${styles.filter}`} autoComplete="off">
       <div className="field is-grouped">
@@ -135,7 +136,6 @@ export default function Filter() {
           ))
         }
       </div>
-      {/**/ 
       <div className={`tags ${styles.tags}`}>
           {Object.keys(filters.meal).map((key, idx) => (
             filters.meal[key] ?  
@@ -154,7 +154,13 @@ export default function Filter() {
             : ""
           ))}
       </div>
-      /**/}
+      { suggestion ?
+        <div className={styles.suggestBox}>
+          <h6 className="is-6">Suggested ingredient -&nbsp;</h6>
+            <span onClick={() => dispatch(explore_add(suggestion))} className={`tag is-primary ${styles.suggestion}`}>{suggestion}</span>
+        </div>
+        : ""
+      }
     </div>
   );
 }
