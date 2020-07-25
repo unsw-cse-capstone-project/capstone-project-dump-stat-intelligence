@@ -39,4 +39,11 @@
 
 .isIng {
   border-color : #0DBF37;
+  cursor: pointer;
 }
+
+.isExp {
+  border-color : var(--primary);
+  cursor: pointer;
+}
+

@@ -51,8 +51,10 @@ export const explore_all = () => async (dispatch) => {
   let newList = [];
   let i = 0;
   Object.keys(pantry).map((key) => {
-    for (i = 0; i < pantry[key].length; i++) {
-      newList.push(pantry[key][i].name);
+    if (key !== "meta") {
+      for (i = 0; i < pantry[key].length; i++) {
+        newList.push(pantry[key][i].name);
+      }
     }
   });
   dispatch({

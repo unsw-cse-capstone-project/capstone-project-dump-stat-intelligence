@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { update_search, search_type } from "../../lib/redux/actions/searchAction";
 import { explore_remove, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
 import FilterSearch from "./FilterSearch";
+import FilterIngredient from "./FilterIngredient";
 import Check from "./Check";
 
 export default function Filter() {
@@ -12,7 +13,6 @@ export default function Filter() {
   let filters = useSelector((state) => state.explore.filters);
   let selections = useSelector(state => state.explore.ingredients);
   let pantryOnly = useSelector(state => state.search.pantryOnly);
-  let pantry = useSelector(state => state.pantry);
   return (
     <div className={`form ${styles.filter}`} autoComplete="off">
       <div className="field is-grouped">
@@ -130,10 +130,7 @@ export default function Filter() {
       <div className={`tags ${styles.tags}`}>
         {
           selections.map((val, idx) => (
-            <span key={idx} className={`tag ${styles.greyTag} ${pantry.meta.indexOf(val) !== -1 ? styles.isIng : ""}`}>
-              {val}
-              <button onClick={() => dispatch(explore_remove({ingredient : val}))} className="delete is_small"></button>
-            </span>
+            <FilterIngredient ingredient={val} key={idx}/>
 
           ))
         }
