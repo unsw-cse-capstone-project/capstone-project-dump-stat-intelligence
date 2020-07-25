@@ -36,7 +36,7 @@ export default function Filter() {
               </button>
             </div>
             <div className={`dropdown-menu`} id="dropdown-menu4" role="menu">
-              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu4").classList.remove(styles.show)}} className="dropdown-content">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu4").classList.remove(styles.show)}} className={`dropdown-content ${styles.stopBorder}`}>
                 <a onClick={() => (dispatch(search_type(true)))} className="dropdown-item">
                   <span>Pantry ingredients only</span>
                   { pantryOnly ? <Check/> : ""}
@@ -70,7 +70,7 @@ export default function Filter() {
               </button>
             </div>
             <div className="dropdown-menu" id="dropdown-menu5" role="menu">
-              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu5").classList.remove(styles.show)}} className="dropdown-content">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu5").classList.remove(styles.show)}} className={`dropdown-content ${styles.stopBorder}`}>
                 {Object.keys(filters.meal).map((key, idx) => (
                   <FilterItem
                     key={idx}
@@ -99,7 +99,7 @@ export default function Filter() {
               </button>
             </div>
             <div className="dropdown-menu" id="dropdown-menu6" role="menu">
-              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu6").classList.remove(styles.show)}} className="dropdown-content">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu6").classList.remove(styles.show)}} className={`dropdown-content ${styles.stopBorder}`}>
                 {Object.keys(filters.diet).map((key, idx) => (
                   <FilterItem
                     key={idx}
