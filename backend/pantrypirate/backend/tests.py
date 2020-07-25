@@ -1529,9 +1529,9 @@ class SearchTestCase(TestCase):
 
         self.assertEqual(json.loads(response.content), expected_response)
 
-    # make sure search will always return a suggested ingredient
+    # make sure search will always return a suggested ingredient, or empty string as last case
     def test_search7(self):
-        
+
         # add things to pantry
         ingredient_data1 = {'user': "1", "ingredient": "apple"}
         ingredient_data2 = {'user': "1", "ingredient": "pear"}
@@ -1589,7 +1589,81 @@ class SearchTestCase(TestCase):
 
         self.assertEqual(json.loads(response.content), expected_response)
 
-# Testing searching
+        # now check empty string
+        # add recipe with lemon
+        recipe_data = {"name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
+                        "ingredients":
+                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
+                            {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
+                       "meal_cat": [{"name": "lunch"}], 
+                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        post = self.c.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+
+        ingredient_data5 = {'user': "1", "ingredient": "lemon"}
+        self.c.post('/user/pantry/', json.dumps(ingredient_data5), content_type='application/json')
+
+        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot,lemon&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+                         content_type="application/json")
+
+        expected_response = [{"recipe": 
+                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "image_URL": None,
+                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                                "ingredients": 
+                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+                            "match_percentage": 1.0, 
+                            "missing_ing": []},
+                            
+                            {"recipe": 
+                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "image_URL": None,
+                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                                "ingredients": 
+                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+                            "match_percentage": 1.0, 
+                            "missing_ing": []},
+
+                            {"recipe": 
+                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "image_URL": None,
+                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                                "ingredients": 
+                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+                            "match_percentage": 1.0, 
+                            "missing_ing": []}, 
+
+                            {"recipe": 
+                                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
+                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                                "image_URL": None,
+                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                                "ingredients": 
+                                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
+                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
+                                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
+                            "match_percentage": 1.0, 
+                            "missing_ing": []},
+                            
+                            {"suggestion" : ""}] 
+
+        self.assertEqual(json.loads(response.content), expected_response)
+
+
+# Testing search metadata
 class MetaSearchTestCase(TestCase):
     def setUp(self):
         # set up meal categories and dietary requirements
