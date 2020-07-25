@@ -12,7 +12,10 @@ export default function FilterIngredient(props) {
         for (var k of keys) {
             if (k !== 'meta') {
                 for (var dict of pantry[k]) {
-                    if (dict.name === ing) return dict;
+                    if (dict.name === ing) return {
+                        category : k,
+                        expiry : dict.expiry
+                    };
                 }
             }
         }
