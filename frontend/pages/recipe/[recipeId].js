@@ -96,11 +96,11 @@ const Recipe = (props) => {
     );
   } else if (isLoggedIn) {
     faveButton = isFavourite ? (
-      <a onClick={removeFave} className="button is-light is-warning">
+      <a onClick={removeFave} className="button is-warning">
         Unfavourite
       </a>
     ) : (
-      <a onClick={addFave} className="button is-light is-warning">
+      <a onClick={addFave} className="button is-warning">
         Favourite
       </a>
     );
