@@ -260,9 +260,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if not suggested_ingredient:
             suggested_ingredient = Ingredient.objects.exclude(name__in=running_list)[0].name
 
-        # if somehow still no ingredient was found then make it first ingredient
+        # if somehow still no ingredient was found then return empty string
         if not suggested_ingredient:
-            suggested_ingredient = Ingredient.objects.all()[0]
+            suggested_ingredient = ""
 
         # add to return
         final_return = ordered_results.copy()
