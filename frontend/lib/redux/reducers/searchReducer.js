@@ -25,7 +25,6 @@ export const searchReducer = (state = initialState, action ) => {
             return {
                 searchString : "",
                 results : [],
-                ...state
             }
         default:
             return state

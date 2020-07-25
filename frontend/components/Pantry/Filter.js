@@ -1,6 +1,6 @@
 import styles from "./Filter.module.scss";
 import FilterItem from "./FilterItem";
-import { recipes_update } from "../../lib/redux/actions/recipesAction";
+import { recipes_update, recipes_unsuggest } from "../../lib/redux/actions/recipesAction";
 import { useSelector, useDispatch } from "react-redux";
 import { update_search, search_type } from "../../lib/redux/actions/searchAction";
 import { explore_add, explore_clear, filter_update, filter_clear } from "../../lib/redux/actions/exploreAction";
@@ -128,6 +128,16 @@ export default function Filter() {
           </button>
         </div>
       </div>
+      { suggestion ?
+        <div className={styles.suggestBox}>
+            <button onClick={e=> {e.stopPropagation(); dispatch(recipes_unsuggest())}} className="delete is_small"></button>
+            <h6 className="is-6">&nbsp;Suggested ingredient -&nbsp;</h6>
+            <span onClick={() => {dispatch(explore_add(suggestion)); dispatch(recipes_unsuggest());}} className={`tag is-primary ${styles.suggestion}`}>
+              {suggestion}
+            </span>
+        </div>
+        : ""
+      }
       <div className={`tags ${styles.tags}`}>
         {
           selections.map((val, idx) => (
@@ -154,13 +164,7 @@ export default function Filter() {
             : ""
           ))}
       </div>
-      { suggestion ?
-        <div className={styles.suggestBox}>
-          <h6 className="is-6">Suggested ingredient -&nbsp;</h6>
-            <span onClick={() => dispatch(explore_add(suggestion))} className={`tag is-primary ${styles.suggestion}`}>{suggestion}</span>
-        </div>
-        : ""
-      }
+      
     </div>
   );
 }

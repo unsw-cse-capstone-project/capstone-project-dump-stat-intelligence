@@ -16,6 +16,12 @@ RECIPES
 
 */
 
+export const recipes_unsuggest = () => async dispatch => {
+  dispatch({
+    type: types.RECIPES_UNSUGGEST,
+  })
+}
+
 //NO API, MAY NOT EVEN BE NECESSARY
 export const recipes_clear = () => async (dispatch) => {
   dispatch({

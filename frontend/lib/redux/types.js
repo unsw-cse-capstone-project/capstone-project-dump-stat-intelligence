@@ -11,6 +11,7 @@ export const LOAD_OWNED = 'LOAD_OWNED'; // get owned recipes
 //Recipes
 export const RECIPES_CLEAR = 'RECIPES_CLEAR'; //clear the recipes shown in explore page
 export const RECIPES_UPDATE = 'RECIPES_UPDATE'; //query has changed, update which recipes are shown
+export const RECIPES_UNSUGGEST = 'RECIPES_UNSUGGEST'; //clear suggestion
 
 //Explore
 export const EXPLORE_CLEAR = 'EXPLORE_CLEAR'; //clear the current running list
