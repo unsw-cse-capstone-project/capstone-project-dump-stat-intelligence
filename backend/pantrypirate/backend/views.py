@@ -205,9 +205,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #    {"suggestion" : "ing_name"}]
 
         f = f.order_by("name")
-        recipe_list = self.get_serializer(
-            f, many=True
-        ).data  # serialise so that recipe info can be returned later
+        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
         unordered_results = []
 
         all_missing_ingredients = []
@@ -260,15 +258,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # if somehow no ingredient was found then make it first ingredient not in running list
         if not suggested_ingredient:
-            suggested_ingredient = Ingredient.objects.exclude(name__in=running_list)[0]
+            suggested_ingredient = Ingredient.objects.exclude(name__in=running_list)[0].name
 
         # if somehow still no ingredient was found then make it first ingredient
         if not suggested_ingredient:
             suggested_ingredient = Ingredient.objects.all()[0]
 
         # add to return
-        # final_return = ordered_results.copy()
-        # final_return.append({"suggestion" : suggested_ingredient})
+        final_return = ordered_results.copy()
+        final_return.append({"suggestion" : suggested_ingredient})
 
         # Update query string based on whether a match has been found
         full_match = 0
@@ -276,7 +274,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             full_match = 1
         self.update_search(string, full_match=full_match)
 
-        return Response(ordered_results)
+        return Response(final_return)
 
     # Takes boolean for full match and ingredients string from running list
     # input
