@@ -4,7 +4,7 @@ const initialState = {
     searchString : "",
     //each one is an object with name and category
     results : [],
-    pantryOnly : true,
+    pantryOnly : false,
 }
 
 
