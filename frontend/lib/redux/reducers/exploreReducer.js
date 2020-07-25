@@ -14,8 +14,8 @@ const initialState = {
         diet : {
             Vegan : false,
             Vegetarian : false,
-            "Gluten-Free" : false,
-            "Dairy-Free" : false
+            "Gluten-free" : false,
+            "Dairy-free" : false
 
         }
     }
@@ -37,7 +37,21 @@ export const exploreReducer = (state = initialState, action) => {
             return {
                 ...state, 
                 filters : {
-                    ...initialState.filters
+                    meal : {
+                        Breakfast : false,
+                        Lunch : false,
+                        Dinner : false,
+                        Snack : false,
+                        Dessert : false,
+                        Brunch : false
+                    },
+                    diet : {
+                        Vegan : false,
+                        Vegetarian : false,
+                        "Gluten-free" : false,
+                        "Dairy-free" : false
+            
+                    }
                 }
             }
         case types.EXPLORE_ALL:

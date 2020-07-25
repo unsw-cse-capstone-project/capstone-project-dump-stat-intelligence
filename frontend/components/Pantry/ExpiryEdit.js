@@ -85,7 +85,7 @@ export default function ExpiryEdit() {
             </form>
             <div className={styles.expiryDelete}>
                 <button onClick={handleDelete} className={`button is-primary ${styles.deleteButton}`}>
-                    Delete ingredient
+                    Remove from pantry
                 </button>
             </div>
         </div>

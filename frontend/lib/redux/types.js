@@ -11,6 +11,7 @@ export const LOAD_OWNED = 'LOAD_OWNED'; // get owned recipes
 //Recipes
 export const RECIPES_CLEAR = 'RECIPES_CLEAR'; //clear the recipes shown in explore page
 export const RECIPES_UPDATE = 'RECIPES_UPDATE'; //query has changed, update which recipes are shown
+export const RECIPES_UNSUGGEST = 'RECIPES_UNSUGGEST'; //clear suggestion
 
 //Explore
 export const EXPLORE_CLEAR = 'EXPLORE_CLEAR'; //clear the current running list
@@ -28,9 +29,14 @@ export const PANTRY_REMOVE = 'PANTRY_REMOVE'; //remove item from pantry
 export const PANTRY_CHANGE = 'PANTRY_CHANGE'; //Update expiry in a pantry ingredient
 
 
-//Ingredient 
+//Query 
 export const QUERY = 'QUERY'; // new key stroke, search for new ingredient
 export const CLEAR_QUERY = 'CLEAR_QUERY'; // set query back to empty
+
+//SEARCH 
+export const SEARCH = 'SEARCH'; // new key stroke, search for new ingredient
+export const CLEAR_SEARCH = 'CLEAR_SEARCH'; // set SEARCH back to empty
+export const SEARCH_TYPE = 'SEARCH_TYPE'; // Change the type of search
 
 //Create
 export const CLEAR_CREATE = 'CLEAR_CREATE'; // clear all the recipe info

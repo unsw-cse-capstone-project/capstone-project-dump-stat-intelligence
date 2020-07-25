@@ -2,6 +2,9 @@ import * as types from "../types";
 
 const initialState = {
     //Each key is a category and each value is a list of ingredient types
+
+    //EXCEPT for meta tag which holds a list of all the ingredient names
+    meta : []
 }
 
 
@@ -22,8 +25,15 @@ export const pantryReducer = (state = initialState, action) => {
             return state
             
         case types.PANTRY_GET:
+            let newMeta = [];
+            for (cat in action.pantry) {
+                for (ing in action.pantry[cat]) {
+                    newMeta.push(ing);
+                }
+            }
             return {
-                ...action.pantry
+                ...action.pantry,
+                meta : newMeta
             }
         case types.PANTRY_ADD:
             let currCat = []
@@ -31,24 +41,20 @@ export const pantryReducer = (state = initialState, action) => {
             if (action.newIngredient.category in state) {
                 currCat = state[action.newIngredient.category];
             }
-            //Making sure ingredient isn't already in pantry
-            let found = false;
-            for (let i = 0; i < currCat.length; i++) {
-                if (currCat[i].name == action.newIngredient.name) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+            newMeta = state.meta;
+            if (state.meta.indexOf(action.newIngredient.name) === -1) {
                 currCat.push({
                     name : action.newIngredient.name,
                     expiry : action.newIngredient.expiry
                 })
-            } 
+                newMeta.push(action.newIngredient.name);
+            }
+
             let newState = state;
             newState[action.newIngredient.category] = currCat;
             return {
                 ...newState,
+                meta : newMeta,
             }
         case types.PANTRY_REMOVE:
             //CASE already removed
@@ -68,8 +74,11 @@ export const pantryReducer = (state = initialState, action) => {
             if (newCat.length === 0) {
                delete  newState[action.toRemove.category];
             }
+            newMeta = state.meta;
+            newMeta.splice(newMeta.indexOf(action.toRemove.ingredient), 1);
             return {
-                ...newState
+                ...newState,
+                meta : newMeta
             }
 
         default:

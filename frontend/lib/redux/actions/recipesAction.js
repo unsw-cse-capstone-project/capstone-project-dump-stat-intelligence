@@ -16,6 +16,12 @@ RECIPES
 
 */
 
+export const recipes_unsuggest = () => async dispatch => {
+  dispatch({
+    type: types.RECIPES_UNSUGGEST,
+  })
+}
+
 //NO API, MAY NOT EVEN BE NECESSARY
 export const recipes_clear = () => async (dispatch) => {
   dispatch({
@@ -45,14 +51,19 @@ export const recipes_update = () => async (dispatch) => {
   // TODO: backend has changed format to now have match_percentage
   // going to just extract recipes for now
   const recipes = await RecipeAPI.getAll(mealStr, dietStr, ingredientStr);
-  console.log(recipes)
   let extractedRecipes = [];
+  let suggestion = null;
   recipes.data.forEach((r) => {
-    extractedRecipes.push(r.recipe);
+    if (r.suggestion) {
+      suggestion = r.suggestion;
+    } else {
+      extractedRecipes.push(r.recipe);
+    }
   });
-
+  if (explore.ingredients.length === 0) suggestion = null;
   dispatch({
     type: types.RECIPES_UPDATE,
     recipes: extractedRecipes,
+    suggestion : suggestion,
   });
 };

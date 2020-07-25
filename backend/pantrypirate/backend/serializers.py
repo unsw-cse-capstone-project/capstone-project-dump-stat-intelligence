@@ -106,7 +106,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ["name", "category"]
-        extra_kwargs = {"name": {"validators": [],}}
+        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
     def create(self, validated_data):
         cat_data = validated_data.pop("category")
