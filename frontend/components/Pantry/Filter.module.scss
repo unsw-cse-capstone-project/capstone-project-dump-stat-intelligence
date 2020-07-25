@@ -25,7 +25,7 @@
   display:none;
 }
 .show {
-  display:block;
+  display:block !important;
 }
 
 .tags {
@@ -47,3 +47,6 @@
   cursor: pointer;
 }
 
+.dropBox {
+  position:relative;
+}

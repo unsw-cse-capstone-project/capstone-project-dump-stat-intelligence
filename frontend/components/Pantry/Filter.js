@@ -22,7 +22,7 @@ export default function Filter() {
           
         </div>
         <div className="control">
-          <div className="select dropdown is-hoverable">
+          <div onFocus={e => {let obj = document.getElementById("dropdown-menu4"); obj.classList.add(styles.show); obj.firstElementChild.focus();}} className={`select dropdown`}>
             <div className="dropdown-trigger">
               <button
                 className="button"
@@ -35,8 +35,8 @@ export default function Filter() {
                 </span>
               </button>
             </div>
-            <div className="dropdown-menu" id="dropdown-menu4" role="menu">
-              <div className="dropdown-content">
+            <div className={`dropdown-menu`} id="dropdown-menu4" role="menu">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu4").classList.remove(styles.show)}} className="dropdown-content">
                 <a onClick={() => (dispatch(search_type(true)))} className="dropdown-item">
                   <span>Pantry ingredients only</span>
                   { pantryOnly ? <Check/> : ""}
@@ -56,12 +56,12 @@ export default function Filter() {
       
       <div className="field is-grouped">
         <div className="control">
-          <div className="select dropdown is-hoverable">
+          <div onFocus={e => {let obj = document.getElementById("dropdown-menu5"); obj.classList.add(styles.show); obj.firstElementChild.focus();}} className="select dropdown">
             <div className="dropdown-trigger">
               <button
                 className="button"
                 aria-haspopup="true"
-                aria-controls="dropdown-menu4"
+                aria-controls="dropdown-menu5"
               >
                 <span>Meal type</span>
                 <span className="icon is-small">
@@ -69,8 +69,8 @@ export default function Filter() {
                 </span>
               </button>
             </div>
-            <div className="dropdown-menu" id="dropdown-menu4" role="menu">
-              <div className="dropdown-content">
+            <div className="dropdown-menu" id="dropdown-menu5" role="menu">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu5").classList.remove(styles.show)}} className="dropdown-content">
                 {Object.keys(filters.meal).map((key, idx) => (
                   <FilterItem
                     key={idx}
@@ -85,12 +85,12 @@ export default function Filter() {
           </div>
         </div>
         <div className="control">
-          <div className="select dropdown is-hoverable">
+          <div onFocus={e => {let obj = document.getElementById("dropdown-menu6"); obj.classList.add(styles.show); obj.firstElementChild.focus();}} className="select dropdown">
             <div className="dropdown-trigger">
               <button
                 className="button"
                 aria-haspopup="true"
-                aria-controls="dropdown-menu4"
+                aria-controls="dropdown-menu6"
               >
                 <span>Dietary requirements</span>
                 <span className="icon is-small">
@@ -98,8 +98,8 @@ export default function Filter() {
                 </span>
               </button>
             </div>
-            <div className="dropdown-menu" id="dropdown-menu4" role="menu">
-              <div className="dropdown-content">
+            <div className="dropdown-menu" id="dropdown-menu6" role="menu">
+              <div tabIndex="0" onBlur={e => {document.getElementById("dropdown-menu6").classList.remove(styles.show)}} className="dropdown-content">
                 {Object.keys(filters.diet).map((key, idx) => (
                   <FilterItem
                     key={idx}
