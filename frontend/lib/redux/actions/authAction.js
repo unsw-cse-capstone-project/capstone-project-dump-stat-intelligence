@@ -144,6 +144,8 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
 
 export const login = (email, password) => {
   return (dispatch) => {
+    removeUser();
+    
     return UserAPI.login(email, password)
     .then(res => {
       let data = res.data;
