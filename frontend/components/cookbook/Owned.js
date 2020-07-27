@@ -28,7 +28,7 @@ export default function Favourites() {
             <div className={styles.buffer}></div>
             {owned.map((recipe, idx) => (
                 <div key={idx} className="column is-3">
-                <RecipeIcon owned={true} fave={true} title={recipe.name} id={recipe.id} src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}/>
+                <RecipeIcon owned={true} fave={true} title={recipe.name} id={recipe.id} src={recipe.image_URL}/>
                 </div>
             ))}
         </div>

@@ -135,7 +135,7 @@ const Recipe = (props) => {
               </div>
               <div className="column is-8">
                 <img
-                  src={`https://source.unsplash.com/1200x600/?${recipe.name}`}
+                  src={recipe.image_URL === null ? `https://source.unsplash.com/400x300/?food&sig=${recipe.id}` : recipe.image_URL}
                 />
               </div>
             </div>
