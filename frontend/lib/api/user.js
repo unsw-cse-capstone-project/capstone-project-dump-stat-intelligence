@@ -19,8 +19,11 @@ const UserAPI = {
     return await api.get(`/user/${userId}/`);
   },
   owned: async () => {
-    return await api.get(`/user/myrecipes/`)
-  }
+    return await api.get(`/user/myrecipes/`);
+  },
+  update: async (userId, username, email, password) => {
+    return await api.put(`/user/${userId}/`, { username, password, email });
+  },
 };
 
 export default UserAPI;
