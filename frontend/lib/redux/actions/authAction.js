@@ -186,7 +186,7 @@ export const login = (email, password) => {
             type: types.LOGIN,
             userInfo: data,
             uid: data.id,
-            token: user.token,
+            token: data.token,
             favourites,
           });
         });
