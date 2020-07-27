@@ -34,7 +34,6 @@ export default function Explore() {
               <div key={idx} className="column is-3">
                 <RecipeCard
                   className="column is-3"
-                  src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}
                   recipe={recipe}
                 />
               </div>

@@ -35,7 +35,7 @@ export default function Favourites() {
               fave={true}
               title={recipe.name}
               id={recipe.id}
-              src={`https://source.unsplash.com/400x300/?food&sig=${recipe.id}`}
+              src={recipe.image_URL}
             />
           </div>
         ))}

@@ -14,7 +14,8 @@ const initialState = {
     },
     diet_req : [],
     meal_cat : [],
-    ingredients : []
+    ingredients : [],
+    image_URL : ""
 }
 
 

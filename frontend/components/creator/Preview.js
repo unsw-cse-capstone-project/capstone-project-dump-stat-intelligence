@@ -30,13 +30,9 @@ export default function Preview() {
         <NewIngredient id="new-ingredient" />
         <div className="box column is-10">
           <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
-          {creation.name !== "New Recipe" ? (
-            <img
-              src={`https://source.unsplash.com/1200x600/?${creation.name}`}
+          <img
+              src={creation.image_URL}
             />
-          ) : (
-            ""
-          )}
           <p>
             Author: {user.username} | Cook time: {creation.cook_time}
           </p>
