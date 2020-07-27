@@ -37,7 +37,7 @@ export const remove_category = (name, category) => async (dispatch) => {
 };
 
 export const create_ingredient = (name, category) => {
-  IngredientAPI.create({name, category})
+  IngredientAPI.create({ name, category });
 };
 
 //NO API, frontend only
@@ -76,9 +76,9 @@ export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
   let tmp;
   let i;
-  for(i=0; i < recipe.ingredients.length; i++) {
-    tmp = recipe.ingredients[i]["ingredient"]["name"]
-    recipe.ingredients[i]["ingredient"] = tmp
+  for (i = 0; i < recipe.ingredients.length; i++) {
+    tmp = recipe.ingredients[i]["ingredient"]["name"];
+    recipe.ingredients[i]["ingredient"] = tmp;
   }
   let user = store.getState().auth;
 
@@ -95,7 +95,7 @@ export const save_create = () => async (dispatch) => {
     })
     .catch((err) => {
       console.error(err.response);
-    });  
+    });
 };
 
 //NO API, frontend only
@@ -119,7 +119,7 @@ export const load_create = (id) => async (dispatch) => {
     .then(() => {
       dispatch({
         type: types.LOAD_CREATE,
-        loaded: recipe,
+        loaded: { ...recipe, existing: true }, // Edit flag is for the create page
       });
     });
 };

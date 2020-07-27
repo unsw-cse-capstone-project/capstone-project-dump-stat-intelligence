@@ -3,6 +3,7 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
+import CookbookAPI from "../../api/cookbook";
 import { getUser, setUser, removeUser } from "../../utils/localstorage";
 
 /*
@@ -27,11 +28,14 @@ AUTH
 
 */
 
-//NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
 
-  //INSERT API, tell backend to remove recipe <id> as favourite from user
+  CookbookAPI.delete(id)
+    .then((res) => {
+      // console.log(res);
+    })
+    .catch((err) => console.error(err.response));
 
   dispatch({
     type: types.REMOVE_FAVE,
@@ -39,11 +43,14 @@ export const remove_favourite = (id) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const add_favourite = (recipe) => async (dispatch) => {
   let user = store.getState().auth;
 
-  //INSERT API, tell backend to add recipe <id> as favourite from user
+  CookbookAPI.add(recipe.id)
+    .then((res) => {
+      // console.log(res);
+    })
+    .catch((err) => console.error(err.response));
 
   dispatch({
     type: types.ADD_FAVE,
@@ -139,12 +146,18 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   UserAPI.get(user.id)
     .then((res) => {
       let data = res.data;
-      console.log("login success from localstorage");
-      dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: user.token,
+      // console.log("login success from localstorage");
+
+      // Then get the favourite recipes for this user
+      CookbookAPI.get().then((res) => {
+        let favourites = res.data;
+        dispatch({
+          type: types.LOGIN,
+          userInfo: data,
+          uid: data.id,
+          token: user.token,
+          favourites,
+        });
       });
     })
     .catch((err) => {
@@ -167,12 +180,17 @@ export const login = (email, password) => {
         let data = res.data;
         setUser({ id: data.id, token: data.token });
 
-        dispatch({
-          type: types.LOGIN,
-          userInfo: data,
-          uid: data.id,
-          token: data.token,
+        CookbookAPI.get().then((res) => {
+          let favourites = res.data;
+          dispatch({
+            type: types.LOGIN,
+            userInfo: data,
+            uid: data.id,
+            token: user.token,
+            favourites,
+          });
         });
+
         return { success: true };
       })
       .catch((err) => {

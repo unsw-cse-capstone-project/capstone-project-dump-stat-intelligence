@@ -59,10 +59,10 @@ const Recipe = (props) => {
     return <p>Loading</p>;
   }
 
-  console.log(recipe)
+  console.log(recipe);
 
   function addFave() {
-    dispatch(add_favourite({ title: recipe.name, src: null, id: recipe.id }));
+    dispatch(add_favourite({ name: recipe.name, src: null, id: recipe.id }));
     setFavourite(true);
   }
 
