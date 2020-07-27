@@ -65,4 +65,5 @@ as API examples).
 Week 8
 
 Updated meal categories, dietary requirements and ingredient categories 
-to allow space in names.
+to allow space in names. Minor updates overall, small tweaks to 
+responses / request interpretation.
