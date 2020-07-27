@@ -70,7 +70,6 @@ export const new_next = (next) => async (dispatch) => {
 export const update_password = (password) => async (dispatch) => {
   let user = store.getState().auth;
   //INSERT API, no frontend change but tell backend to update password for user
-  console.log(user);
   UserAPI.update(
     user.uid,
     user.userInfo.username,
@@ -79,9 +78,7 @@ export const update_password = (password) => async (dispatch) => {
   )
     .then((res) => {
       let data = res.data;
-
-      console.log("success!");
-      console.log(res);
+      // don't need to update anything
     })
     .catch((err) => {
       console.error(err.response);
@@ -89,18 +86,14 @@ export const update_password = (password) => async (dispatch) => {
 };
 
 //NEEDS API
-export const update_details = (username, email, password) => async (
+export const update_details = (username, email, old_password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
-  console.log("updating user:", user);
-  UserAPI.update(user.uid, username, email, password)
+  UserAPI.update(user.uid, username, email, old_password)
     .then((res) => {
       let data = res.data;
-
-      console.log("success!");
-      console.log(res);
 
       let userInfo = {
         username: username,
