@@ -16,7 +16,8 @@ export default function EditDetails(props) {
     dispatch(
       update_details(
         event.target.elements.username.value,
-        event.target.elements.email.value
+        event.target.elements.email.value,
+        event.target.elements.password.value
       )
     );
     //Either way, should reset form
@@ -59,6 +60,16 @@ export default function EditDetails(props) {
             type="text"
             placeholder="Your Email"
             defaultValue={deets.email}
+          ></input>
+        </div>
+        <label className="label">Old Password</label>
+        <div className="field control">
+          <input
+            name="password"
+            className="input"
+            type="password"
+            placeholder="Your Password"
+            defaultValue={deets.old_password}
           ></input>
         </div>
         <hr />
