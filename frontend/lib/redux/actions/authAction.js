@@ -3,6 +3,7 @@ import * as types from "../types";
 import store from "../store";
 
 import UserAPI from "../../api/user";
+import CookbookAPI from "../../api/cookbook";
 import { getUser, setUser, removeUser } from "../../utils/localstorage";
 
 /*
@@ -27,11 +28,14 @@ AUTH
 
 */
 
-//NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
 
-  //INSERT API, tell backend to remove recipe <id> as favourite from user
+  CookbookAPI.delete(id)
+    .then((res) => {
+      // console.log(res);
+    })
+    .catch((err) => console.error(err.response));
 
   dispatch({
     type: types.REMOVE_FAVE,
@@ -39,11 +43,14 @@ export const remove_favourite = (id) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const add_favourite = (recipe) => async (dispatch) => {
   let user = store.getState().auth;
 
-  //INSERT API, tell backend to add recipe <id> as favourite from user
+  CookbookAPI.add(recipe.id)
+    .then((res) => {
+      // console.log(res);
+    })
+    .catch((err) => console.error(err.response));
 
   dispatch({
     type: types.ADD_FAVE,
@@ -66,10 +73,9 @@ export const new_next = (next) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const update_password = (password) => async (dispatch) => {
   let user = store.getState().auth;
-  //INSERT API, no frontend change but tell backend to update password for user
+
   UserAPI.update(
     user.uid,
     user.userInfo.username,
@@ -78,19 +84,18 @@ export const update_password = (password) => async (dispatch) => {
   )
     .then((res) => {
       let data = res.data;
-      // don't need to update anything
+      // don't need to update anything on frontend
     })
     .catch((err) => {
       console.error(err.response);
     });
 };
 
-//NEEDS API
 export const update_details = (username, email, old_password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
-  //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
+
   UserAPI.update(user.uid, username, email, old_password)
     .then((res) => {
       let data = res.data;
@@ -109,7 +114,6 @@ export const update_details = (username, email, old_password) => async (
     });
 };
 
-//NEEDS API
 export const register = (username, email, password) => {
   return (dispatch) => {
     return UserAPI.register(username, email, password)
@@ -142,12 +146,18 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   UserAPI.get(user.id)
     .then((res) => {
       let data = res.data;
-      console.log("login success from localstorage");
-      dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: user.token,
+      // console.log("login success from localstorage");
+
+      // Then get the favourite recipes for this user
+      CookbookAPI.get().then((res) => {
+        let favourites = res.data;
+        dispatch({
+          type: types.LOGIN,
+          userInfo: data,
+          uid: data.id,
+          token: user.token,
+          favourites,
+        });
       });
     })
     .catch((err) => {
@@ -170,12 +180,17 @@ export const login = (email, password) => {
         let data = res.data;
         setUser({ id: data.id, token: data.token });
 
-        dispatch({
-          type: types.LOGIN,
-          userInfo: data,
-          uid: data.id,
-          token: data.token,
+        CookbookAPI.get().then((res) => {
+          let favourites = res.data;
+          dispatch({
+            type: types.LOGIN,
+            userInfo: data,
+            uid: data.id,
+            token: data.token,
+            favourites,
+          });
         });
+
         return { success: true };
       })
       .catch((err) => {
@@ -184,6 +199,9 @@ export const login = (email, password) => {
   };
 };
 
+/*
+  Log the user out
+*/
 export const logout = () => async (dispatch) => {
   UserAPI.logout()
     .then((res) => {
@@ -199,6 +217,9 @@ export const logout = () => async (dispatch) => {
     });
 };
 
+/*
+  Get recipes that belong to the current logged in user
+*/
 export const get_owned = () => async (dispatch) => {
   UserAPI.owned()
     .then((res) => {

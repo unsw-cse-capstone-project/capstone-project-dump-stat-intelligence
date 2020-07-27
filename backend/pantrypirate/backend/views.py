@@ -23,8 +23,12 @@ class MetaSearchView(generics.ListAPIView):
         if request.user.is_authenticated:
             result = MetaSearch.objects.all().order_by("-references")
             if not result:
-                return Response(data={'search': 'No searches have been made '
-                                                'yet', 'references': 0})
+                return Response(
+                    data={
+                        "search": "No searches have been made " "yet",
+                        "references": 0,
+                    }
+                )
             serializer = self.get_serializer(result[0])
             return Response(serializer.data)
         else:
@@ -205,7 +209,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         #    {"suggestion" : "ing_name"}]
 
         f = f.order_by("name")
-        recipe_list = self.get_serializer(f, many=True).data  # serialise so that recipe info can be returned later
+        recipe_list = self.get_serializer(
+            f, many=True
+        ).data  # serialise so that recipe info can be returned later
         unordered_results = []
 
         all_missing_ingredients = []
@@ -231,7 +237,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             }
             unordered_results.append(new_dict)
 
-        ordered_results = sorted(unordered_results, key=lambda k: k['match_percentage'], reverse=True)
+        ordered_results = sorted(
+            unordered_results, key=lambda k: k["match_percentage"], reverse=True
+        )
 
         # now find ingredient to suggest
         # by default --> take most common unmatched ingredient amongst top 10 matching recipes
@@ -242,7 +250,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         suggested_ingredient = None
 
         if count.most_common(1):
-            suggested_ingredient = count.most_common(1)[0][0] # most common ingredient by default
+            suggested_ingredient = count.most_common(1)[0][
+                0
+            ]  # most common ingredient by default
 
         # from pantry if user is logged in
         if request.user.is_authenticated:
@@ -250,7 +260,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             found = False
             for missing_ing in count.most_common():
                 if not found:
-                    for pantry_ing in PantryIngredient.objects.filter(user=request.user):
+                    for pantry_ing in PantryIngredient.objects.filter(
+                        user=request.user
+                    ):
                         if pantry_ing.ingredient.name == missing_ing[0]:
                             suggested_ingredient = missing_ing[0]
                             found = True
@@ -268,7 +280,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # add to return
         final_return = ordered_results.copy()
-        final_return.append({"suggestion" : suggested_ingredient})
+        final_return.append({"suggestion": suggested_ingredient})
 
         # Update query string based on whether a match has been found
         full_match = 0
@@ -283,7 +295,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def update_search(self, list_string, full_match):
         # Update meta search model for query
         running_list = sorted(list_string["ingredients"][0].split(","))
-        if 3 >= len(running_list) and '' not in running_list:
+        if 3 >= len(running_list) and "" not in running_list:
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
             if not full_match:
@@ -363,6 +375,7 @@ class CookbookViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.id)
+            print("User: ", user.favourites)
             user.favourites.add(request.data["id"])
             return Response(200)
         else:
