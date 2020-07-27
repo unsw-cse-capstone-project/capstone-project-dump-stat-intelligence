@@ -36,12 +36,20 @@
 # Week 6
 
 - Started a new sprint however didn't have much time to complete much.
-<<<<<<< HEAD
 - On sunday began serious work on linkup - particular auth and storing tokens in localstorage
 - Completed auth linkup with backend
 - Completed recipe creation linkup with backend
 - Fixed some issues with favouriting in redux
 - Converted many direct API calls to redux actions
-=======
-- On sunday began serious work on linkup - particular auth and storing tokens in localstorage
->>>>>>> development
+
+# Week 7
+- Completed work on localstorage of auth tokens and loading in authentication
+
+# Week 8
+- Worked on filtering by ingredient
+- Implemented filtering recipes by meal type and dietary requirements
+- Shows meal type and dietry requirements on RecipeCards as tags
+
+# Week 9
+- Completed linkup for editing details and changing user passwords
+- Linked up favouriting functionality
