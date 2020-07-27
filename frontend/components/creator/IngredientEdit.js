@@ -119,7 +119,7 @@ export default function IngredientEdit() {
           </div>
           <div className="field control">
             <input
-              required={true}
+              required={false}
               onChange={updateIng}
               className="input"
               type="text"

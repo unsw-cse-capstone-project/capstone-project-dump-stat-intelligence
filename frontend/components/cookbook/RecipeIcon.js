@@ -9,7 +9,7 @@ export default function RecipeIcon(props) {
         <div className={`card ${styles.recipe}`}>
             <div className="card-image">
                 <figure className="image is-4by3">
-                    <img src={props.src} alt={props.title}/>
+                    <img src={props.src === null ? `https://source.unsplash.com/400x300/?food&sig=${props.id}` : props.src} alt={props.title}/>
                 </figure>
             </div>
 

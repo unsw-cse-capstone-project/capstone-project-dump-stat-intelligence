@@ -54,6 +54,16 @@ export default function GeneralEdit() {
             />
         </div>
         <div className="field control">
+            <label className="label">Image URL</label>
+            <input
+                name="image_URL"
+                className="input"
+                type="text"
+                value={recipe.image_URL}
+                onChange={handleInput}
+            />
+        </div>
+        <div className="field control">
         <label className="label">Meal type</label>
             <div className="select dropdown is-hoverable" style={{width:"100%"}}>
                 <div style={{width:"100%"}} className="dropdown-trigger">

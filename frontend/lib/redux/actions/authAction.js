@@ -27,7 +27,6 @@ AUTH
 
 */
 
-
 //NEEDS API
 export const remove_favourite = (id) => async (dispatch) => {
   let user = store.getState().auth;
@@ -68,49 +67,69 @@ export const new_next = (next) => async (dispatch) => {
 };
 
 //NEEDS API
-export const update_password = (old, pwd) => async (dispatch) => {
+export const update_password = (password) => async (dispatch) => {
   let user = store.getState().auth;
   //INSERT API, no frontend change but tell backend to update password for user
+  UserAPI.update(
+    user.uid,
+    user.userInfo.username,
+    user.userInfo.email,
+    password
+  )
+    .then((res) => {
+      let data = res.data;
+      // don't need to update anything
+    })
+    .catch((err) => {
+      console.error(err.response);
+    });
 };
 
 //NEEDS API
-export const update_details = (username, email, password) => async (
+export const update_details = (username, email, old_password) => async (
   dispatch
 ) => {
   let user = store.getState().auth;
   //INSERT API, tell backend to update respective details. Note not all deets may have actually changed - check to see which ones are different what is currntly in user.
+  UserAPI.update(user.uid, username, email, old_password)
+    .then((res) => {
+      let data = res.data;
 
-  let userInfo = {
-    username: username,
-    email: email,
-  };
-  dispatch({
-    type: types.UPDATE_DEETS,
-    userInfo: userInfo,
-  });
+      let userInfo = {
+        username: username,
+        email: email,
+      };
+      dispatch({
+        type: types.UPDATE_DEETS,
+        userInfo: userInfo,
+      });
+    })
+    .catch((err) => {
+      console.error(err.response);
+    });
 };
 
 //NEEDS API
 export const register = (username, email, password) => {
   return (dispatch) => {
-    return UserAPI.register(username, email, password).then(res => {
-      let data = res.data;
-      setUser({id : data.id, token : data.token});
+    return UserAPI.register(username, email, password)
+      .then((res) => {
+        let data = res.data;
+        setUser({ id: data.id, token: data.token });
 
-      dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: data.token,
+        dispatch({
+          type: types.LOGIN,
+          userInfo: data,
+          uid: data.id,
+          token: data.token,
+        });
+        return true;
+      })
+      .catch((err) => {
+        return false;
       });
-      return true;
-    }).catch(err => {
-      return false;
-    })
-  }
-}
-
-
+  };
+};
 
 export const attemptLoginFromLocalStorage = () => async (dispatch) => {
   let user = getUser(); // this also sets the token
@@ -144,26 +163,26 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
 
 export const login = (email, password) => {
   return (dispatch) => {
+    removeUser();
+
     return UserAPI.login(email, password)
-    .then(res => {
-      let data = res.data;
-      setUser({ id: data.id, token: data.token });
+      .then((res) => {
+        let data = res.data;
+        setUser({ id: data.id, token: data.token });
 
-      dispatch({
-        type: types.LOGIN,
-        userInfo: data,
-        uid: data.id,
-        token: data.token
+        dispatch({
+          type: types.LOGIN,
+          userInfo: data,
+          uid: data.id,
+          token: data.token,
+        });
+        return { success: true };
+      })
+      .catch((err) => {
+        return { success: false };
       });
-      return {success : true};
-    })
-    .catch(err => {
-      return {success : false};
-    })
-  }
-}
-
-
+  };
+};
 
 export const logout = () => async (dispatch) => {
   UserAPI.logout()
@@ -180,16 +199,15 @@ export const logout = () => async (dispatch) => {
     });
 };
 
-
 export const get_owned = () => async (dispatch) => {
   UserAPI.owned()
-  .then((res => {
-    dispatch({
-      type : types.LOAD_OWNED,
-      owned : res.data,
+    .then((res) => {
+      dispatch({
+        type: types.LOAD_OWNED,
+        owned: res.data,
+      });
     })
-  }))
-  .catch(err => {
-    console.log(err.response)
-  })
-}
+    .catch((err) => {
+      console.log(err.response);
+    });
+};
