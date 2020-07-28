@@ -2,7 +2,7 @@ import "../styles/styles.scss";
 
 import App from "next/app";
 import React, { useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import { createWrapper } from "next-redux-wrapper";
 import store from "../lib/redux/store";
 import { useRouter } from "next/router";
@@ -17,6 +17,7 @@ import { attemptLoginFromLocalStorage } from "../lib/redux/actions/authAction";
 function PantryPirate({ Component, pageProps }) {
   const router = useRouter();
   const dispatch = useDispatch();
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
   useEffect(() => {
     dispatch(attemptLoginFromLocalStorage());
@@ -37,7 +38,7 @@ function PantryPirate({ Component, pageProps }) {
         {router.pathname == "/recipe/create" ? (
           <EditButton />
         ) : (
-          <PantryButton />
+          isLoggedIn ? <PantryButton /> : ""
         )}
       </main>
     </Provider>
