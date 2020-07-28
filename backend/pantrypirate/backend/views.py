@@ -313,7 +313,7 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
 
-    # Make general and specific recipe get anonymous allowable
+    # Make general ingredient listing get anonymous allowable
     def get_permissions(self):
         if self.action == "list":
             permission_classes = [AllowAny]
