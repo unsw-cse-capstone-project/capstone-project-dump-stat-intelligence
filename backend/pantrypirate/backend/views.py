@@ -313,6 +313,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all().order_by("name")
     serializer_class = IngredientSerializer
 
+    # Make general and specific recipe get anonymous allowable
+    def get_permissions(self):
+        if self.action == "list":
+            permission_classes = [AllowAny]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
+
 
 # List currently has specific authentication request, likely redundant now
 # that IsAuthenticated is the default permission for all views
