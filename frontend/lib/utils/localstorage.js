@@ -26,7 +26,6 @@ const setTokenHeader = (token) => {
 
 const removeTokenHeader = () => {
   delete api.defaults.headers.common["Authorization"];
-  console.log("AFTER", api.defaults.headers)
 }
 
 export { getUser, setUser, removeUser };

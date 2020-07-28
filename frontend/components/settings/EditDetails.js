@@ -62,16 +62,6 @@ export default function EditDetails(props) {
             defaultValue={deets.email}
           ></input>
         </div>
-        <label className="label">Old Password</label>
-        <div className="field control">
-          <input
-            name="password"
-            className="input"
-            type="password"
-            placeholder="Your Password"
-            defaultValue={deets.old_password}
-          ></input>
-        </div>
         <hr />
         <div className="field control">
           <button className="button is-link">Update</button>
