@@ -3,7 +3,8 @@ import paging from "../utils/paging";
 
 const IngredientAPI = {
   getAll: async () => {
-    return api.get(`/ingredients/`);
+    console.log("SENDING", api.defaults.headers)
+    return await api.get(`/ingredients/`);
   },
   search: async (name, page, limit = 10) =>
     api.get(`/ingredients/?search=${name}&${paging(limit, page)}`),
