@@ -19,21 +19,23 @@ export const update_query = (query) => async dispatch => {
     //parameter query holds the new string to search for
 
     //INSERT API, take query param and turn into list of possible ingredients
-    
-    const ingredients = await IngredientAPI.getAll();
-
     let match = [];
+    if (query !== "") {
+        const ingredients = await IngredientAPI.getAll();
+        var i;
+        for(i = 0; i < ingredients.data.length; i++) {
+            if (ingredients.data[i].name.startsWith(query))
+                match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
+        }
 
-    var i;
-    for(i = 0; i < ingredients.data.length; i++) {
-        if (ingredients.data[i].name.startsWith(query))
-            match.push({name: ingredients.data[i].name, category: ingredients.data[i].category.name});
     }
+
+
 
     dispatch({
         type : types.QUERY,
         query : query,
-        results: match
+        results: match.slice(0,10),
     })
 }
 

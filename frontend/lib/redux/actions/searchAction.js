@@ -26,8 +26,9 @@ export const search_type = (pantryOnly) => async dispatch => {
 export const update_search = (query) => async dispatch => {
     const pantryOnly = store.getState().search.pantryOnly;
     let match = [];
-    
-    if (pantryOnly) {
+    if (query === "") {
+        //WANT EMPTY QUERY
+    } else if (pantryOnly) {
         const pantryIngredients = store.getState().pantry.meta
         var val;
         for (val of pantryIngredients) {
@@ -51,7 +52,7 @@ export const update_search = (query) => async dispatch => {
     dispatch({
         type : types.SEARCH,
         query : query,
-        results: match
+        results: match.slice(0,10),
     })
 }
 
