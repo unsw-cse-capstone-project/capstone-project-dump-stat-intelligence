@@ -31,15 +31,19 @@ export default function RecipeCard(props) {
               </span>
             ))}
           </p>
-          <Indicator value={props.recipe.ingredients.length} color="#0f0">
-            <ul>
-              {props.recipe.ingredients.map((ingredient, idx) => (
-                    <li key={idx}>
-                      {ingredient.ingredient.name}
-                    </li>
-              ))}
-            </ul>
-          </Indicator>
+          {
+            props.recipe.missing_ing ?
+            <Indicator value={props.recipe.missing_ing.length} color="#0f0">
+              <ul className={styles.missList}>
+                {props.recipe.missing_ing.map((val, idx) => (
+                      <li key={idx}>
+                        -&nbsp;&nbsp;{val}
+                      </li>
+                ))}
+              </ul>
+            </Indicator>
+            : ""
+          }
         </div>
       </div>
     </Link>

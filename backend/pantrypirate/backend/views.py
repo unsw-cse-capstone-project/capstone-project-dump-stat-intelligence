@@ -226,7 +226,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 else:
                     missing_ingredients.append(ing.ingredient.name)
                     all_missing_ingredients.append(ing.ingredient.name)
-
+            
+            if len(running_list) == 0:
+                missing_ingredients = False
             match_percentage = matching_ingredients / len(
                 Recipe.objects.get(pk=rec["id"]).ingredients.all()
             )

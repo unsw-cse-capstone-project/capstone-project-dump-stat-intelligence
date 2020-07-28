@@ -20,7 +20,10 @@ export default class Indicator extends React.Component {
         {!this.state.hover ? (
           this.props.value
         ) : (
-          <div className={styles.indicator.open}>{this.props.children}</div>
+          <div className={styles.indicator.open}>
+            <h6 className={styles.needs}>You need:</h6>
+            {this.props.children}
+          </div>
         )}
       </div>
     );
