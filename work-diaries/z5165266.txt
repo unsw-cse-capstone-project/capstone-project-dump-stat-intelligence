@@ -67,3 +67,9 @@ Week 8
 Updated meal categories, dietary requirements and ingredient categories 
 to allow space in names. Minor updates overall, small tweaks to 
 responses / request interpretation.
+
+Week 9
+
+Small fixes to permissions for ingredients. Began working on report, 
+filling in expanded dot points which will be formatted and grammatically 
+improved at a later date.
