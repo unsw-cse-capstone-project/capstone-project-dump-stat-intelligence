@@ -220,6 +220,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             matching_ingredients = 0
             missing_ingredients = []
 
+            
             for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1

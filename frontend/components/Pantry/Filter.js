@@ -19,7 +19,7 @@ export default function Filter() {
       <div className="field is-grouped">
         <div className={`control ${styles.searchFormBox}`} onFocus={() => document.getElementById("explore-ing-add").classList.toggle(styles.show)} onBlur={() => setTimeout(() => document.getElementById("explore-ing-add").classList.remove(styles.show), 200)}>
           <FilterSearch id={"explore-ing-add"} searcher="explore-search"/>
-          <input id="explore-search" placeholder="Search an ingredient" className="input" name="search" onChange={(e => {e.preventDefault(); dispatch(update_search(e.target.value))})}/>
+          <input autocomplete="off" id="explore-search" placeholder="Search an ingredient" className="input" name="search" onChange={(e => {e.preventDefault(); dispatch(update_search(e.target.value))})}/>
           
         </div>
         <div className="control">
