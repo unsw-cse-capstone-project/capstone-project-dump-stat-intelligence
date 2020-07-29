@@ -4,6 +4,11 @@ from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
 
+'''
+    Custom serialiser classes 
+    Used to return non JSON-serialisable objects in JSON responses
+    Serialisers are defined and created in the appropriate viewset
+'''
 
 class MetaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -73,18 +78,7 @@ class DietReqSerializer(serializers.ModelSerializer):
         extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
 
 
-# Currently not used or implemented ## Ignore for now ##
-class FavouritesSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ["id", "favourites"]
-
-    def update(self, instance, validated_data):
-        instance.favourites = validated_data('id')
-
-
 # Requires a unique string to make, will return said string
-
 # Validators temporarily removed to allow spaces in category names
 # Will be replaced with a custom validator
 class IngredientCategorySerializer(serializers.ModelSerializer):
@@ -94,8 +88,8 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
         extra_kwargs = {"name": {"validators": [],}}
 
 
-# Serialiser for ingredient, creation requires category object currently (
-# should be changed to string foreign key). Update also requires full
+# Serialiser for ingredient, creation requires category object currently
+# (should be changed to string foreign key). Update also requires full
 # category object
 
 # Validators temporarily removed to allow spaces in category names
@@ -139,12 +133,8 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 
 # Serialiser for creating recipes
-# Requires meal_cat objects (should be changed to foreign key for ease),
-# same with diet_req
 # Requires recipe ingredients objects (full details) since recipe ingredients
 # are created when the recipe is created
-# Favourites are currently not implemented, but will be reference to the
-# through table between recipes and users
 class RecipeSerializer(serializers.ModelSerializer):
     meal_cat = MealCatSerializer(many=True)
     diet_req = DietReqSerializer(many=True)
@@ -219,12 +209,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             cat = MealCategory.objects.get(name=meal_data.get("name"))
             instance.meal_cat.add(cat)
 
-        # TODO: Understand what is going on here
-        # Why does it only update if a ingredient id is returned
-        # When are these ingredient ids returned to the frontend?
-        # ----- Response
-        # The else case creates new ingredients (adding to the recipe for
-        # example).
         for ing in ingredients:
             ing_id = ing.get("id", None)
             if ing_id:

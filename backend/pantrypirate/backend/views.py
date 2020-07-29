@@ -13,6 +13,13 @@ from django.db.models import Max
 import json
 from collections import Counter
 
+'''
+    Views for website
+    To make our site's backend work more seamlessly with the frontend, we have used 
+    Rest API's viewsets
+    ModelVewSets automatically provide 'list', 'create', 'retrieve', 'update' and 
+    'destroy' actions
+'''
 
 # View that requests the most commonly searched ingredient queries, maximum 3
 # ingredients
@@ -117,9 +124,6 @@ class UserLogout(APIView):
 
 
 # Recipes can be retrieved, updated, searched, deleted and created.
-# Default permission is authenticated, currently doesn't check that the
-# request user is the same as the update/delete recipe user, will need to be
-# implemented later.
 # Listing and retrieving can be done by any user
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all().order_by("name")
@@ -133,14 +137,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
+
+    '''
+        List function implements seaching logic
+            Step 1: parse query string
+            Step 2: get all recipes matching any ingredients in the
+                running list
+            Step 3: filter by dietary requirements and meal categories
+            Step 4: order recipes by match percentage, return missing ingredients
+                for each recipe
+            Step 5: determine best ingredient suggestion for user to add to
+                search
+    '''
     # Search for recipes given the running list input and filters
     def list(self, request, *args, **kwargs):
-        # query string looks like: meal=dinner+lunch&diet=vegan&limit=10&offset=21
+        '''
+        query string looks like: 
+        '?ingredients=apple,carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/'
+        '''
 
+        ''' STEP 1 '''
         # Parse the query string
-        string = urllib.parse.parse_qs(
-            request.META["QUERY_STRING"], keep_blank_values=True
-        )
+        string = urllib.parse.parse_qs(request.META["QUERY_STRING"], 
+            keep_blank_values=True)
 
         # If the query string does not exist, order by name and return
         if not string:
@@ -152,8 +171,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # queryset
         recipes = Recipe.objects.none()
 
-        # Check if ingredients were provided, if so filter based on matching,
-        # otherwise take all recipes
+        ''' STEP 2 '''
+        # Check if ingredients were provided, if so filter based on matching
         if string.get("ingredients")[0] is not "" or None:
             running_list = string["ingredients"][0].split(",")
 
@@ -161,10 +180,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
             for item in running_list:
                 ingredient = Ingredient.objects.get(pk=item)
                 for rec_ingredient in RecipeIngredient.objects.filter(
-                    ingredient=ingredient
-                ):
+                    ingredient=ingredient):
+
                     name = rec_ingredient.recipe
                     recipes |= Recipe.objects.filter(name=name)
+
+        # otherwise take all recipes
         else:
             recipes = Recipe.objects.all().order_by("name")
             running_list = []
@@ -172,6 +193,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # Remove duplicate recipes from the queryset
         f = recipes.distinct()
 
+        ''' STEP 3 '''
         # Check if dietary requirements were provided, if so filter based on
         # matching
         if string.get("diet") is not "" or None:
@@ -187,9 +209,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             meals = string["meal"][0].split()
 
             if len(meals) != 0:
-                e = (
-                    Recipe.objects.none()
-                )  # need an empty set to build OR relationship from
+                e = (Recipe.objects.none())  # need an empty set to build OR
                 for category in meals:
                     e |= f.filter(meal_cat__pk=category)
                 f = e  # rename back to f
@@ -197,21 +217,24 @@ class RecipeViewSet(viewsets.ModelViewSet):
         # remove duplicates
         f = f.distinct()
 
+        ''' STEP 4 '''
         # return matching recipes with the ingredients each recipe is missing
         # recipes returned in descending order of match %
         # then alphabetically
-        # LAST element in response is suggested ingredient for user to add to their running list
+        # LAST element in response is suggested ingredient for user to add to 
+        # their running list
 
         # return looks like:
-        #   [{"recipe1" : OrderedDict(), "match_percentage" : num, "missing_ing" : ["ing1_name", "ing2_name"]},
+        #   [{"recipe1" : OrderedDict(), "match_percentage" : num, 
+        #           "missing_ing" : ["ing1_name", "ing2_name"]},
         #    {"recipe2" : ...}
         #        .....
         #    {"suggestion" : "ing_name"}]
 
         f = f.order_by("name")
-        recipe_list = self.get_serializer(
-            f, many=True
-        ).data  # serialise so that recipe info can be returned later
+
+        # serialise so that recipe info can be returned later
+        recipe_list = self.get_serializer(f, many=True).data
         unordered_results = []
 
         all_missing_ingredients = []
@@ -220,6 +243,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             matching_ingredients = 0
             missing_ingredients = []
 
+            # get all ingredients for a recipe
             for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
@@ -229,32 +253,35 @@ class RecipeViewSet(viewsets.ModelViewSet):
             
             if len(running_list) == 0:
                 missing_ingredients = False
-            match_percentage = matching_ingredients / len(
-                Recipe.objects.get(pk=rec["id"]).ingredients.all()
-            )
-            new_dict = {
-                "recipe": rec,
-                "match_percentage": match_percentage,
-                "missing_ing": missing_ingredients,
-            }
+
+            # % = matching ing in running list / all recipe ingredients
+            match_percentage = (matching_ingredients / 
+                len(Recipe.objects.get(pk=rec["id"]).ingredients.all()))
+
+            new_dict = {"recipe": rec,
+                        "match_percentage": match_percentage,
+                        "missing_ing": missing_ingredients}
+
             unordered_results.append(new_dict)
 
-        ordered_results = sorted(
-            unordered_results, key=lambda k: k["match_percentage"], reverse=True
-        )
+        # sort all results according to match percentage (descending)
+        ordered_results = sorted(unordered_results, 
+            key=lambda k: k["match_percentage"], reverse=True)
 
+        ''' STEP 5 '''
         # now find ingredient to suggest
-        # by default --> take most common unmatched ingredient amongst top 10 matching recipes
+        # by default --> take most common unmatched ingredient amongst top 10 
+        #   matching recipes
         # if user is logged in --> look through pantry ingredients first
-        # suggest ingredient not in pantry only if there are no suitable pantry ingredients
+        # suggest ingredient not in pantry only if there are no suitable 
+        #   pantry ingredients
         count = Counter(all_missing_ingredients)
 
         suggested_ingredient = None
 
         if count.most_common(1):
-            suggested_ingredient = count.most_common(1)[0][
-                0
-            ]  # most common ingredient by default
+            # most common ingredient by default
+            suggested_ingredient = count.most_common(1)[0][0]
 
         # from pantry if user is logged in
         if request.user.is_authenticated:
@@ -263,14 +290,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
             for missing_ing in count.most_common():
                 if not found:
                     for pantry_ing in PantryIngredient.objects.filter(
-                        user=request.user
-                    ):
+                        user=request.user):
+
                         if pantry_ing.ingredient.name == missing_ing[0]:
                             suggested_ingredient = missing_ing[0]
                             found = True
                             break
 
-        # if somehow no ingredient was found then make it first ingredient not in running list
+        # if somehow no ingredient was found then make it first ingredient not 
+        # in running list
         if not suggested_ingredient:
             suggest = Ingredient.objects.exclude(name__in=running_list)
             if len(suggest) > 0:
@@ -292,18 +320,25 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         return Response(final_return)
 
+    # Updates search metadata for ingredients that are commonly searched for
+    # but don't appear together in a recipe
     # Takes boolean for full match and ingredients string from running list
     # input
     def update_search(self, list_string, full_match):
+        
         # Update meta search model for query
         running_list = sorted(list_string["ingredients"][0].split(","))
+
         if 3 >= len(running_list) and "" not in running_list:
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
+
             if not full_match:
                 search[0].references += 1
+
             elif search[0].references > 0:
                 search[0].references = 0
+
             search[0].save()
 
 
@@ -324,8 +359,6 @@ class IngredientViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
 
-# List currently has specific authentication request, likely redundant now
-# that IsAuthenticated is the default permission for all views
 # List returns ordered by category name primarily, then ingredient name
 # secondarily
 class PantryIngredientViewSet(viewsets.ModelViewSet):
@@ -335,8 +368,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             queryset = PantryIngredient.objects.filter(user=request.user).order_by(
-                "ingredient__category__name", "ingredient__name"
-            )
+                "ingredient__category__name", "ingredient__name")
             serializer = self.get_serializer(queryset, many=True)
             return Response(serializer.data)
         else:
@@ -347,8 +379,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).destroy(
-                request, *args, **kwargs
-            )
+                request, *args, **kwargs)
         else:
             return Response(status=401)
 
@@ -357,8 +388,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).partial_update(
-                request, *args, **kwargs
-            )
+                request, *args, **kwargs)
         else:
             return Response(status=401)
 
@@ -369,7 +399,9 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=401)
 
-
+# Favourites recipes are stored in cookbook
+# list function returns all recipes favourited by user (logged in only)
+# create function adds favourite association to recipe
 class CookbookViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
@@ -385,7 +417,6 @@ class CookbookViewSet(viewsets.ModelViewSet):
     def create(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.id)
-            print("User: ", user.favourites)
             user.favourites.add(request.data["id"])
             return Response(200)
         else:
@@ -395,14 +426,14 @@ class CookbookViewSet(viewsets.ModelViewSet):
         if request.user.is_authenticated:
             user = User.objects.get(pk=request.user.id)
             recipe_id = int(
-                [i for i in str(request.META["PATH_INFO"]).split("/") if i][-1]
-            )
+                [i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
             user.favourites.remove(recipe_id)
             return Response(200)
         else:
             return Response(401)
 
-
+# Users' added recipes
+# list returns all recipes for which the user is the author
 class MyRecipesViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer

@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+'''
+    Models for website
+'''
 
 # Meta data for search queries
 class MetaSearch(models.Model):

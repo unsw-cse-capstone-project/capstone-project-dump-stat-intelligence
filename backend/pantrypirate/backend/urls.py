@@ -4,6 +4,12 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 from django.contrib.auth import views as auth
 
+'''
+    URL paths for website
+    Viewsets are registered with a router and urlconfs are determined
+    automatically
+'''
+
 # Router recognises url patterns and request types, sending them to the
 # appropriate views
 router = routers.DefaultRouter()
@@ -13,8 +19,6 @@ router.register(r'user/cookbook', CookbookViewSet)
 router.register(r'user', UserViewSet)
 router.register(r'recipes', RecipeViewSet)
 router.register(r'ingredients', IngredientViewSet)
-
-
 
 urlpatterns = [
 
