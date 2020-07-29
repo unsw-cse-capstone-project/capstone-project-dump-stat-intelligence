@@ -4,6 +4,9 @@ from .models import *
 from .views import *
 import json
 
+'''
+    Test suite for backend
+'''
 
 # Tests for the user login, logout, register and retrieve, put, list, delete
 # functionality
@@ -1142,28 +1145,34 @@ class SearchTestCase(TestCase):
 
         # set up user
         self.c = APIClient()
-        user_data = {'username' : 'Jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
-        user = self.c.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user_data = {'username' : 'Jess', 'email' : 'jess@gmail.com', 
+            'password' : '1111'}
+        user = self.c.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
         user_data.pop('email')      
-        token = self.c.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        token = self.c.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
         self.c.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
         user = User.objects.get(pk=1)
 
         # set up recipes
-        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", method="Yummy yummy", author=user)
+        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", 
+            method="Yummy yummy", author=user)
         fruit_salad.save()
         fruit_salad.meal_cat.add(breakfast)
         fruit_salad.diet_req.add(vegan)
         fruit_salad.diet_req.add(dairy_free)
 
-        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", method="Crunch crunch", author=user)
+        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", 
+            method="Crunch crunch", author=user)
         garden_salad.save()
         garden_salad.meal_cat.add(lunch)
         garden_salad.diet_req.add(vegan)
         garden_salad.diet_req.add(dairy_free)
 
-        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", method="Yummy crunch?", author=user)
+        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", 
+            method="Yummy crunch?", author=user)
         mixed_salad.save()
         mixed_salad.meal_cat.add(lunch)
         mixed_salad.diet_req.add(vegan)
@@ -1186,90 +1195,100 @@ class SearchTestCase(TestCase):
         lemon = Ingredient(name="lemon", category=vegetable)
         lemon.save()
 
-        r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=fruit_salad)
+        r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=apple, recipe=fruit_salad)
         r_apple.save()
-        r_pear = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=pear, recipe=fruit_salad)
+        r_pear = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=pear, recipe=fruit_salad)
         r_pear.save()
 
-        r_tomato = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=tomato, recipe=garden_salad)
+        r_tomato = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=tomato, recipe=garden_salad)
         r_tomato.save()
-        r_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=carrot, recipe=garden_salad)
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=carrot, recipe=garden_salad)
         r_carrot.save()
 
-        r_mixed_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=apple, recipe=mixed_salad)
+        r_mixed_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=apple, recipe=mixed_salad)
         r_mixed_apple.save()
-        r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", ingredient=carrot, recipe=mixed_salad)
+        r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=carrot, recipe=mixed_salad)
         r_mixed_carrot.save()
 
     # test with some matching ingredients in running list, should order by percentage
     def test_search1(self):
 
-        response = self.c.get('/recipes/?ingredients=apple,pear,carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,pear,carrot'
+            '&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
-                                
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"suggestion" : "tomato"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
+                
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"suggestion" : "tomato"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # test with some matching ingredients in running list, should order by name (% is equal)
     def test_search2(self):
 
-        response = self.c.get('/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=carrot&meal=dinner+lunch'
+            '&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]}, 
-                                
-                            {"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["apple"]},
-                            
-                            {"suggestion" : "tomato"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]}, 
+                
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["apple"]},
+            
+            {"suggestion" : "tomato"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -1277,49 +1296,51 @@ class SearchTestCase(TestCase):
     def test_search3(self):
         self.maxDiff = None
 
-        response = self.c.get('/recipes/?ingredients=apple,carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,carrot'
+            '&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
-                                
-                            {"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["pear"]},
-                            
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"suggestion" : "pear"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
+                
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["pear"]},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"suggestion" : "pear"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -1327,76 +1348,81 @@ class SearchTestCase(TestCase):
     def test_search4(self):
 
         # add new recipe with tomato
-        recipe_data = {"name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
-                            {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        recipe_data = {
+            "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
-        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon'
+            '&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
-                                
-                            {"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["pear"]},
-                            
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"recipe": 
-                                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}},
-                                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"suggestion" : "tomato"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
+                
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["pear"]},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"recipe": 
+                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}},
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"suggestion" : "tomato"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
 
-    # test ingredient suggestion, should return ingredient from pantry since user is logged in
+    # test ingredient suggestion, should return ingredient from pantry since 
+    # user is logged in
     def test_search5(self):
 
         # add things to pantry
@@ -1405,131 +1431,141 @@ class SearchTestCase(TestCase):
         ingredient_data3 = {'user': "1", "ingredient": "carrot"}
         ingredient_data4 = {'user': "1", "ingredient": "lemon"}
         
-        self.c.post('/user/pantry/', json.dumps(ingredient_data1), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data2), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data3), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data4), content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data1), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data2), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data3), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data4), 
+            content_type='application/json')
 
         # add new recipe with tomato
-        recipe_data = {"name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
-                            {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        recipe_data = {
+            "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
-        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon'
+            '&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
-                                
-                            {"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["pear"]},
-                            
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"recipe": 
-                                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}},
-                                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.5, 
-                            "missing_ing": ["tomato"]},
-                            
-                            {"suggestion" : "pear"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
+                
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["pear"]},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"recipe": 
+                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}},
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.5, 
+            "missing_ing": ["tomato"]},
+            
+            {"suggestion" : "pear"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # test search returns all recipes when no filters applied
     def test_search6(self):
-
+        self.maxDiff = None
         # empty search string
         response = self.c.get('/recipes/?ingredients=&meal=&diet=&limit=10&offset=0/',
-                         content_type="application/json")
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 0.0, 
-                            "missing_ing": ["apple", "pear"]}, 
-                                
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.0, 
-                            "missing_ing": ["tomato", "carrot"]},
-                            
-                            {"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 0.0, 
-                            "missing_ing": ["apple", "carrot"]},
-                            
-                            {"suggestion" : "apple"}] 
+        expected_response = [
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 0.0, 
+            "missing_ing": ["apple", "pear"]}, 
+                
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.0, 
+            "missing_ing": ["tomato", "carrot"]},
+            
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"},
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 0.0, 
+            "missing_ing": ["apple", "carrot"]},
+            
+            {"suggestion" : "apple"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
-    # make sure search will always return a suggested ingredient, or empty string as last case
+    # make sure search will always return a suggested ingredient, 
+    # or empty string as last case
     def test_search7(self):
 
         # add things to pantry
@@ -1538,127 +1574,138 @@ class SearchTestCase(TestCase):
         ingredient_data3 = {'user': "1", "ingredient": "carrot"}
         ingredient_data4 = {'user': "1", "ingredient": "tomato"}
         
-        self.c.post('/user/pantry/', json.dumps(ingredient_data1), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data2), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data3), content_type='application/json')
-        self.c.post('/user/pantry/', json.dumps(ingredient_data4), content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data1), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data2), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data3), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data4), 
+            content_type='application/json')
 
-        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot&'
+            'meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []},
-                            
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []},
+        expected_response = [
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []},
 
-                            {"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
-                            
-                            {"suggestion" : "lemon"}] 
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
+            
+            {"suggestion" : "lemon"}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
         # now check empty string
         # add recipe with lemon
-        recipe_data = {"name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
-                            {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        recipe_data = {
+            "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "tomato"},
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "ingredient": "lemon"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         ingredient_data5 = {'user': "1", "ingredient": "lemon"}
-        self.c.post('/user/pantry/', json.dumps(ingredient_data5), content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data5), 
+            content_type='application/json')
 
-        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot,lemon&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
-                         content_type="application/json")
+        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot,lemon'
+            '&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
 
-        expected_response = [{"recipe": 
-                                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
-                                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []},
-                            
-                            {"recipe": 
-                                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []},
+        expected_response = [
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []},
 
-                            {"recipe": 
-                                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
-                                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
-                                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []}, 
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []}, 
 
-                            {"recipe": 
-                                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
-                                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
-                                "image_URL": None,
-                                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
-                                "ingredients": 
-                                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
-                                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
-                                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
-                            "match_percentage": 1.0, 
-                            "missing_ing": []},
-                            
-                            {"suggestion" : ""}] 
+            {"recipe": 
+                {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
+                        "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": []},
+            
+            {"suggestion" : ""}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -2026,94 +2073,111 @@ class MyRecipesTest(TestCase):
         # set up users
         self.c1 = APIClient()
         user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
-        user = self.c1.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user = self.c1.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
         user_data.pop('email')      
-        token = self.c1.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        token = self.c1.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
         self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
         self.c2 = APIClient()
         user_data = {'username' : 'reece', 'email' : 'reece@gmail.com', 'password' : '2222'}
-        user = self.c2.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user = self.c2.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
         user_data.pop('email')      
-        token = self.c2.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        token = self.c2.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
         self.c2.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])  
 
         # set up recipe ingredients
         fruit = IngredientCategory.objects.create(name="fruit")
         fruit.save()
 
-        ingredient = IngredientSerializer(data={"name": "apple", "category": {"name": "fruit"}})
+        ingredient = IngredientSerializer(data={"name": "apple", 
+            "category": {"name": "fruit"}})
         ingredient.is_valid()
         ingredient.save()
 
-        ingredient = IngredientSerializer(data={"name": "pear", "category": {"name": "fruit"}})
+        ingredient = IngredientSerializer(data={"name": "pear", 
+            "category": {"name": "fruit"}})
         ingredient.is_valid()
         ingredient.save()
 
     # tests that users recipes are correctly returned
     def test_my_recipes1(self):
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        post = self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
         response = self.c1.get('/user/myrecipes/')
 
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]  
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]  
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # tests that user can't view other users' added recipes
     def test_my_recipes2(self):
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        post = self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "2", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        post = self.c2.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        post = self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
+
+        recipe_data = {
+            "name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "2", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        post = self.c2.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         # get recipes for user 1
         response = self.c1.get('/user/myrecipes/')
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]  
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]  
 
         self.assertEqual(json.loads(response.content), expected_response)
 
         # get recipes for user 2
         response = self.c2.get('/user/myrecipes/')     
-        expected_response = [{'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
-                                'author': {'id': 2, 'username': 'reece', 'email': 'reece@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]
+        expected_response = [
+                {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                    'author': {'id': 2, 'username': 'reece', 'email': 'reece@gmail.com'},
+                    "image_URL": None,
+                    'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                    'ingredients': 
+                        [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                            'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -2131,16 +2195,20 @@ class CookbookTest(TestCase):
         # set up users
         self.c1 = APIClient()
         user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
-        user = self.c1.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user = self.c1.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
         user_data.pop('email')
-        token = self.c1.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        token = self.c1.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
         self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
         self.c2 = APIClient()
         user_data = {'username' : 'reece', 'email' : 'reece@gmail.com', 'password' : '2222'}
-        user = self.c2.post('/user/register/', json.dumps(user_data), content_type='application/json')
+        user = self.c2.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
         user_data.pop('email')
-        token = self.c2.post('/user/login/', json.dumps(user_data), content_type='application/json')
+        token = self.c2.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
         self.c2.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
         # set up recipe ingredients
@@ -2158,88 +2226,106 @@ class CookbookTest(TestCase):
     # test adding recipes to cookbook
     def test_cookbook1(self):
         # enter recipe data
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}],
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}],
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
+
+        recipe_data = {
+            "name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         # add to user 2's favourites
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), 
+            content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), 
+            content_type='application/json')
 
         response = self.c2.get('/user/cookbook/')
 
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
-                                                 
-                            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
+                                    
+            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # test deleting recipes from cookbook
     def test_cookbook2(self):
         # enter recipe data
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}],
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}],
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
+
+        recipe_data = {
+            "name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         # add to user 2's favourites
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), 
+            content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), 
+            content_type='application/json')
 
         response = self.c2.get('/user/cookbook/')
 
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
-                                                 
-                            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]},
+                                    
+            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -2248,13 +2334,14 @@ class CookbookTest(TestCase):
 
         response = self.c2.get('/user/cookbook/')
 
-        expected_response = [{'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
+        expected_response = [
+            {'id': 2, 'name': 'Chopped apple', 'cook_time': '20 minutes', 'method': 'Crunch', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 2, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}]}]  
 
         self.assertEqual(json.loads(response.content), expected_response)
 
@@ -2268,42 +2355,52 @@ class CookbookTest(TestCase):
 
 
         # make sure recipes can be added again
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), 
+            content_type='application/json')
 
         response = self.c2.get('/user/cookbook/')
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
 
         self.assertEqual(json.loads(response.content), expected_response)
 
     # test that users can't access other users' cookbooks
     def test_cookbook3(self):
         # enter recipe data
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}],
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}],
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-        recipe_data = {"name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
-                       "meal_cat": [{"name": "lunch"}], 
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
+
+        recipe_data = {
+            "name": "Chopped apple", "cook_time": "20 minutes", "method": "Crunch", "author": "1", 
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"}],
+                "meal_cat": [{"name": "lunch"}], 
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         # add to user 2's favourites
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
-        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "1"}), 
+            content_type='application/json')
+        self.c2.post('/user/cookbook/', json.dumps({"id" : "2"}), 
+            content_type='application/json')
 
         response = self.c1.get('/user/cookbook/')
         expected_response = []   
@@ -2313,30 +2410,67 @@ class CookbookTest(TestCase):
     # test that users can add their own recipes to cookbook
     def test_cookbook4(self):
         # enter recipe data
-        recipe_data = {"name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
-                        "ingredients":
-                           [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
-                            {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
-                       "meal_cat": [{"name": "lunch"}],
-                       "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
-        self.c1.post('/recipes/', json.dumps(recipe_data), content_type='application/json')
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "apple"},
+                    {"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "pear"}],
+                "meal_cat": [{"name": "lunch"}],
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
+
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
 
         # add to user 1's favourites
-        self.c1.post('/user/cookbook/', json.dumps({"id" : "1"}), content_type='application/json')
+        self.c1.post('/user/cookbook/', json.dumps({"id" : "1"}), 
+            content_type='application/json')
 
         response = self.c1.get('/user/cookbook/')
-        expected_response = [{'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
-                                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
-                                "image_URL": None,
-                                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
-                                'ingredients': 
-                                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
-                                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
-                                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
+        expected_response = [
+            {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'apple', 'category': {'name': 'fruit'}}}, 
+                    {'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'pear', 'category': {'name': 'fruit'}}}]}]
 
         self.assertEqual(json.loads(response.content), expected_response)
 
 
+class ValidatorTest(TestCase):
+    def setUp(self) -> None:
+        # set up meal categories and dietary requirements
+        breakfast = MealCategory.objects.create(name="breakfast")
+        lunch = MealCategory.objects.create(name="lunch")
+        dessert = MealCategory.objects.create(name="dessert")
+        vegan = DietaryRequirement.objects.create(name="vegan")
+        dairy_free = DietaryRequirement.objects.create(name="dairy-free")
 
-    
+        # set up users
+        self.c1 = APIClient()
+        user_data = {'username' : 'jess', 'email' : 'jess@gmail.com', 'password' : '1111'}
+        user = self.c1.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
+        user_data.pop('email')
+        token = self.c1.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
+        self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+        # set up recipe ingredients
+        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit.save()
+
+        ingredient = IngredientSerializer(data={"name": "apple", "category": {"name": "fruit"}})
+        ingredient.is_valid()
+        ingredient.save()
+
+        ingredient = IngredientSerializer(data={"name": "pear", "category": {"name": "fruit"}})
+        ingredient.is_valid()
+        ingredient.save()
+
+    # TODO
+        def test_validation(self):
+            pass
