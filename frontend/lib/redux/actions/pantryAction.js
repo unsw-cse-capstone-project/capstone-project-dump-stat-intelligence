@@ -19,7 +19,7 @@ export const change = (ingredient, category, expiry) => async (dispatch) => {
   let i;
   for (i = 0; i < pantry.data.length; i++) {
     if (pantry.data[i]["ingredient"]["name"] == ingredient) {
-      await PantryAPI.update(pantry.data[i]["id"], expiry);
+      await PantryAPI.update(pantry.data[i]["id"], {expiry_date:expiry});
     }
   }
 
