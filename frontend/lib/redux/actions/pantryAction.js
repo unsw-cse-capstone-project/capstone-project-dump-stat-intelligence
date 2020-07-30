@@ -77,23 +77,5 @@ export const remove = (ingredient) => async (dispatch) => {
     category: ingredient.category,
     ingredient: ingredient.ingredient,
   };
-  dispatch({
-    type: types.PANTRY_REMOVE,
-    toRemove: toRemove,
-  });
-};
-
-export const get_pantry = () => async (dispatch) => {
   let auth = store.getState().auth;
-  let newPantry = {};
-
-  if (auth.isLoggedIn) {
-    response = await PantryAPI.get(10, 1, ""); // TODO: token auth, error handling
-    newPantry = response.data;
-  }
-
   dispatch({
-    type: types.PANTRY_GET,
-    pantry: newPantry,
-  });
-};
