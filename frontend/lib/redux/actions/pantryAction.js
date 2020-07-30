@@ -89,7 +89,6 @@ export const remove = (ingredient) => async (dispatch) => {
 export const get_pantry = () => {
   return async (dispatch) => {
     let auth = store.getState().auth;
-    console.log("TRYIONG")
     if (auth.isLoggedIn) {
       PantryAPI.get(10, 1, "")
       .catch(err => {

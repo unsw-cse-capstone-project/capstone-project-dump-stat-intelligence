@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Favourites from "../components/cookbook/Favourites";
 import Owned from "../components/cookbook/Owned";
-import Suggset from "../components/cookbook/Suggest";
 
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
@@ -29,8 +28,6 @@ export default function CookBook() {
         <Favourites/>
         <hr/>
         <Owned/>
-        <hr/>
-        <Suggset/>
       </div>
     </>
   );

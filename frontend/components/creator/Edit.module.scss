@@ -120,3 +120,19 @@
 .show {
   display:block;
 }
+
+
+
+.suggestion {
+  width:100%;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+.choice {
+  padding-top:.5rem;
+  align-items: center;
+  margin:0 !important;
+  display:inline-block !important;
+}
