@@ -83,17 +83,42 @@ export const remove = (ingredient) => async (dispatch) => {
   });
 };
 
-export const get_pantry = () => async (dispatch) => {
-  let auth = store.getState().auth;
-  let newPantry = {};
-
-  if (auth.isLoggedIn) {
-    response = await PantryAPI.get(10, 1, ""); // TODO: token auth, error handling
-    newPantry = response.data;
+export const get_pantry = () => {
+  return async (dispatch) => {
+    let auth = store.getState().auth;
+    
+    if (auth.isLoggedIn) {
+      PantryAPI.get(10, 1, "")
+      .catch(err => {
+        dispatch({
+          type: types.PANTRY_GET,
+          pantry: {}
+        })
+      })
+      .then(res => {
+        console.log(res.data);
+        let newPantry = {}
+        for (var i = 0; i < res.data.length; i++) {
+          let ing = res.data[i];
+          if (!(ing.ingredient.category.name in newPantry)) {
+            newPantry[ing.ingredient.category.name] = []
+          }
+          newPantry[ing.ingredient.category.name].push({
+            name : ing.ingredient.name,
+            expiry : ing.expiry_date
+          })
+        }
+        
+        
+        console.log(newPantry)
+        dispatch({
+          type: types.PANTRY_GET,
+          pantry: {...newPantry}
+        })
+      })
+      
+    }
+    
   }
-  console.log(newPantry);
-  dispatch({
-    type: types.PANTRY_GET,
-    pantry: newPantry,
-  });
-};
+}
+

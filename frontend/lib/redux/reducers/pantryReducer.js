@@ -26,8 +26,8 @@ export const pantryReducer = (state = initialState, action) => {
             
         case types.PANTRY_GET:
             let newMeta = [];
-            for (cat in action.pantry) {
-                for (ing in action.pantry[cat]) {
+            for (var cat in action.pantry) {
+                for (var ing in action.pantry[cat]) {
                     newMeta.push(ing);
                 }
             }

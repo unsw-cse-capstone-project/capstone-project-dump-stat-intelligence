@@ -11,6 +11,7 @@ export default function Login(props) {
   const router = useRouter();
   const next = useSelector((state) => state.auth.nextPage);
   const alertName = props.login + "-alert";
+  const islogged = useSelector(state => state.auth.isLoggedIn);
   function toggle(id) {
     document.getElementById(id).classList.toggle("is-active");
   }
@@ -26,12 +27,13 @@ export default function Login(props) {
         event.target.elements.password.value
       )
     ).then(res => {
-      if (res.success) {
+      if (res.type == "LOGIN") {
+        
         document.getElementById(alertName).innerHTML = "";
         document.getElementById(alertName).classList.remove(styles.show);
         close(props.login);
         //LOGIN SUCCEEDED, GET PANTRY
-        dispatch(get_pantry());
+        setTimeout(() => {dispatch(get_pantry())}, 50);
         if (next) {
           router.push(next);
           dispatch(clear_next());

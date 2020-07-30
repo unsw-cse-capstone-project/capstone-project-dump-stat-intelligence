@@ -3,7 +3,7 @@ import styles from "./Pantry.module.scss";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import PantryIngredient from "./PantryIngredient";
-import { remove } from "../../lib/redux/actions/pantryAction";
+import { remove, get_pantry } from "../../lib/redux/actions/pantryAction";
 import {
   explore_remove,
   explore_add,
@@ -32,6 +32,7 @@ export default function Pantry() {
   let searchId = "searcher";
 
   let isExplore = router.pathname === '/explore'
+
 
   return (
     <div id="pantry" className={styles.pantry}>
