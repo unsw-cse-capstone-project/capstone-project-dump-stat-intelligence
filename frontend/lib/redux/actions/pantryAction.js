@@ -24,39 +24,54 @@ export const change = (ingredient, category, expiry) => async (dispatch) => {
   })
 }
 
-
-//NEEDS API
 export const add = (ingredient) => async (dispatch) => {
   let auth = store.getState().auth;
+  let response;
+  let exists = false
+  let i;
 
   if (auth.isLoggedIn) {
-    // TODO: token auth
-    // TODO: is ingredient.ingredient the primary key of
-    // TODO: error handle
-    //await PantryAPI.add(ingredient.ingredient, "");
+    response = await PantryAPI.get(10, 1, "");
+
+    for (i = 0; i < response.data.length; i++) {
+      if (response.data[i]['ingredient']['name'] == ingredient.name) {
+        exists = true
+      }
+    }
   }
-  let newIngredient = {
-    category: ingredient.category,
-    name: ingredient.name,
-    expiry : ingredient.expiry
-  };
-  dispatch({
-    type: types.PANTRY_ADD,
-    newIngredient: newIngredient,
-  });
+
+  if (exists == false) {
+    await PantryAPI.add({'expiry_date': ingredient.expiry, 'user': auth.uid, 'ingredient': ingredient.name});
+
+    let newIngredient = {
+      category: ingredient.category,
+      name: ingredient.name,
+      expiry : ingredient.expiry
+    };
+
+    dispatch({
+      type: types.PANTRY_ADD,
+      newIngredient: newIngredient,
+    });
+  }
 };
 
 //NEEDS API
 export const remove = (ingredient) => async (dispatch) => {
   let auth = store.getState().auth;
+  let response;
+  let i;
 
   if (auth.isLoggedIn) {
-    //INSER API, user is logged in so update pantry on backend
+    response = await PantryAPI.get(10, 1, "");
 
-    // TODO: token auth
-    // TODO: is ingredient.ingredient the primary key of
-    // TODO: error handle
-    //await PantryAPI.delete(ingredient.ingredient, "");
+    for (i = 0; i < response.data.length; i++) {
+
+      if (response.data[i]['ingredient']['name'] == ingredient.ingredient) {
+        console.log(response.data[i]['id'])
+        await PantryAPI.delete(response.data[i]['id']);
+      }
+    }
   }
   let toRemove = {
     category: ingredient.category,
