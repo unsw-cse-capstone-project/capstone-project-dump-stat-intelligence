@@ -24,13 +24,14 @@ export default function Preview() {
   };
 
   const createRecipe = () => {
-    if (router.query.edit) {
-      dispatch(update_recipe());
-    } else {
-      dispatch(save_create());
-    }
+    dispatch(save_create());
     router.push("/cookbook");
   };
+
+  const updateRecipe = () => {
+    dispatch(update_recipe());
+    router.push("/cookbook");
+  }
 
   return (
     <div className="container">
@@ -90,7 +91,7 @@ export default function Preview() {
             {creation.id ? (
               <>
                 <button
-                  onClick={createRecipe}
+                  onClick={updateRecipe}
                   className="button is-light is-success"
                 >
                   Save Changes
