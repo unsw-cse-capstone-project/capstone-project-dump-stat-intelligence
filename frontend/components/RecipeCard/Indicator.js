@@ -21,7 +21,7 @@ export default class Indicator extends React.Component {
           this.props.value
         ) : (
           <div className={styles.indicator.open}>
-            <h6 className={styles.needs}>You need:</h6>
+            <h6 className={styles.needs}>{this.props.perfect ? "Ready to cook!" : "You need"}:</h6>
             {this.props.children}
           </div>
         )}
