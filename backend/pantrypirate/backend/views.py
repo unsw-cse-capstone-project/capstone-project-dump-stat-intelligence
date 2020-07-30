@@ -254,7 +254,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
                 else:
-                    if pantry.filter(ingredient=ing.ingredient):
+                    if not pantry.filter(ingredient=ing.ingredient):
                         missing_ingredients.append(ing.ingredient.name)
                     all_missing_ingredients.append(ing.ingredient.name)
             
