@@ -2440,7 +2440,7 @@ class CookbookTest(TestCase):
         self.assertEqual(json.loads(response.content), expected_response)
 
 
-# test allowing spaces in ingredient categories and names
+# Test allowing spaces in ingredient categories and names
 class ValidatorTest(TestCase):
     def setUp(self) -> None:
         # set up meal categories and dietary requirements
@@ -2468,7 +2468,7 @@ class ValidatorTest(TestCase):
         ingredient.is_valid()
         ingredient.save()
 
-    # TODO
+    # test with spaces in names
     def test_validation(self):
         self.maxDiff = None
         # enter recipe data
