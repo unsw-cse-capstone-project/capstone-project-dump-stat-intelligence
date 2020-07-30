@@ -37,3 +37,16 @@ the view for displaying a recipe's details as a group to familiarise ourselves w
 
 Individually, I wrote the view functions for displaying profile details and pantry contents. Working currently on displaying search results 
 filtered by meal categories and dietary requirements.
+
+WEEK 5:
+
+Implemented filters for dietary requirements and meal types, worked with Michael to also filter by any match from the running list. Rohan refactored the
+backend code to work better with Rest API, reviewed the changes. Wrote some test data for the demo on Friday, and made up a set of demo requests in Postman
+as our backend and frontend are not currently fully linked.
+
+Demonstrated the backend functionality in Postman for the first sprint during the demo. After the demo, we had our retrospective and I cleaned up and 
+submitted the document.
+
+WEEK 6:
+
+Started off by adding subtasks under user stories in Jira, as discussed in our retrospective and first weekly meeting.
