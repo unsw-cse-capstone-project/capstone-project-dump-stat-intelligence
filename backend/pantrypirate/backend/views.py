@@ -380,7 +380,12 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
     # Make deletion only compatible for our account
     def destroy(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        if not request.user.is_authenticated:
+            return Response(401)
+
+        recipe_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        user_id = PantryIngredient.objects.get(pk=recipe_id).user.id
+
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).destroy(
                 request, *args, **kwargs)
@@ -389,7 +394,12 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
     # Make partial_update
     def partial_update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        if not request.user.is_authenticated:
+            return Response(401)
+
+        recipe_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        user_id = PantryIngredient.objects.get(pk=recipe_id).user.id
+
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).partial_update(
                 request, *args, **kwargs)
@@ -397,7 +407,12 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             return Response(status=401)
 
     def update(self, request, *args, **kwargs):
-        user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        if not request.user.is_authenticated:
+            return Response(401)
+
+        recipe_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
+        user_id = PantryIngredient.objects.get(pk=recipe_id).user.id
+        
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).update(request, *args, **kwargs)
         else:
