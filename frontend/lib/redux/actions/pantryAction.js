@@ -14,8 +14,15 @@ PANTRY
 
 */
 
-//NO API, frontend only
 export const change = (ingredient, category, expiry) => async (dispatch) => {
+  let pantry = await PantryAPI.get(10, 1, "");
+  let i;
+  for (i = 0; i < pantry.data.length; i++) {
+    if (pantry.data[i]["ingredient"]["name"] == ingredient) {
+      await PantryAPI.update(pantry.data[i]["id"], expiry);
+    }
+  }
+
   dispatch({
     type: types.PANTRY_CHANGE,
     ingredient: ingredient,
@@ -60,7 +67,6 @@ export const add = (ingredient) => async (dispatch) => {
   }
 };
 
-//NEEDS API
 export const remove = (ingredient) => async (dispatch) => {
   let auth = store.getState().auth;
   let response;
