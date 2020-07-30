@@ -91,7 +91,7 @@ export const get_pantry = () => async (dispatch) => {
   let newPantry = {};
 
   if (auth.isLoggedIn) {
-    response = await PantryAPI.get(10, 1, ""); // TODO: token auth, error handling
+    response = await PantryAPI.get(10, 1, "");
     newPantry = response.data;
   }
 

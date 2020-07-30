@@ -36,7 +36,15 @@ export default function Preview() {
         <NewIngredient id="new-ingredient" />
         <div className="box column is-10">
           <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
-          <img src={creation.image_URL} />
+          <img
+            style={{
+              width: "100%",
+              maxHeight: "500px",
+              objectFit: "cover",
+              display: "block",
+            }}
+            src={creation.image_URL}
+          />
           <p>
             Author: {user.username} | Cook time: {creation.cook_time}
           </p>
