@@ -52,4 +52,6 @@
 
 # Week 9
 - Completed linkup for editing details and changing user passwords
-- Linked up favouriting functionality
+- Linked up favouriting functionality to frontend
+- Linked up recipe editing functionality to frontend
+- Integrated unsplash API into recipe create to allow selection of image_URL
