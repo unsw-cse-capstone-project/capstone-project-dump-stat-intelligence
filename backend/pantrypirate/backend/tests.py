@@ -387,7 +387,7 @@ class IngredientTest(TestCase):
         # Data for the account and testing
         user_data = {'username' : 'Bob', 'password' : 'Bob'}
         ingredient_data = {'name': 'potato', 'category': {'name':
-                                                              'not_grain'}}
+                                                              'not-grain'}}
 
         # Log in and authorise user
         token = api_client.post('/user/login/', json.dumps(user_data),
@@ -1424,6 +1424,7 @@ class SearchTestCase(TestCase):
     # test ingredient suggestion, should return ingredient from pantry since 
     # user is logged in
     def test_search5(self):
+        self.maxDiff = None
 
         # add things to pantry
         ingredient_data1 = {'user': "1", "ingredient": "apple"}
@@ -1452,8 +1453,7 @@ class SearchTestCase(TestCase):
         post = self.c.post('/recipes/', json.dumps(recipe_data), 
             content_type='application/json')
 
-        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon'
-            '&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+        response = self.c.get('/recipes/?ingredients=apple,carrot,lemon&meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
             content_type="application/json")
 
         expected_response = [
@@ -1532,7 +1532,7 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": ["apple", "pear"]}, 
+            "missing_ing": False}, 
                 
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1545,7 +1545,7 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": ["tomato", "carrot"]},
+            "missing_ing": False},
             
             {"recipe": 
                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1558,7 +1558,7 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": ["apple", "carrot"]},
+            "missing_ing": False},
             
             {"suggestion" : "apple"}] 
 
@@ -2440,6 +2440,7 @@ class CookbookTest(TestCase):
         self.assertEqual(json.loads(response.content), expected_response)
 
 
+# Test allowing spaces in ingredient categories and names
 class ValidatorTest(TestCase):
     def setUp(self) -> None:
         # set up meal categories and dietary requirements
@@ -2460,17 +2461,36 @@ class ValidatorTest(TestCase):
         self.c1.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
 
         # set up recipe ingredients
-        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit = IngredientCategory.objects.create(name="fruits and vegetables")
         fruit.save()
 
-        ingredient = IngredientSerializer(data={"name": "apple", "category": {"name": "fruit"}})
+        ingredient = IngredientSerializer(data={"name": "green apple", "category": {"name": "fruits and vegetables"}})
         ingredient.is_valid()
         ingredient.save()
 
-        ingredient = IngredientSerializer(data={"name": "pear", "category": {"name": "fruit"}})
-        ingredient.is_valid()
-        ingredient.save()
+    # test with spaces in names
+    def test_validation(self):
+        self.maxDiff = None
+        # enter recipe data
+        recipe_data = {
+            "name": "Fruit salad", "cook_time": "20 minutes", "method": "Yummy yummy", "author": "1",
+                "ingredients":
+                    [{"adjective": "chopped", "unit": "cups", "amount": "2", "ingredient": "green apple"}],
+                "meal_cat": [{"name": "lunch"}],
+                "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
-    # TODO
-        def test_validation(self):
-            pass
+        self.c1.post('/recipes/', json.dumps(recipe_data), 
+            content_type='application/json')
+
+        response = self.c1.get('/recipes/1/')
+        
+        expected_response = {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
+                'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
+                "image_URL": None,
+                'meal_cat': [{'name': 'lunch'}], 'diet_req': [{'name': 'dairy-free'}, {'name': 'vegan'}], 
+                'ingredients': 
+                    [{'adjective': 'chopped', 'unit': 'cups', 'amount': '2', 'recipe': 1, 
+                        'ingredient': {'name': 'green apple', 'category': {'name': 'fruits and vegetables'}}}]}
+
+        self.assertEqual(json.loads(response.content), expected_response)
+

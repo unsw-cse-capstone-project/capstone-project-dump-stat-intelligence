@@ -31,7 +31,7 @@ export default function Login(props) {
         document.getElementById(alertName).classList.remove(styles.show);
         close(props.login);
         //LOGIN SUCCEEDED, GET PANTRY
-        //dispatch(get_pantry());
+        dispatch(get_pantry());
         if (next) {
           router.push(next);
           dispatch(clear_next());

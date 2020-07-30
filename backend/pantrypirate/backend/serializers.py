@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
-from django.contrib.auth.validators import UnicodeUsernameValidator, ASCIIUsernameValidator
+from django.core.exceptions import ValidationError
 
 '''
     Custom serialiser classes 
@@ -15,6 +15,15 @@ class MetaSerializer(serializers.ModelSerializer):
         model = MetaSearch
         fields = ["search", "references"]
         order_by = ["references"]
+
+# Custom validator for ingredient names and categories
+# allows letters, hyphens and spaces
+def custom_validator(value):
+    if type(value) != str:
+        raise ValidationError("Input must be a string")
+
+    if not all(x.isalpha() or x == '-' or x == ' ' for x in value):
+        raise ValidationError("Input can only contain letters, numbers and hyphens")
 
 
 # Django authentication model for user, no corresponding model in the
@@ -67,7 +76,7 @@ class MealCatSerializer(serializers.ModelSerializer):
     class Meta:
         model = MealCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [custom_validator],}}
 
 
 # Requires a unique string to make, will return said string
@@ -75,7 +84,7 @@ class DietReqSerializer(serializers.ModelSerializer):
     class Meta:
         model = DietaryRequirement
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [custom_validator],}}
 
 
 # Requires a unique string to make, will return said string
@@ -85,7 +94,7 @@ class IngredientCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientCategory
         fields = ["name"]
-        extra_kwargs = {"name": {"validators": [],}}
+        extra_kwargs = {"name": {"validators": [custom_validator],}}
 
 
 # Serialiser for ingredient, creation requires category object currently
@@ -100,7 +109,7 @@ class IngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
         fields = ["name", "category"]
-        extra_kwargs = {"name": {"validators": [ASCIIUsernameValidator()],}}
+        extra_kwargs = {"name": {"validators": [custom_validator],}}
 
     def create(self, validated_data):
         cat_data = validated_data.pop("category")

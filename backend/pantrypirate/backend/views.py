@@ -243,13 +243,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             matching_ingredients = 0
             missing_ingredients = []
 
-            #ALSO CHECKING PANTRY INGREDIENTS NOW
-            pantry = []
-            if request.user.is_authenticated:
-                pantry = [x.ingredient.name for x in PantryIngredient.objects.filter(user=request.user)]
             # get all ingredients for a recipe
             for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
-                if ing.ingredient.name in running_list or ing.ingredient.name in pantry:
+                if ing.ingredient.name in running_list:
                     matching_ingredients += 1
                 else:
                     missing_ingredients.append(ing.ingredient.name)
@@ -412,7 +408,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
 
         recipe_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         user_id = PantryIngredient.objects.get(pk=recipe_id).user.id
-        
+
         if request.user.id is user_id:
             return super(PantryIngredientViewSet, self).update(request, *args, **kwargs)
         else:
