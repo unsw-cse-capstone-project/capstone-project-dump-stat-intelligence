@@ -13,6 +13,7 @@ import PantryButton from "../components/Pantry/PantryButton";
 import EditButton from "../components/creator/EditButton";
 
 import { attemptLoginFromLocalStorage } from "../lib/redux/actions/authAction";
+import { get_pantry } from "../lib/redux/actions/pantryAction";
 
 function PantryPirate({ Component, pageProps }) {
   const router = useRouter();
@@ -20,7 +21,12 @@ function PantryPirate({ Component, pageProps }) {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
   useEffect(() => {
-    dispatch(attemptLoginFromLocalStorage());
+    dispatch(attemptLoginFromLocalStorage())
+    .then(res => {
+      if (res) {
+        dispatch(get_pantry());
+      }
+    });
   }, []);
 
   return (

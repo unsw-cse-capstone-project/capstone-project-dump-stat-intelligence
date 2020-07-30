@@ -140,10 +140,10 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
 
   if (!user) {
     // obviously not logged in
-    return;
+    return false;
   }
 
-  UserAPI.get(user.id)
+  return UserAPI.get(user.id)
     .then((res) => {
       let data = res.data;
       // console.log("login success from localstorage");
@@ -159,6 +159,7 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
           favourites,
         });
       });
+      return true;
     })
     .catch((err) => {
       console.log(err);
@@ -168,6 +169,7 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
         removeUser();
         dispatch({ type: types.LOGOUT });
       }
+      return false;
     });
 };
 
