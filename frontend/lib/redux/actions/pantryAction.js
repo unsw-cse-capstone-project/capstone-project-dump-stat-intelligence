@@ -98,6 +98,5 @@ export const get_pantry = () => async (dispatch) => {
   dispatch({
     type: types.PANTRY_GET,
     pantry: newPantry,
-    T,
   });
 };
