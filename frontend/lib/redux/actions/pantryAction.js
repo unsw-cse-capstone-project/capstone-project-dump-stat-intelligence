@@ -17,13 +17,12 @@ PANTRY
 //NO API, frontend only
 export const change = (ingredient, category, expiry) => async (dispatch) => {
   dispatch({
-    type : types.PANTRY_CHANGE,
-    ingredient : ingredient, 
-    category : category,
-    expiry : expiry,
-  })
-}
-
+    type: types.PANTRY_CHANGE,
+    ingredient: ingredient,
+    category: category,
+    expiry: expiry,
+  });
+};
 
 //NEEDS API
 export const add = (ingredient) => async (dispatch) => {
@@ -38,7 +37,7 @@ export const add = (ingredient) => async (dispatch) => {
   let newIngredient = {
     category: ingredient.category,
     name: ingredient.name,
-    expiry : ingredient.expiry
+    expiry: ingredient.expiry,
   };
   dispatch({
     type: types.PANTRY_ADD,
@@ -52,7 +51,6 @@ export const remove = (ingredient) => async (dispatch) => {
 
   if (auth.isLoggedIn) {
     //INSER API, user is logged in so update pantry on backend
-
     // TODO: token auth
     // TODO: is ingredient.ingredient the primary key of
     // TODO: error handle
@@ -73,7 +71,7 @@ export const get_pantry = () => async (dispatch) => {
   let newPantry = {};
 
   if (auth.isLoggedIn) {
-    response = await PantryAPI.get(10, 1, ""); // TODO: token auth, error handling
+    response = await PantryAPI.get();
     newPantry = response.data;
   }
 
