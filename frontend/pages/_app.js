@@ -24,7 +24,7 @@ function PantryPirate({ Component, pageProps }) {
     dispatch(attemptLoginFromLocalStorage())
     .then(res => {
       if (res) {
-        setTimeout(() => {dispatch(get_pantry())}, 50);
+        setTimeout(() => {dispatch(get_pantry())}, 300);
       }
     });
   }, []);
