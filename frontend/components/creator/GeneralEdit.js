@@ -111,8 +111,8 @@ export default function GeneralEdit() {
         />
       </div>
       <hr />
-      <div style={{ margin: "50px 0" }}>
-        <button className="button" onClick={() => unsplashSearch()}>
+      <div style={{ margin: "0.5rem 0" }}>
+        <button style={{marginBottom:"0.5rem"}} className="button" onClick={() => unsplashSearch()}>
           Suggest some images...
         </button>
         {images}
