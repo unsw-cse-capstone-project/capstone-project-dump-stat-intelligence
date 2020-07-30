@@ -2,6 +2,7 @@ import Head from "next/head";
 import React from "react";
 
 import Preview from "../../components/creator/Preview";
+import Createrror from "../../components/creator/Createrror";
 
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -28,6 +29,7 @@ export default function Create(props) {
       <Head>
         <title>Pantry Pirate | Create</title>
       </Head>
+      <Createrror/>
       <Preview />
     </>
   );

@@ -24,13 +24,30 @@ export default function Preview() {
   };
 
   const createRecipe = () => {
-    dispatch(save_create());
-    router.push("/cookbook");
+    if (isCompleteRecipe()) {
+      dispatch(save_create());
+      router.push("/cookbook");
+    } else {
+      document.getElementById("createrror").classList.toggle("is-active");
+    }
   };
 
   const updateRecipe = () => {
-    dispatch(update_recipe());
-    router.push("/cookbook");
+    if (isCompleteRecipe()) {
+      dispatch(update_recipe());
+      router.push("/cookbook");
+    } else {
+      document.getElementById("createrror").classList.toggle("is-active");
+    }
+  }
+
+
+  function isCompleteRecipe() {
+    if (creation.name === "" || creation.method === "" || creation.cook_time === "" 
+    || creation.image_URL === "" 
+    || creation.ingredients.length === 0 || creation.meal_cat.length === 0) return false;
+
+    return true;
   }
 
   return (
