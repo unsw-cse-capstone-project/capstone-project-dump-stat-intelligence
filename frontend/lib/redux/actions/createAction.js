@@ -71,7 +71,6 @@ export const update_create = (category, newVal) => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const save_create = () => async (dispatch) => {
   let recipe = store.getState().create;
   let tmp;
@@ -98,6 +97,38 @@ export const save_create = () => async (dispatch) => {
     });
 };
 
+export const update_recipe = () => async (dispatch) => {
+  let recipe = store.getState().create;
+  let user = store.getState().auth;
+
+  let updateRecipe = { ...recipe, author: user.uid };
+
+  let updateIngredients = [];
+  for (let ingredient of updateRecipe.ingredients) {
+    updateIngredients.push({
+      ingredient: ingredient.ingredient.name,
+      adjective: ingredient.adjective,
+      unit: ingredient.unit,
+      amount: ingredient.amount,
+    });
+  }
+
+  updateRecipe.ingredients = updateIngredients;
+
+  console.log("Sending", updateRecipe);
+
+  RecipeAPI.update(recipe.id, updateRecipe)
+    .then((res) => {
+      dispatch({
+        type: types.CLEAR_CREATE, //Just removing all left over info
+      });
+      console.log("updating recipe", { ...recipe, author: user.uid });
+    })
+    .catch((err) => {
+      console.error(err.response);
+    });
+};
+
 //NO API, frontend only
 export const clear_create = () => async (dispatch) => {
   dispatch({
@@ -105,11 +136,7 @@ export const clear_create = () => async (dispatch) => {
   });
 };
 
-//NEEDS API
 export const load_create = (id) => async (dispatch) => {
-  let uid = store.getState().auth.uid;
-  //INSERT API - actually load recipe from backend instead of dummy data
-
   //TEMPORARY ... LOAD RECIPE LIKE WHEN YOU VEIW A RECIPE
   let recipe = null;
   RecipeAPI.get(id)

@@ -17,36 +17,40 @@ PANTRY
 //NO API, frontend only
 export const change = (ingredient, category, expiry) => async (dispatch) => {
   dispatch({
-    type : types.PANTRY_CHANGE,
-    ingredient : ingredient, 
-    category : category,
-    expiry : expiry,
-  })
-}
+    type: types.PANTRY_CHANGE,
+    ingredient: ingredient,
+    category: category,
+    expiry: expiry,
+  });
+};
 
 export const add = (ingredient) => async (dispatch) => {
   let auth = store.getState().auth;
   let response;
-  let exists = false
+  let exists = false;
   let i;
 
   if (auth.isLoggedIn) {
     response = await PantryAPI.get(10, 1, "");
 
     for (i = 0; i < response.data.length; i++) {
-      if (response.data[i]['ingredient']['name'] == ingredient.name) {
-        exists = true
+      if (response.data[i]["ingredient"]["name"] == ingredient.name) {
+        exists = true;
       }
     }
   }
 
   if (exists == false) {
-    await PantryAPI.add({'expiry_date': ingredient.expiry, 'user': auth.uid, 'ingredient': ingredient.name});
+    await PantryAPI.add({
+      expiry_date: ingredient.expiry,
+      user: auth.uid,
+      ingredient: ingredient.name,
+    });
 
     let newIngredient = {
       category: ingredient.category,
       name: ingredient.name,
-      expiry : ingredient.expiry
+      expiry: ingredient.expiry,
     };
 
     dispatch({
@@ -66,10 +70,9 @@ export const remove = (ingredient) => async (dispatch) => {
     response = await PantryAPI.get(10, 1, "");
 
     for (i = 0; i < response.data.length; i++) {
-
-      if (response.data[i]['ingredient']['name'] == ingredient.ingredient) {
-        console.log(response.data[i]['id'])
-        await PantryAPI.delete(response.data[i]['id']);
+      if (response.data[i]["ingredient"]["name"] == ingredient.ingredient) {
+        console.log(response.data[i]["id"]);
+        await PantryAPI.delete(response.data[i]["id"]);
       }
     }
   }

@@ -59,8 +59,6 @@ const Recipe = (props) => {
     return <p>Loading</p>;
   }
 
-  console.log(recipe);
-
   function addFave() {
     dispatch(add_favourite({ name: recipe.name, src: null, id: recipe.id }));
     setFavourite(true);
@@ -76,7 +74,7 @@ const Recipe = (props) => {
   if (isLoggedIn && uid === recipe.author.id) {
     controlButtons = (
       <>
-        <Link href="/recipe/create">
+        <Link href="/recipe/create?edit=true">
           <a
             onClick={() => dispatch(load_create(recipe.id))}
             className="button is-light"
@@ -97,11 +95,11 @@ const Recipe = (props) => {
   } else if (isLoggedIn) {
     faveButton = isFavourite ? (
       <a onClick={removeFave} className="button is-warning">
-        Unfavourite
+        Remove from cookbook
       </a>
     ) : (
       <a onClick={addFave} className="button is-warning">
-        Favourite
+        Add to cookbook
       </a>
     );
   }
@@ -135,7 +133,17 @@ const Recipe = (props) => {
               </div>
               <div className="column is-8">
                 <img
-                  src={recipe.image_URL === null ? `https://source.unsplash.com/400x300/?food&sig=${recipe.id}` : recipe.image_URL}
+                  style={{
+                    width: "100%",
+                    maxHeight: "500px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
+                  src={
+                    recipe.image_URL === null
+                      ? `https://source.unsplash.com/400x300/?food&sig=${recipe.id}`
+                      : recipe.image_URL
+                  }
                 />
               </div>
             </div>

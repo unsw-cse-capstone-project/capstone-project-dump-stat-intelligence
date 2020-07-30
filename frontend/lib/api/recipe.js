@@ -18,7 +18,7 @@ const RecipeAPI = {
     return await api.post(`/recipes/`, recipe);
   },
   update: async (id, recipe) => {
-    return await api.put(`/recipes/${id}`, recipe);
+    return await api.put(`/recipes/${id}/`, recipe);
   },
   delete: async (id) => api.delete(`/recipes/${id}/`),
   discover: async () => {

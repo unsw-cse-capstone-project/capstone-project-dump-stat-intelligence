@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   clear_create,
   save_create,
+  update_recipe,
 } from "../../lib/redux/actions/createAction";
 import { useRouter } from "next/router";
 import NewIngredient from "./NewIngredient";
@@ -21,7 +22,12 @@ export default function Preview() {
   };
 
   const createRecipe = () => {
-    dispatch(save_create());
+    if (router.query.edit) {
+      dispatch(update_recipe());
+    } else {
+      dispatch(save_create());
+    }
+    router.push("/cookbook");
   };
 
   return (
@@ -29,10 +35,20 @@ export default function Preview() {
       <div className="columns is-centred">
         <NewIngredient id="new-ingredient" />
         <div className="box column is-10">
-          <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
+          <div className="notification is-warning">
+            <strong>Preview</strong> - Use the edit button below to start
+            editing this recipe
+          </div>
+          <h1 className="title is-2">{`${creation.name}`}</h1>
           <img
-              src={creation.image_URL}
-            />
+            style={{
+              width: "100%",
+              maxHeight: "500px",
+              objectFit: "cover",
+              display: "block",
+            }}
+            src={creation.image_URL}
+          />
           <p>
             Author: {user.username} | Cook time: {creation.cook_time}
           </p>
@@ -51,8 +67,8 @@ export default function Preview() {
               <ul>
                 {creation.ingredients.map((ingredient, idx) => (
                   <li key={idx}>
-                    {ingredient.amount} {ingredient.unit}{" "}
-                    {ingredient.adjective} {ingredient.ingredient.name}
+                    {ingredient.amount} {ingredient.unit} {ingredient.adjective}{" "}
+                    {ingredient.ingredient.name}
                   </li>
                 ))}
               </ul>

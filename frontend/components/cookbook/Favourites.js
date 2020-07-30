@@ -24,7 +24,7 @@ export default function Favourites() {
   return (
     <>
       <div onClick={() => toggleIt("fave")} className={styles.header}>
-        <h1 className="title is-3">My Favourited recipes</h1>
+        <h1 className="title is-3">Recipes in my cookbook</h1>
         <Arrow name="fave-icon" />
       </div>
       <div id="fave-box" className={`${styles.drawer} columns is-multiline`}>
