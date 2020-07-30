@@ -47,7 +47,7 @@ const Recipe = (props) => {
   const handleDelete = async (e) => {
     setDeleteLoading(true);
     const res = await RecipeAPI.delete(recipe.id);
-    router.push("/explore");
+    router.push("/cookbook");
     setDeleteLoading(false);
   };
 

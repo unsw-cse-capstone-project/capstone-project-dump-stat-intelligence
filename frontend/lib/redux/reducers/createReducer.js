@@ -15,7 +15,8 @@ const initialState = {
     diet_req : [],
     meal_cat : [],
     ingredients : [],
-    image_URL : ""
+    image_URL : "",
+    suggest : true,
 }
 
 

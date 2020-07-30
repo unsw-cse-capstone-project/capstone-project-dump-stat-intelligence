@@ -1,8 +1,7 @@
-import styles from "./Cookbook.module.scss";
+import styles from "./Edit.module.scss";
 
 import { useState, useEffect } from 'react';
 import Link from "next/link";
-import recipeAPI from "../../lib/api/recipe"
 import RecipeAPI from "../../lib/api/recipe";
 
 
@@ -29,10 +28,10 @@ export default function Suggest() {
     }, [])
 
     return <div className={styles.suggestion}>
-        <div className={styles.sug}>
-            <h3 className="title is-5">Feeling creative? Make a recipe with these commonly searched ingredients.</h3>
-        </div>
+        
+        
         <div className={`${styles.choice} tags`}>
+            <span className="is-6">Need inspiration? Use these commonly searched ingredients - </span>
             {
                 ingredients.map((val, idx) => (
                     <span key={idx} className="tag is-dark">
@@ -40,11 +39,6 @@ export default function Suggest() {
                     </span>
                 ))
             }
-        </div>
-        <div className={styles.dewit}>
-            <Link href={"/recipe/create"}>
-                <a className="is-link">Start creating</a>
-            </Link>
         </div>
     </div>
 }

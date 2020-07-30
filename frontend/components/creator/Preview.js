@@ -8,6 +8,7 @@ import {
 } from "../../lib/redux/actions/createAction";
 import { useRouter } from "next/router";
 import NewIngredient from "./NewIngredient";
+import Suggest from "./Suggest";
 
 export default function Preview() {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ export default function Preview() {
 
   let creation = useSelector((state) => state.create);
   let user = useSelector((state) => state.auth.userInfo);
+  
 
   const discard = () => {
     dispatch(clear_create());
@@ -22,23 +24,29 @@ export default function Preview() {
   };
 
   const createRecipe = () => {
-    if (router.query.edit) {
-      dispatch(update_recipe());
-    } else {
-      dispatch(save_create());
-    }
+    dispatch(save_create());
     router.push("/cookbook");
   };
 
+  const updateRecipe = () => {
+    dispatch(update_recipe());
+    router.push("/cookbook");
+  }
+
   return (
     <div className="container">
-      <div className="columns is-centred">
+      <div className="columns is-centered">
         <NewIngredient id="new-ingredient" />
-        <div className="box column is-10">
+        <div className="box column is-11">
           <div className="notification is-warning">
             <strong>Preview</strong> - Use the edit button below to start
             editing this recipe
           </div>
+          {
+            creation.suggest ? 
+            <Suggest/>
+            : ""
+          }
           <h1 className="title is-2">{`${creation.name}`}</h1>
           <img
             style={{
@@ -83,7 +91,7 @@ export default function Preview() {
             {creation.id ? (
               <>
                 <button
-                  onClick={createRecipe}
+                  onClick={updateRecipe}
                   className="button is-light is-success"
                 >
                   Save Changes
