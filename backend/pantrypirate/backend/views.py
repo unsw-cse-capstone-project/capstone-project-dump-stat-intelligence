@@ -237,21 +237,28 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe_list = self.get_serializer(f, many=True).data
         unordered_results = []
 
-        all_missing_ingredients = []
+        # missing ingredients different for logged in user
+        if request.user.is_authenticated:
+            pantry = PantryIngredient.objects.filter(user=request.user.id)
+        else:
+            pantry = PantryIngredient.objects.none()
 
+        all_missing_ingredients = []
         for rec in recipe_list:
-            matching_ingredients = 0
+
             missing_ingredients = []
+            matching_ingredients = 0
 
             # get all ingredients for a recipe
             for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
                 else:
-                    missing_ingredients.append(ing.ingredient.name)
+                    if not pantry.filter(ingredient=ing.ingredient):
+                        missing_ingredients.append(ing.ingredient.name)
                     all_missing_ingredients.append(ing.ingredient.name)
             
-            if len(running_list) == 0:
+            if len(running_list) == 0 or not request.user.is_authenticated:
                 missing_ingredients = False
 
             # % = matching ing in running list / all recipe ingredients

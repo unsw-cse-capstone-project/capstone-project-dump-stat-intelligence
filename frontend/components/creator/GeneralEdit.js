@@ -25,7 +25,7 @@ export default function GeneralEdit() {
     const CLIENT_ID = "55PcQTaRixIN9faqVZzA3K3NwzMoAwqXiTr8GPurdB0";
     axios
       .get(
-        `https://api.unsplash.com/search/photos/?query=${recipe.name}&client_id=${CLIENT_ID}`
+        `https://api.unsplash.com/search/photos/?query=${recipe.name}&orientation=squarish&client_id=${CLIENT_ID}`
       )
       .then((res) => {
         console.log(res);
@@ -111,8 +111,8 @@ export default function GeneralEdit() {
         />
       </div>
       <hr />
-      <div style={{ margin: "50px 0" }}>
-        <button className="button" onClick={() => unsplashSearch()}>
+      <div className="field" style={{ margin: "0.5rem 0" }}>
+        <button style={{marginBottom:"2rem"}} className="button" onClick={() => unsplashSearch()}>
           Suggest some images...
         </button>
         {images}

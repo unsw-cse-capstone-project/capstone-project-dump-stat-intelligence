@@ -182,9 +182,9 @@ export const login = (email, password) => {
         let data = res.data;
         setUser({ id: data.id, token: data.token });
 
-        CookbookAPI.get().then((res) => {
+        return CookbookAPI.get().then((res) => {
           let favourites = res.data;
-          dispatch({
+          return dispatch({
             type: types.LOGIN,
             userInfo: data,
             uid: data.id,
@@ -193,7 +193,6 @@ export const login = (email, password) => {
           });
         });
 
-        return { success: true };
       })
       .catch((err) => {
         return { success: false };
