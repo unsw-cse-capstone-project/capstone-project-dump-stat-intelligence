@@ -110,11 +110,13 @@ export default function GeneralEdit() {
           onChange={handleInput}
         />
       </div>
-
-      <button className="button" onClick={() => unsplashSearch()}>
-        Suggest some images...
-      </button>
-      {images}
+      <hr />
+      <div style={{ margin: "50px 0" }}>
+        <button className="button" onClick={() => unsplashSearch()}>
+          Suggest some images...
+        </button>
+        {images}
+      </div>
       <div className="field control">
         <label className="label">Image URL</label>
         <input
@@ -125,6 +127,7 @@ export default function GeneralEdit() {
           onChange={handleInput}
         />
       </div>
+      <hr />
       <div className="field control">
         <label className="label">Meal type</label>
         <div className="select dropdown is-hoverable" style={{ width: "100%" }}>
@@ -199,6 +202,7 @@ export default function GeneralEdit() {
           </div>
         </div>
       </div>
+      <div style={{ height: "150px" }}></div>
     </div>
   );
 }

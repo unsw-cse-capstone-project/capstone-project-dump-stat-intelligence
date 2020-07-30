@@ -35,7 +35,11 @@ export default function Preview() {
       <div className="columns is-centred">
         <NewIngredient id="new-ingredient" />
         <div className="box column is-10">
-          <h1 className="title is-2">{`PREVIEW: ${creation.name}`}</h1>
+          <div className="notification is-warning">
+            <strong>Preview</strong> - Use the edit button below to start
+            editing this recipe
+          </div>
+          <h1 className="title is-2">{`${creation.name}`}</h1>
           <img
             style={{
               width: "100%",

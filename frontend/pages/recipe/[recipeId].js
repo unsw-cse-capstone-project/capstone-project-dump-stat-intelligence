@@ -95,11 +95,11 @@ const Recipe = (props) => {
   } else if (isLoggedIn) {
     faveButton = isFavourite ? (
       <a onClick={removeFave} className="button is-warning">
-        Unfavourite
+        Remove from cookbook
       </a>
     ) : (
       <a onClick={addFave} className="button is-warning">
-        Favourite
+        Add to cookbook
       </a>
     );
   }
@@ -133,6 +133,12 @@ const Recipe = (props) => {
               </div>
               <div className="column is-8">
                 <img
+                  style={{
+                    width: "100%",
+                    maxHeight: "500px",
+                    objectFit: "cover",
+                    display: "block",
+                  }}
                   src={
                     recipe.image_URL === null
                       ? `https://source.unsplash.com/400x300/?food&sig=${recipe.id}`
