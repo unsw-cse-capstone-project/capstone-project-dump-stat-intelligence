@@ -115,16 +115,7 @@ export default function IngredientEdit() {
               type="number"
               placeholder="Quantity"
               name="qty"
-            />
-          </div>
-          <div className="field control">
-            <input
-              required={false}
-              onChange={updateIng}
-              className="input"
-              type="text"
-              placeholder="Adjective"
-              name="adj"
+              step="0.01"
             />
           </div>
           <div className="field control">
@@ -135,6 +126,16 @@ export default function IngredientEdit() {
               type="text"
               placeholder="Unit"
               name="unit"
+            />
+          </div>
+          <div className="field control">
+            <input
+              required={false}
+              onChange={updateIng}
+              className="input"
+              type="text"
+              placeholder="Adjective"
+              name="adj"
             />
           </div>
           <div className="field control">
