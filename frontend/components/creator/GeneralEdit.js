@@ -130,13 +130,13 @@ export default function GeneralEdit() {
       <hr />
       <div className="field control">
         <label className="label">Meal type</label>
-        <div className="select dropdown is-hoverable" style={{ width: "100%" }}>
+        <div onFocus={e => {let obj = document.getElementById("dropdown-cat"); obj.classList.add(styles.show); obj.firstElementChild.focus();}} className="select dropdown" style={{ width: "100%" }}>
           <div style={{ width: "100%" }} className="dropdown-trigger">
             <button
               className="button"
               style={{ width: "100%" }}
               aria-haspopup="true"
-              aria-controls="dropdown-menu4"
+              aria-controls="dropdown-cat"
             >
               <span>Meal type</span>
               <span className="icon is-small">
@@ -147,10 +147,10 @@ export default function GeneralEdit() {
           <div
             style={{ width: "100%" }}
             className="dropdown-menu"
-            id="dropdown-menu4"
+            id="dropdown-cat"
             role="menu"
           >
-            <div className="dropdown-content">
+            <div tabIndex="0" className={`dropdown-content ${styles.stopBorder}`} onBlur={e => {document.getElementById("dropdown-cat").classList.remove(styles.show)}}>
               {Object.keys(meal).map((key, idx) => (
                 <DropItem
                   key={idx}
@@ -167,13 +167,13 @@ export default function GeneralEdit() {
       </div>
       <div className="field control">
         <label className="label">Dietary requirements</label>
-        <div className="select dropdown is-hoverable" style={{ width: "100%" }}>
+        <div onFocus={e => {let obj = document.getElementById("dropdown-diet"); obj.classList.add(styles.show); obj.firstElementChild.focus();}}  className="select dropdown" style={{ width: "100%" }}>
           <div style={{ width: "100%" }} className="dropdown-trigger">
             <button
               className="button"
               style={{ width: "100%" }}
               aria-haspopup="true"
-              aria-controls="dropdown-menu4"
+              aria-controls="dropdown-diet"
             >
               <span>Dietary requirements</span>
               <span className="icon is-small">
@@ -184,10 +184,10 @@ export default function GeneralEdit() {
           <div
             style={{ width: "100%" }}
             className="dropdown-menu"
-            id="dropdown-menu4"
+            id="dropdown-diet"
             role="menu"
           >
-            <div className="dropdown-content">
+            <div tabIndex="0" className={`dropdown-content ${styles.stopBorder}`} onBlur={e => {document.getElementById("dropdown-diet").classList.remove(styles.show)}}>
               {Object.keys(diet).map((key, idx) => (
                 <DropItem
                   key={idx}
