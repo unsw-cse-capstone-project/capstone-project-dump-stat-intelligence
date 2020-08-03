@@ -60,7 +60,7 @@ export default function Pantry() {
               return (
                 <div key={i}>
                   <h4>{category}</h4>
-                  <div className="tags">
+                  <div className="field is-grouped is-grouped-multiline">
                     {pantry[category].map((ingredient, j) => (
                       <PantryIngredient
                         func={remove}

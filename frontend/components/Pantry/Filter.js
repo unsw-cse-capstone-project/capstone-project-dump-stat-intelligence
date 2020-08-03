@@ -32,7 +32,7 @@ export default function Filter() {
               >
                 <span>Search from</span>
                 <span className="icon is-small">
-                  <i className="fas fa-check" aria-hidden="true"></i>
+                  <i className="fas " aria-hidden="true"></i>
                 </span>
               </button>
             </div>
@@ -66,7 +66,7 @@ export default function Filter() {
               >
                 <span>Meal type</span>
                 <span className="icon is-small">
-                  <i className="fas fa-check" aria-hidden="true"></i>
+                  <i className="fas" aria-hidden="true"></i>
                 </span>
               </button>
             </div>
@@ -95,7 +95,7 @@ export default function Filter() {
               >
                 <span>Dietary requirements</span>
                 <span className="icon is-small">
-                  <i className="fas fa-check" aria-hidden="true"></i>
+                  <i className="fas" aria-hidden="true"></i>
                 </span>
               </button>
             </div>

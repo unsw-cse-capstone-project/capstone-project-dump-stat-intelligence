@@ -57,7 +57,7 @@ export const recipes_update = () => async (dispatch) => {
     if (r.suggestion) {
       suggestion = r.suggestion;
     } else {
-      extractedRecipes.push({...r.recipe, missing_ing : r.missing_ing, match_percentage : r.match_percentage});
+      extractedRecipes.push({...r.recipe, missing_ing : r.missing_ing, match_percentage : r.match_percentage, nearly_expiring : r.nearly_expiring});
     }
   });
   if (explore.ingredients.length === 0) suggestion = null;

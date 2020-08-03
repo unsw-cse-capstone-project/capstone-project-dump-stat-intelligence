@@ -19,5 +19,8 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-thunk": "^2.3.0",
     "sass": "^1.26.8"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.14.0"
   }
 }

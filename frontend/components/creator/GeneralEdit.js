@@ -140,7 +140,7 @@ export default function GeneralEdit() {
             >
               <span>Meal type</span>
               <span className="icon is-small">
-                <i className="fas fa-check" aria-hidden="true"></i>
+                <i className="fas" aria-hidden="true"></i>
               </span>
             </button>
           </div>
@@ -177,7 +177,7 @@ export default function GeneralEdit() {
             >
               <span>Dietary requirements</span>
               <span className="icon is-small">
-                <i className="fas fa-check" aria-hidden="true"></i>
+                <i className="fas" aria-hidden="true"></i>
               </span>
             </button>
           </div>

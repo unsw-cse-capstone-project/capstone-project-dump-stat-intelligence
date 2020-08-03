@@ -18,7 +18,12 @@
   }
 }
 
+.indicationBox {
+  display:flex;
+}
+
 .indicator {
+  margin:0.1rem;
   border-radius: 100px;
   color: white;
   width: 25px;

@@ -2,8 +2,10 @@ import Link from "next/link";
 import styles from "./RecipeCard.module.scss";
 
 import Indicator from "./Indicator";
+import Indication from "./Indication";
 
 export default function RecipeCard(props) {
+  console.log(props.recipe)
   return (
     <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
       <div className={"card " + styles.recipe}>
@@ -31,19 +33,8 @@ export default function RecipeCard(props) {
               </span>
             ))}
           </p>
-          {
-            props.recipe.missing_ing ?
-            <Indicator perfect={props.recipe.missing_ing.length === 0} value={props.recipe.missing_ing.length} color="#0f0">
-              <ul className={styles.missList}>
-                {props.recipe.missing_ing.map((val, idx) => (
-                      <li key={idx}>
-                        -&nbsp;&nbsp;{val}
-                      </li>
-                ))}
-              </ul>
-            </Indicator>
-            : ""
-          }
+          <Indication missing={props.recipe.missing_ing} expiring={props.recipe.nearly_expiring}/>
+          
         </div>
       </div>
     </Link>

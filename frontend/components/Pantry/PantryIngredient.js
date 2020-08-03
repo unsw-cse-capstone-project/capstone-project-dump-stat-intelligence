@@ -1,6 +1,7 @@
 import styles from "./Pantry.module.scss";
 import { useDispatch } from 'react-redux';
 import { load_expiry } from "../../lib/redux/actions/expiryAction";
+import { explore_add } from "../../lib/redux/actions/exploreAction";
 
 export default function PantryIngredient(props) {
     const dispatch = useDispatch();
@@ -25,15 +26,21 @@ export default function PantryIngredient(props) {
             dispatch(load_expiry(props.ingredient, props.category, props.expiry));
         }
     }
-
-    return <span onClick={openEdit} key={props.idx} className={`tag ${close ? "is-danger" : "is-dark"} ${styles.tag}`}>
-        {props.ingredient}
-        {
-            props.del ? 
-            <button onClick={(e) => {e.stopPropagation(); cya(props.ingredient, props.category)}} className="delete is-small"/>
-            : ""
-        }
-    </span>
+    return <div key={props.idx} className="control">
+        <div className="tags has-addons">
+            <span onClick={openEdit} className={`tag ${close ? "is-danger" : "is-dark"} ${styles.tag}`}>{props.ingredient}</span>
+            {
+                props.del ? 
+                <a className="tag is-delete" onClick={(e) => {e.stopPropagation(); cya(props.ingredient, props.category)}}></a>
+                : <a onClick={(e) => {e.stopPropagation(); dispatch(explore_add(props.ingredient))}} className="tag">
+                    <span className="icon mdi mdi-dark">
+                        <i className="fas fa-search-plus"></i>
+                    </span>
+                </a>
+            }
+        </div>
+    </div>
+    
 
 
 }
