@@ -3,6 +3,7 @@ from rest_framework.test import force_authenticate, APIClient
 from .models import *
 from .views import *
 import json
+import datetime
 
 '''
     Test suite for backend
@@ -1235,7 +1236,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1248,7 +1250,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"suggestion" : "tomato"}] 
 
@@ -1273,7 +1276,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]}, 
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1286,7 +1290,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["apple"]},
+            "missing_ing": ["apple"],
+            "nearly_expiring": False},
             
             {"suggestion" : "tomato"}] 
 
@@ -1312,7 +1317,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
@@ -1325,7 +1331,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["pear"]},
+            "missing_ing": ["pear"],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1338,7 +1345,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"suggestion" : "pear"}] 
 
@@ -1375,7 +1383,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
@@ -1388,7 +1397,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["pear"]},
+            "missing_ing": ["pear"],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1401,7 +1411,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
@@ -1414,7 +1425,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
                         "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"suggestion" : "tomato"}] 
 
@@ -1468,7 +1480,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
@@ -1481,7 +1494,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["pear"]},
+            "missing_ing": [],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1494,7 +1508,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
@@ -1507,7 +1522,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
                         "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.5, 
-            "missing_ing": ["tomato"]},
+            "missing_ing": ["tomato"],
+            "nearly_expiring": False},
             
             {"suggestion" : "pear"}] 
 
@@ -1532,7 +1548,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": False}, 
+            "missing_ing": False,
+            "nearly_expiring": False}, 
                 
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1545,7 +1562,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": False},
+            "missing_ing": False,
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1558,7 +1576,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 0.0, 
-            "missing_ing": False},
+            "missing_ing": False,
+            "nearly_expiring": False},
             
             {"suggestion" : "apple"}] 
 
@@ -1599,7 +1618,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []},
+            "missing_ing": [],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1612,7 +1632,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []},
+            "missing_ing": [],
+            "nearly_expiring": False},
 
             {"recipe": 
                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1625,7 +1646,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
             
             {"suggestion" : "lemon"}] 
 
@@ -1664,7 +1686,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
                         "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []},
+            "missing_ing": [],
+            "nearly_expiring": False},
             
             {"recipe": 
                 {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
@@ -1677,7 +1700,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []},
+            "missing_ing": [],
+            "nearly_expiring": False},
 
             {"recipe": 
                 {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
@@ -1690,7 +1714,8 @@ class SearchTestCase(TestCase):
                     {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
                         "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []}, 
+            "missing_ing": [],
+            "nearly_expiring": False}, 
 
             {"recipe": 
                 {"id": 4, "name": "Tomato salad", "cook_time": "20 minutes", "method": "Chop tomatoes", 
@@ -1703,12 +1728,169 @@ class SearchTestCase(TestCase):
                     {"adjective": "juiced", "unit": "Tbsp", "amount": "2", "recipe": 4, 
                         "ingredient": {"name": "lemon", "category": {"name": "vegetable"}}}]}, 
             "match_percentage": 1.0, 
-            "missing_ing": []},
+            "missing_ing": [],
+            "nearly_expiring": False},
             
             {"suggestion" : ""}] 
 
         self.assertEqual(json.loads(response.content), expected_response)
 
+
+# Testing that nearly expiring ingredients are returned correctly
+class ExpiryTestCase(TestCase):
+    def setUp(self):
+
+        # set up meal categories and dietary requirements
+        breakfast = MealCategory.objects.create(name="breakfast")
+        lunch = MealCategory.objects.create(name="lunch")
+        dessert = MealCategory.objects.create(name="dessert")
+        vegan = DietaryRequirement.objects.create(name="vegan")
+        dairy_free = DietaryRequirement.objects.create(name="dairy-free")
+
+        # set up user
+        self.c = APIClient()
+        user_data = {'username' : 'Jess', 'email' : 'jess@gmail.com', 
+            'password' : '1111'}
+        user = self.c.post('/user/register/', json.dumps(user_data), 
+            content_type='application/json')
+        user_data.pop('email')      
+        token = self.c.post('/user/login/', json.dumps(user_data), 
+            content_type='application/json')
+        self.c.credentials(HTTP_AUTHORIZATION='Token ' + token.data['token'])
+
+        user = User.objects.get(pk=1)
+
+        # set up recipes
+        fruit_salad = Recipe(name="Fruit salad", cook_time="30 minutes", 
+            method="Yummy yummy", author=user)
+        fruit_salad.save()
+        fruit_salad.meal_cat.add(breakfast)
+        fruit_salad.diet_req.add(vegan)
+        fruit_salad.diet_req.add(dairy_free)
+
+        garden_salad = Recipe(name="Garden salad", cook_time="30 minutes", 
+            method="Crunch crunch", author=user)
+        garden_salad.save()
+        garden_salad.meal_cat.add(lunch)
+        garden_salad.diet_req.add(vegan)
+        garden_salad.diet_req.add(dairy_free)
+
+        mixed_salad = Recipe(name="Mixed salad", cook_time="30 minutes", 
+            method="Yummy crunch?", author=user)
+        mixed_salad.save()
+        mixed_salad.meal_cat.add(lunch)
+        mixed_salad.diet_req.add(vegan)
+        mixed_salad.diet_req.add(dairy_free)
+
+        # set up recipe ingredients
+        fruit = IngredientCategory.objects.create(name="fruit")
+        fruit.save()
+        apple = Ingredient(name="apple", category=fruit)
+        apple.save()
+        pear = Ingredient(name="pear", category=fruit)
+        pear.save()
+
+        vegetable = IngredientCategory.objects.create(name="vegetable")
+        vegetable.save()
+        tomato = Ingredient(name="tomato", category=vegetable)
+        tomato.save()
+        carrot = Ingredient(name="carrot", category=vegetable)
+        carrot.save()
+        lemon = Ingredient(name="lemon", category=vegetable)
+        lemon.save()
+
+        r_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=apple, recipe=fruit_salad)
+        r_apple.save()
+        r_pear = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=pear, recipe=fruit_salad)
+        r_pear.save()
+
+        r_tomato = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=tomato, recipe=garden_salad)
+        r_tomato.save()
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=carrot, recipe=garden_salad)
+        r_carrot.save()
+
+        r_mixed_apple = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=apple, recipe=mixed_salad)
+        r_mixed_apple.save()
+        r_mixed_carrot = RecipeIngredient(adjective="chopped", unit="whole", amount="3", 
+            ingredient=carrot, recipe=mixed_salad)
+        r_mixed_carrot.save()
+
+    # make sure search will always return a suggested ingredient, 
+    # or empty string as last case
+    def test_expiry(self):
+
+        date_today = "2020-08-03"
+
+        # add things to pantry
+        ingredient_data1 = {'user': "1", "ingredient": "apple", "expiry_date": date_today}
+        ingredient_data2 = {'user': "1", "ingredient": "pear", "expiry_date": "2020-08-05"}
+        ingredient_data3 = {'user': "1", "ingredient": "carrot", "expiry_date": "2020-08-20"}
+        ingredient_data4 = {'user': "1", "ingredient": "tomato"}
+        
+        self.c.post('/user/pantry/', json.dumps(ingredient_data1), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data2), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data3), 
+            content_type='application/json')
+        self.c.post('/user/pantry/', json.dumps(ingredient_data4), 
+            content_type='application/json')
+
+        response = self.c.get('/recipes/?ingredients=apple,tomato,pear,carrot&'
+            'meal=dinner+lunch+breakfast&diet=vegan&limit=10&offset=0/',
+            content_type="application/json")
+
+        expected_response = [
+            {"recipe": 
+                {"id": 1, "name": "Fruit salad", "cook_time": "30 minutes", "method": "Yummy yummy", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "breakfast"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 1, 
+                        "ingredient": {"name": "pear", "category": {"name": "fruit"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": [],
+            "nearly_expiring": ["apple", "pear"]},
+            
+            {"recipe": 
+                {"id": 2, "name": "Garden salad", "cook_time": "30 minutes", "method": "Crunch crunch", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "tomato", "category": {"name": "vegetable"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 2, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": [],
+            "nearly_expiring": False},
+
+            {"recipe": 
+                {"id": 3, "name": "Mixed salad", "cook_time": "30 minutes", "method": "Yummy crunch?", 
+                "author": {"id": 1, "username": "Jess", "email": "jess@gmail.com"}, 
+                "image_URL": None,
+                "meal_cat": [{"name": "lunch"}], "diet_req": [{"name": "dairy-free"}, {"name": "vegan"}], 
+                "ingredients": 
+                    [{"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "apple", "category": {"name": "fruit"}}}, 
+                    {"adjective": "chopped", "unit": "whole", "amount": "3", "recipe": 3, 
+                        "ingredient": {"name": "carrot", "category": {"name": "vegetable"}}}]}, 
+            "match_percentage": 1.0, 
+            "missing_ing": [],
+            "nearly_expiring": ["apple"]}, 
+            
+            {"suggestion" : "lemon"}] 
+
+        self.assertEqual(json.loads(response.content), expected_response)
 
 # Testing search metadata
 class MetaSearchTestCase(TestCase):
