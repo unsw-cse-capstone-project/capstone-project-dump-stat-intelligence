@@ -12,6 +12,7 @@ from django.contrib.auth import authenticate
 from django.db.models import Max
 import json
 from collections import Counter
+import datetime
 
 '''
     Views for website
@@ -145,7 +146,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 running list
             Step 3: filter by dietary requirements and meal categories
             Step 4: order recipes by match percentage, return missing ingredients
-                for each recipe
+                for each recipe and nearly expiring ingredients, if applicable
             Step 5: determine best ingredient suggestion for user to add to
                 search
     '''
@@ -226,7 +227,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         # return looks like:
         #   [{"recipe1" : OrderedDict(), "match_percentage" : num, 
-        #           "missing_ing" : ["ing1_name", "ing2_name"]},
+        #           "missing_ing" : ["ing1_name", "ing2_name"]
+        #           "nearly_expiring : ["ing1_name", "ings2_name"]},
         #    {"recipe2" : ...}
         #        .....
         #    {"suggestion" : "ing_name"}]
@@ -248,13 +250,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
             missing_ingredients = []
             matching_ingredients = 0
+            nearly_expiring = []
 
             # get all ingredients for a recipe
             for ing in Recipe.objects.get(pk=rec["id"]).ingredients.all():
+
+                # first check if nearly expiring (if recipe ing in pantry)
+                in_pantry = pantry.filter(ingredient=ing.ingredient)
+                if in_pantry:
+                    if (in_pantry[0].expiry_date and 
+                        in_pantry[0].expiry_date - datetime.date.today() 
+                            < datetime.timedelta(days=7)):
+                        nearly_expiring.append(ing.ingredient.name)
+
+                # check if recipe ingredient is in the running list
                 if ing.ingredient.name in running_list:
                     matching_ingredients += 1
+
+                # if not in running list and not in pantry, add to missing ing
                 else:
-                    if not pantry.filter(ingredient=ing.ingredient):
+                    if not in_pantry:
                         missing_ingredients.append(ing.ingredient.name)
                     all_missing_ingredients.append(ing.ingredient.name)
             
@@ -265,9 +280,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             match_percentage = (matching_ingredients / 
                 len(Recipe.objects.get(pk=rec["id"]).ingredients.all()))
 
+            # if no nearly expiring ingredients just set to false
+            if len(nearly_expiring) == 0:
+                nearly_expiring = False
+
             new_dict = {"recipe": rec,
                         "match_percentage": match_percentage,
-                        "missing_ing": missing_ingredients}
+                        "missing_ing": missing_ingredients,
+                        "nearly_expiring" : nearly_expiring}
 
             unordered_results.append(new_dict)
 
