@@ -33,11 +33,18 @@ class MetaSearchView(generics.ListAPIView):
             if not result:
                 return Response(
                     data={
-                        "search": "No searches have been made " "yet",
+                        "search": "No searches have been made yet",
                         "references": 0,
                     }
                 )
             serializer = self.get_serializer(result[0])
+            if serializer.data["references"] == 0:
+                return Response(
+                    data={
+                        "search": "chicken|eggs",
+                        "references": 0,
+                    }
+                )
             return Response(serializer.data)
         else:
             return Response(status=401)
@@ -245,6 +252,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         else:
             pantry = PantryIngredient.objects.none()
 
+        full_match = 0
         all_missing_ingredients = []
         for rec in recipe_list:
 
@@ -275,6 +283,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             
             if len(running_list) == 0 or not request.user.is_authenticated:
                 missing_ingredients = False
+
+            if matching_ingredients == len(running_list):
+                full_match = 1
 
             # % = matching ing in running list / all recipe ingredients
             match_percentage = (matching_ingredients / 
@@ -340,9 +351,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         final_return.append({"suggestion": suggested_ingredient})
 
         # Update query string based on whether a match has been found
-        full_match = 0
-        if len(ordered_results) > 0 and ordered_results[0]["match_percentage"] == 1.0:
-            full_match = 1
+        # A match in this case is when the matching ingredients list is the
+        # same length as the running list, instead of the length of the
+        # recipe ingredients
         self.update_search(string, full_match=full_match)
 
         return Response(final_return)
@@ -352,11 +363,10 @@ class RecipeViewSet(viewsets.ModelViewSet):
     # Takes boolean for full match and ingredients string from running list
     # input
     def update_search(self, list_string, full_match):
-        
         # Update meta search model for query
         running_list = sorted(list_string["ingredients"][0].split(","))
 
-        if 3 >= len(running_list) and "" not in running_list:
+        if 3 >= len(running_list) > 1 and "" not in running_list:
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
 
