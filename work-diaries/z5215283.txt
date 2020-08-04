@@ -22,3 +22,9 @@ Bit of a quieter week for me. Had done a lot the previous week and got to the po
 
 Week 8
 Continual integration work this week, working across a bunch of different areas like the search, suggested recipes, favouriting recipe integration and a bit more. Mostly just fixing up all the rough parts in different sections. Also completely redesigned the search capabilities and how they interact, inline with what Maryam suggested. This ended up adding some features that meant refactoring the state management a bit.
+
+Week 9
+Finishing up the interface!! Fixed a few issues that Maryam had suggested. This included completely redesigning the search functionality. Other than that minor bug fixes and amendments throughout the week.
+
+Week 10
+Mainly just bug fixes brought up by trying to break the frontend. Tried to get site running as a subsite on my own server but it didn't work.
