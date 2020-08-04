@@ -14,7 +14,7 @@ export default function Logout(props) {
     function out() {
         toggle(props.logout);
         dispatch(logout());
-        Router.push('/');
+        Router.push('/pantrypirate');
     }
     let content = <div className="form">
         <h3 className="title is-3">Are you sure you want to sign out?</h3>

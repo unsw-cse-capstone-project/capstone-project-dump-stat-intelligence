@@ -2,10 +2,10 @@ import Head from "next/head";
 import React, { useState } from "react";
 
 import { useSelector, useDispatch } from "react-redux";
-import { recipes_update } from "../lib/redux/actions/recipesAction";
+import { recipes_update } from "../../lib/redux/actions/recipesAction";
 
-import RecipeCard from "../components/RecipeCard/RecipeCard";
-import Filter from "../components/Pantry/Filter";
+import RecipeCard from "../../components/RecipeCard/RecipeCard";
+import Filter from "../../components/Pantry/Filter";
 
 export default function Explore() {
   const recipes = useSelector((state) => state.recipes.recipes);

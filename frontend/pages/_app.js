@@ -41,7 +41,7 @@ function PantryPirate({ Component, pageProps }) {
         <div className="container">
           <Component {...pageProps} />
         </div>
-        {router.pathname == "/recipe/create" ? (
+        {router.pathname == "/pantrypirate/recipe/create" ? (
           <EditButton />
         ) : (
           isLoggedIn ? <PantryButton /> : ""

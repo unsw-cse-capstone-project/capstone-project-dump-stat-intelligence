@@ -20,13 +20,13 @@ export default function Preview() {
 
   const discard = () => {
     dispatch(clear_create());
-    router.push("/cookbook");
+    router.push("/pantrypirate/cookbook");
   };
 
   const createRecipe = () => {
     if (isCompleteRecipe()) {
       dispatch(save_create());
-      router.push("/cookbook");
+      router.push("/pantrypirate/cookbook");
     } else {
       document.getElementById("createrror").classList.toggle("is-active");
     }
@@ -35,7 +35,7 @@ export default function Preview() {
   const updateRecipe = () => {
     if (isCompleteRecipe()) {
       dispatch(update_recipe());
-      router.push("/cookbook");
+      router.push("/pantrypirate/cookbook");
     } else {
       document.getElementById("createrror").classList.toggle("is-active");
     }

@@ -6,7 +6,7 @@ import Indication from "./Indication";
 
 export default function RecipeCard(props) {
   return (
-    <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
+    <Link href={`/pantrypirate/recipe/[recipeId]`} as={`/pantrypirate/recipe/${props.recipe.id}`}>
       <div className={"card " + styles.recipe}>
         <div className="card-image">
           <figure className="image is-4by3">
@@ -17,7 +17,7 @@ export default function RecipeCard(props) {
                   ? `https://source.unsplash.com/400x300/?food&sig=${props.recipe.id}`
                   : props.recipe.image_URL
               }
-              alt={props.recipe.name}
+              alt={props.recipe.name} 
             />
           </figure>
         </div>

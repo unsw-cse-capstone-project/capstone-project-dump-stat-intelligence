@@ -31,7 +31,7 @@ export default function Pantry() {
   let chosen = useSelector((state) => state.explore.ingredients);
   let searchId = "searcher";
 
-  let isExplore = router.pathname === '/explore'
+  let isExplore = router.pathname === '/pantrypirate/explore'
 
 
   return (

@@ -8,7 +8,7 @@ export default function NavItem(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   let isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  let active = router.pathname.indexOf(props.href) > -1 && props.href !== "/";
+  let active = router.pathname.indexOf(props.href) > -1 && props.href !== "/pantrypirate";
   function forceLogin() {
     document.getElementById(props.restricted).classList.add("is-active");
     document.getElementById(props.restricted + "-alert").innerHTML =
@@ -55,7 +55,7 @@ export default function NavItem(props) {
         )}
       </div>
       <audio id={`pop-${props.popSound}`}>
-        <source src={`/audio/pop${props.popSound}.mp3`} />
+        <source src={`/pantrypirate/audio/pop${props.popSound}.mp3`} />
       </audio>
     </>
   );

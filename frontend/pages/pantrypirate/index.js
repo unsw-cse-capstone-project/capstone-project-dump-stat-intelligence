@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useSelector } from 'react-redux';
 
-import { removeUser } from "../lib/utils/localstorage";
+import { removeUser } from "../../lib/utils/localstorage";
 
 export default function Home() {
   const sayings = [

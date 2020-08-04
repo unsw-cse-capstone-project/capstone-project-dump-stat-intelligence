@@ -3,16 +3,16 @@ import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
-import RecipeAPI from "../../lib/api/recipe";
-import Error from "../../components/Error/Error";
+import RecipeAPI from "../../../lib/api/recipe";
+import Error from "../../../components/Error/Error";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
   add_favourite,
   remove_favourite,
-} from "../../lib/redux/actions/authAction";
-import { load_create } from "../../lib/redux/actions/createAction";
-import { recipes_update } from "../../lib/redux/actions/recipesAction";
+} from "../../../lib/redux/actions/authAction";
+import { load_create } from "../../../lib/redux/actions/createAction";
+import { recipes_update } from "../../../lib/redux/actions/recipesAction";
 
 const Recipe = (props) => {
   const dispatch = useDispatch();
@@ -47,7 +47,7 @@ const Recipe = (props) => {
   const handleDelete = async (e) => {
     setDeleteLoading(true);
     const res = await RecipeAPI.delete(recipe.id);
-    router.push("/cookbook");
+    router.push("/pantrypirate/cookbook");
     setDeleteLoading(false);
   };
 
@@ -74,7 +74,7 @@ const Recipe = (props) => {
   if (isLoggedIn && uid === recipe.author.id) {
     controlButtons = (
       <>
-        <Link href="/recipe/create?edit=true">
+        <Link href="/pantrypirate/recipe/create?edit=true">
           <a
             onClick={() => dispatch(load_create(recipe.id))}
             className="button is-light"

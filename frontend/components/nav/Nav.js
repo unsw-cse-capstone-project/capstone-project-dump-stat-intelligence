@@ -22,12 +22,12 @@ export default function Nav() {
       <nav className={styles.nav}>
         <div className={styles.upperNav}>
           <ul>
-            <NavItem popSound="2" icon={<Brand />} brand={true} href="/" />
+            <NavItem popSound="2" icon={<Brand />} brand={true} href="/pantrypirate" />
             <NavItem
               popSound="1"
               icon={<Explore />}
               name={"Explore"}
-              href="/explore"
+              href="/pantrypirate/explore"
             />
             {/* <NavItem icon={<Pantry />} name={"Pantry"} href="/pantry" /> */}
             <NavItem
@@ -35,14 +35,14 @@ export default function Nav() {
               restricted={"auth-login"}
               icon={<Cookbook />}
               name={"Cookbook"}
-              href="/cookbook"
+              href="/pantrypirate/cookbook"
             />
             <NavItem
               popSound="3"
               restricted={"auth-login"}
               icon={<Create />}
               name={"Create"}
-              href="/recipe/create"
+              href="/pantrypirate/recipe/create"
             />
           </ul>
         </div>
@@ -60,7 +60,7 @@ export default function Nav() {
               restricted={"auth-login"}
               icon={<Settings />}
               name={"Settings"}
-              href="/settings"
+              href="/pantrypirate/settings"
             />
           </ul>
         </div>

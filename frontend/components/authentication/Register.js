@@ -38,7 +38,7 @@ export default function Register(props) {
           dispatch(clear_next());
         }
         toggle("auth-register", "is-active");
-        router.push("/explore");
+        router.push("/pantrypirate/explore");
       } else {
         document.getElementById(alertName).innerHTML =
           "Failed to register. Please make sure you are not already registered and the email is valid.";
