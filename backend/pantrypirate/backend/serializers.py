@@ -132,7 +132,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     class Meta:
         model = RecipeIngredient
         fields = ["adjective", "unit", "amount", "recipe", "ingredient"]
-        extra_kwargs = {"adjective": {"required": False}}
+        extra_kwargs = {"adjective": {"required": False}, "unit": {"required": False}}
         read_only_fields = ["recipe"]
 
     def to_representation(self, instance):

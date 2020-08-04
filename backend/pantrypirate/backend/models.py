@@ -69,7 +69,7 @@ class Ingredient(models.Model):
 # recipe foreign key will be an id integer
 class RecipeIngredient(models.Model):
     adjective = models.CharField(max_length=30, blank=True, null=True)
-    unit = models.CharField(max_length=20)
+    unit = models.CharField(max_length=20, blank=True, null=True)
     amount = models.CharField(max_length=5)
     ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE,
