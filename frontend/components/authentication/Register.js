@@ -26,20 +26,22 @@ export default function Register(props) {
         event.target.elements.email.value,
         event.target.elements.password.value
       )
-    ).then(res => {
+    ).then((res) => {
       if (res) {
         document.getElementById(alertName).innerHTML = "";
         document.getElementById(alertName).classList.remove(styles.show);
-        close(props.login);
+        // close(props.register);
         //LOGIN SUCCEEDED, GET PANTRY
         dispatch(get_pantry());
         if (next) {
           router.push(next);
           dispatch(clear_next());
         }
+        toggle("auth-register", "is-active");
+        router.push("/explore");
       } else {
         document.getElementById(alertName).innerHTML =
-        "Failed to register. Please make sure you are not already registered and the email is valid.";
+          "Failed to register. Please make sure you are not already registered and the email is valid.";
         document.getElementById(alertName).classList.add(styles.show);
       }
     });

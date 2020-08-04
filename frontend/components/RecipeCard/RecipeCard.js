@@ -5,13 +5,20 @@ import Indicator from "./Indicator";
 import Indication from "./Indication";
 
 export default function RecipeCard(props) {
-  console.log(props.recipe)
   return (
     <Link href={`/recipe/[recipeId]`} as={`/recipe/${props.recipe.id}`}>
       <div className={"card " + styles.recipe}>
         <div className="card-image">
           <figure className="image is-4by3">
-            <img style={{"objectFit":"cover"}} src={props.recipe.image_URL === null ? `https://source.unsplash.com/400x300/?food&sig=${props.recipe.id}` : props.recipe.image_URL} alt={props.recipe.name} />
+            <img
+              style={{ objectFit: "cover" }}
+              src={
+                props.recipe.image_URL === null
+                  ? `https://source.unsplash.com/400x300/?food&sig=${props.recipe.id}`
+                  : props.recipe.image_URL
+              }
+              alt={props.recipe.name}
+            />
           </figure>
         </div>
         <div className="card-content">
@@ -33,8 +40,10 @@ export default function RecipeCard(props) {
               </span>
             ))}
           </p>
-          <Indication missing={props.recipe.missing_ing} expiring={props.recipe.nearly_expiring}/>
-          
+          <Indication
+            missing={props.recipe.missing_ing}
+            expiring={props.recipe.nearly_expiring}
+          />
         </div>
       </div>
     </Link>
