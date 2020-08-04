@@ -156,7 +156,7 @@ const Recipe = (props) => {
                   {recipe.ingredients.map((ingredient, idx) => (
                     <li key={idx}>
                       {ingredient.amount} {ingredient.unit}{" "}
-                      {ingredient.ingredient.name}
+                      {ingredient.ingredient.name + (ingredient.adjective ? ", " + ingredient.adjective : "")}
                     </li>
                   ))}
                 </ul>
