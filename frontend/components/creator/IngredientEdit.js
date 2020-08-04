@@ -120,7 +120,7 @@ export default function IngredientEdit() {
           </div>
           <div className="field control">
             <input
-              required={true}
+              required={false}
               onChange={updateIng}
               className="input"
               type="text"
@@ -156,9 +156,9 @@ export default function IngredientEdit() {
             <label className="label">Preview</label>
             <div className="tags">
               <span className={`tag ${styles.wideTag}`}>
-                {`${newOne.qty === null ? "" : newOne.qty} ${
+              {`${newOne.qty === null ? "" : newOne.qty} ${
                   newOne.unit === "" ? "" : newOne.unit
-                } ${newOne.adj === "" ? "" : newOne.adj} ${newOne.name}`}
+                } ${(newOne.name === "ingredient" ? "" : newOne.name) + (newOne.adj === "" ? "" : ", " + newOne.adj)} `}
               </span>
             </div>
           </div>
