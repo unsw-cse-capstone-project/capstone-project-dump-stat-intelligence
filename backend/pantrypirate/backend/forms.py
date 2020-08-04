@@ -35,6 +35,7 @@ class RecipeIngredientForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(RecipeIngredientForm, self).__init__(*args, **kwargs)
         self.fields['adjective'].required = False
+        self.fields['unit'].required = False
 
 
 # note - currenty zero security (should fix this)

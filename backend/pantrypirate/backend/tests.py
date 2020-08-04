@@ -2010,7 +2010,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 0)
-        self.assertEqual(json.loads(response.content)['search'], 'apple|carrot')
+        self.assertEqual(json.loads(response.content)['search'], 'chicken|eggs')
 
     # Test that a full match gets an old MetaSearch object with value 0
     def test_meta_search2(self):
@@ -2042,7 +2042,7 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 0)
-        self.assertEqual(json.loads(response.content)['search'], 'apple|carrot')
+        self.assertEqual(json.loads(response.content)['search'], 'chicken|eggs')
 
     # Test that no full match creates a new MetaSearch object with value 1
     def test_meta_search3(self):
@@ -2061,7 +2061,8 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10'
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=dinner+lunch&diet=vegan&limit=10'
             '&offset=0/',
             content_type="application/json")
 
@@ -2069,7 +2070,8 @@ class MetaSearchTestCase(TestCase):
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 1)
-        self.assertEqual(json.loads(response.content)['search'], 'carrot')
+        self.assertEqual(json.loads(response.content)['search'],
+                         'apple|carrot|tomato')
 
     # Test that no full match update an old MetaSearch object with value + 1
     def test_meta_search4(self):
@@ -2088,18 +2090,21 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
             content_type="application/json")
 
         # Verify that the metadata was updated appropriately
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 2)
-        self.assertEqual(json.loads(response.content)['search'], 'carrot')
+        self.assertEqual(json.loads(response.content)['search'],
+                         'apple|carrot|tomato')
 
     # Test that meta search returns highest reference count
     def test_meta_search5(self):
@@ -2118,22 +2123,27 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=pear&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            '/recipes/?ingredients=pear,'
+            'apple,carrot&meal=dinner+lunch&diet=vegan&limit'
+            '=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=pear&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
+            '/recipes/?ingredients=pear,carrot,apple'
+            '&meal=dinner+lunch&diet=vegan&limit=10&offset=0/',
             content_type="application/json")
 
         # Verify that the metadata was updated appropriately
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 2)
-        self.assertEqual(json.loads(response.content)['search'], 'pear')
+        self.assertEqual(json.loads(response.content)['search'],
+                         'apple|carrot|pear')
 
     # Test that references cannot go below zero
     def test_meta_search6(self):
@@ -2152,7 +2162,8 @@ class MetaSearchTestCase(TestCase):
 
         # Attempt to get some recipes
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=&diet=&limit=10&offset=0/',
             content_type="application/json")
 
         # Create recipe simulating user doing so
@@ -2167,19 +2178,33 @@ class MetaSearchTestCase(TestCase):
                                     recipe=carrot_rec)
         r_carrot.save()
 
+        tomato = Ingredient.objects.get(name="tomato")
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole",
+                                    amount="3", ingredient=tomato,
+                                    recipe=carrot_rec)
+        r_carrot.save()
+
+        apple = Ingredient.objects.get(name="apple")
+        r_carrot = RecipeIngredient(adjective="chopped", unit="whole",
+                                    amount="3", ingredient=apple,
+                                    recipe=carrot_rec)
+        r_carrot.save()
+
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=&diet=&limit=10&offset=0/',
             content_type="application/json")
 
         response = c.get(
-            '/recipes/?ingredients=carrot&meal=&diet=&limit=10&offset=0/',
+            '/recipes/?ingredients=carrot,apple,tomato'
+            '&meal=&diet=&limit=10&offset=0/',
             content_type="application/json")
 
         # Verify that the metadata was updated appropriately
         response = c.get('/meta/')
 
         self.assertEqual(json.loads(response.content)['references'], 0)
-        self.assertEqual(json.loads(response.content)['search'], 'carrot')
+        self.assertEqual(json.loads(response.content)['search'], 'chicken|eggs')
 
     # Test that different running list order does not create new meta
     # searches for same query
