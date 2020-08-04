@@ -92,8 +92,8 @@ export default function Preview() {
               <ul>
                 {creation.ingredients.map((ingredient, idx) => (
                   <li key={idx}>
-                    {ingredient.amount} {ingredient.unit} {ingredient.adjective}{" "}
-                    {ingredient.ingredient.name}
+                    {ingredient.amount} {ingredient.unit} {" "}
+                    {ingredient.ingredient.name + ", " + ingredient.adjective}
                   </li>
                 ))}
               </ul>
