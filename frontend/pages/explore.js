@@ -32,10 +32,7 @@ export default function Explore() {
           {recipes ? (
             recipes.map((recipe, idx) => (
               <div key={idx} className="column is-3">
-                <RecipeCard
-                  className="column is-3"
-                  recipe={recipe}
-                />
+                <RecipeCard recipe={recipe} />
               </div>
             ))
           ) : (

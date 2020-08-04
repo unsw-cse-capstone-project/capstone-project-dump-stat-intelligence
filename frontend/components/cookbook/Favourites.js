@@ -29,7 +29,7 @@ export default function Favourites() {
       </div>
       <div id="fave-box" className={`${styles.drawer} columns is-multiline`}>
         <div className={styles.buffer}></div>
-        {favourites.map((recipe, idx) => (
+        {favourites?.map((recipe, idx) => (
           <div key={idx} className="column is-3">
             <RecipeIcon
               fave={true}

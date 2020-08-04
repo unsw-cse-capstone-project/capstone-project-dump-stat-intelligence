@@ -1,6 +1,7 @@
 .recipe {
   transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
   border-radius: 8px;
+  height: 100%;
 
   // Make all equal height
   // display: flex;
@@ -19,11 +20,11 @@
 }
 
 .indicationBox {
-  display:flex;
+  display: flex;
 }
 
 .indicator {
-  margin:0.1rem;
+  margin: 0.1rem;
   border-radius: 100px;
   color: white;
   width: 25px;
@@ -34,18 +35,17 @@
 
   &:hover {
     width: 100%;
-    height:auto;
-    padding:2px;
+    height: auto;
+    padding: 2px;
     border-radius: 8px;
     text-align: left;
   }
-
 }
 
 .needs {
-  font-style :bold;
+  font-style: bold;
 }
 
 .missList {
-  font-size:0.85rem;
+  font-size: 0.85rem;
 }
