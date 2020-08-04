@@ -266,10 +266,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 # first check if nearly expiring (if recipe ing in pantry)
                 in_pantry = pantry.filter(ingredient=ing.ingredient)
                 if in_pantry:
-                    if (in_pantry[0].expiry_date and 
-                        in_pantry[0].expiry_date - datetime.date.today() 
-                            < datetime.timedelta(days=7)):
-                        nearly_expiring.append(ing.ingredient.name)
+                    if (in_pantry[0].expiry_date 
+                    and in_pantry[0].expiry_date - datetime.date.today() < 
+                    datetime.timedelta(days=7)):
+                        if ing.ingredient.name not in nearly_expiring:
+                            nearly_expiring.append(ing.ingredient.name)
 
                 # check if recipe ingredient is in the running list
                 if ing.ingredient.name in running_list:
@@ -278,7 +279,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 # if not in running list and not in pantry, add to missing ing
                 else:
                     if not in_pantry:
-                        missing_ingredients.append(ing.ingredient.name)
+                        if ing.ingredient.name not in missing_ingredients:
+                            missing_ingredients.append(ing.ingredient.name)
                     all_missing_ingredients.append(ing.ingredient.name)
             
             if len(running_list) == 0 or not request.user.is_authenticated:
