@@ -73,3 +73,8 @@ Week 9
 Small fixes to permissions for ingredients. Began working on report, 
 filling in expanded dot points which will be formatted and grammatically 
 improved at a later date.
+
+Week 10
+
+Updated meta search to better reflect the definition of full match, 
+updated test accordingly and wiped meta entries in database.
