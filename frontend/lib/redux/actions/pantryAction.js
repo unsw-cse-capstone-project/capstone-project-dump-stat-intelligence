@@ -77,7 +77,6 @@ export const remove = (ingredient) => async (dispatch) => {
 
     for (i = 0; i < response.data.length; i++) {
       if (response.data[i]["ingredient"]["name"] == ingredient.ingredient) {
-        console.log(response.data[i]["id"]);
         await PantryAPI.delete(response.data[i]["id"]);
       }
     }
@@ -104,7 +103,6 @@ export const get_pantry = () => {
         })
       })
       .then(res => {
-        console.log(res.data);
         let newPantry = {}
         for (var i = 0; i < res.data.length; i++) {
           let ing = res.data[i];
@@ -118,7 +116,6 @@ export const get_pantry = () => {
         }
         
         
-        console.log(newPantry)
         dispatch({
           type: types.PANTRY_GET,
           pantry: {...newPantry}
