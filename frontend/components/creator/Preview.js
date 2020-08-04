@@ -1,5 +1,5 @@
 import styles from "./Edit.module.scss";
-
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import {
   clear_create,
@@ -8,12 +8,17 @@ import {
 } from "../../lib/redux/actions/createAction";
 import { useRouter } from "next/router";
 import NewIngredient from "./NewIngredient";
-import Suggest from "./Suggest";
+import RecipeAPI from "../../lib/api/recipe";
 
 export default function Preview() {
   const dispatch = useDispatch();
   const router = useRouter();
+    const [ingredients, setIngredients] = useState([
+      "coriander", "chicken"
+  ]);
 
+
+  
   let creation = useSelector((state) => state.create);
   let user = useSelector((state) => state.auth.userInfo);
   
@@ -27,6 +32,7 @@ export default function Preview() {
     if (isCompleteRecipe()) {
       dispatch(save_create());
       router.push("/cookbook");
+      RecipeAPI.getAll(ingredients.join(","), "", "");
     } else {
       document.getElementById("createrror").classList.toggle("is-active");
     }
@@ -50,6 +56,19 @@ export default function Preview() {
     return true;
   }
 
+  useEffect(() => {
+    RecipeAPI.discover()
+    .then(res => {
+        let ings = res.data.search.split(",");
+        for (let i = 0; i < ings.length; i++) {
+            ings[i] = ings[i].split("|").join(" ")
+        }
+        setIngredients(ings)
+
+    })
+    .catch(err => console.log(err))
+}, [])
+
   return (
     <div className="container">
       <div className="columns is-centered">
@@ -61,7 +80,18 @@ export default function Preview() {
           </div>
           {
             creation.suggest ? 
-            <Suggest/>
+            <div className={styles.suggestion}>
+              <div className={`${styles.choice} tags`}>
+                  <span className="is-6">Need inspiration? Use these commonly searched ingredients - </span>
+                  {
+                      ingredients.map((val, idx) => (
+                          <span key={idx} className="tag is-dark">
+                              {val}
+                          </span>
+                      ))
+                  }
+              </div>
+            </div>
             : ""
           }
           <h1 className="title is-2">{`${creation.name}`}</h1>
