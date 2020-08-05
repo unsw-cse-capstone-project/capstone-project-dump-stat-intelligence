@@ -83,8 +83,22 @@ to database fully working.
 
 Week 8
 
-Fixed an issue with posting recipes that was causing a bad request error, instead reformatting frontend post to match what backend expects. Creating recipes now fully linked up an integrated with rest of the site. Fixed various Ui issues as well as an inconsistency that was causing certain dietary requirements to not display properly. Started working on linking up pantry so that ingredients persist with the user. Began working on creating a new action to allow updating recipes to handle properly, instead of creating a new instance whenever you edit. Working with the rest of the team, made sure to address almost all user stories in our second sprint prior to the demo. Demo itself was quite successful, with Maryam's major critique focused on a lack of clarity surrounding how the search function worked. In our retrospective following the meeting, we set out to address these UI concerns in our final week-long sprint, along with clean up our code and start on the report.
+Fixed an issue with posting recipes that was causing a bad request error, instead reformatting frontend post to match what backend expects. Creating recipes now
+fully linked up an integrated with rest of the site. Fixed various Ui issues as well as an inconsistency that was causing certain dietary requirements to not
+display properly. Started working on linking up pantry so that ingredients persist with the user. Began working on creating a new action to allow updating recipes
+to handle properly, instead of creating a new instance whenever you edit. Working with the rest of the team, made sure to address almost all user stories in our
+second sprint prior to the demo. Demo itself was quite successful, with Maryam's major critique focused on a lack of clarity surrounding how the search function
+worked. In our retrospective following the meeting, we set out to address these UI concerns in our final week-long sprint, along with clean up our code and start on
+the report.
 
 Week 9
 
-Currently working on ingredient persistence in the pantry, along with testing and code cleanup [In progress]
+Currently working on ingredient persistence in the pantry, along with testing and code cleanup. Got ingredient persistence working later in the week so that a user's pantry is now successfully saved to their account. Also fixed some issues with updating expiry dates. Started working on the report.
+
+Week 10
+
+This final week was spent mostly bug finding and working on the report. Identified a number of UI bugs in the frontend, such as cookbook images not displaying and
+ingredients not showing properly in recipes, among others. Once brought up, team members relevant to the root problem domain worked to address the issue, with I
+myself working to fix how ingredients are displayed across the website to include missing information and make them more syntactically accurate. Kept working on 
+report, specifically describing the functionalities of our site and how they differ from the objectives in the project description or from earlier designs in our 
+proposal, where relevant.
