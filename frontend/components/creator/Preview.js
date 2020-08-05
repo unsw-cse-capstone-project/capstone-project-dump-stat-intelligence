@@ -59,11 +59,11 @@ export default function Preview() {
   useEffect(() => {
     RecipeAPI.discover()
     .then(res => {
-        let ings = res.data.search.split(",");
-        for (let i = 0; i < ings.length; i++) {
-            ings[i] = ings[i].split("|").join(" ")
-        }
-        setIngredients(ings)
+      let ings = res.data.search.split("|");
+      for (let i = 0; i < ings.length; i++) {
+        ings[i] = ings[i].split("|").join(" ")
+      }
+      setIngredients(ings)
 
     })
     .catch(err => console.log(err))
@@ -85,7 +85,7 @@ export default function Preview() {
                   <span className="is-6">Need inspiration? Use these commonly searched ingredients - </span>
                   {
                       ingredients.map((val, idx) => (
-                          <span key={idx} className="tag is-dark">
+                          <span key={idx} className={`tag is-dark ${styles.seperate}`}>
                               {val}
                           </span>
                       ))
