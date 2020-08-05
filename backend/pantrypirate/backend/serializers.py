@@ -4,17 +4,6 @@ from .models import *
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-'''
-    Custom serialiser classes 
-    Used to return non JSON-serialisable objects in JSON responses
-    Serialisers are defined and created in the appropriate viewset
-'''
-
-class MetaSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MetaSearch
-        fields = ["search", "references"]
-        order_by = ["references"]
 
 # Custom validator for ingredient names and categories
 # allows letters, hyphens and spaces
@@ -24,6 +13,15 @@ def custom_validator(value):
 
     if not all(x.isalpha() or x == '-' or x == ' ' for x in value):
         raise ValidationError("Input can only contain letters, numbers and hyphens")
+
+
+# Serialiser for metasearch model which tracks what searches do not have
+# recipes that match it
+class MetaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MetaSearch
+        fields = ["search", "references"]
+        order_by = ["references"]
 
 
 # Django authentication model for user, no corresponding model in the

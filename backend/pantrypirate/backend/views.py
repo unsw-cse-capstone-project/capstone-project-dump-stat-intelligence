@@ -16,14 +16,15 @@ import datetime
 
 '''
     Views for website
-    To make our site's backend work more seamlessly with the frontend, we have used 
-    Rest API's viewsets
-    ModelVewSets automatically provide 'list', 'create', 'retrieve', 'update' and 
-    'destroy' actions
+    To make our site's backend work more seamlessly with the frontend, we have 
+    used Rest API's viewsets
+    ModelVewSets automatically provide 'list', 'create', 'retrieve', 'update' 
+    and 'destroy' actions
 '''
 
+
 # View that requests the most commonly searched ingredient queries, maximum 3
-# ingredients
+# ingredients, minimum 2
 class MetaSearchView(generics.ListAPIView):
     serializer_class = MetaSerializer
 
@@ -81,7 +82,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=401)
 
-    # Make partial_update
+    # Allow update only from user who owns account
     def partial_update(self, request, *args, **kwargs):
         user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
@@ -89,6 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=401)
 
+    # Allow update only from user who owns account
     def update(self, request, *args, **kwargs):
         user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
@@ -104,6 +106,7 @@ class UserCreate(generics.CreateAPIView):
     serializer_class = CreateUser
     permission_classes = (AllowAny,)
 
+    # Allow account creation only from anonymous users
     def post(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return Response(status=401)
@@ -147,7 +150,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
 
     '''
-        List function implements seaching logic
+        List function implements searching logic
             Step 1: parse query string
             Step 2: get all recipes matching any ingredients in the
                 running list
@@ -286,6 +289,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
             if len(running_list) == 0 or not request.user.is_authenticated:
                 missing_ingredients = False
 
+            # Relevant to updating search metadata, if all running list
+            # ingredients matched with one recipe, then it counts as a match
+            # and will no longer be suggested for recipe creation
             if matching_ingredients == len(running_list):
                 full_match = 1
 
@@ -372,6 +378,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
 
+            # Tracks how popular each search running list set is
             if not full_match:
                 search[0].references += 1
 
@@ -427,7 +434,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=401)
 
-    # Make partial_update
+    # Make partial_update compatible only for user who owns pantry
     def partial_update(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response(401)
@@ -441,6 +448,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=401)
 
+    # Make update compatible only for user who owns pantry
     def update(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return Response(401)
@@ -452,6 +460,7 @@ class PantryIngredientViewSet(viewsets.ModelViewSet):
             return super(PantryIngredientViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
+
 
 # Favourites recipes are stored in cookbook
 # list function returns all recipes favourited by user (logged in only)
@@ -485,6 +494,7 @@ class CookbookViewSet(viewsets.ModelViewSet):
             return Response(200)
         else:
             return Response(401)
+
 
 # Users' added recipes
 # list returns all recipes for which the user is the author

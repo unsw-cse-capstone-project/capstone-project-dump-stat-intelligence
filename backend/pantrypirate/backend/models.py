@@ -29,6 +29,8 @@ class MealCategory(models.Model):
 
 # Recipe contains required author field, and optional meal category, dietary
 # requirement and favourites fields
+# Image URL pertains to the image that will be showed when the recipe is
+# inspected or seen
 class Recipe(models.Model):
     name = models.CharField(max_length=50)
     cook_time = models.CharField(max_length=50)

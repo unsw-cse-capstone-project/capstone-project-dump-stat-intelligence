@@ -9,6 +9,7 @@ import datetime
     Test suite for backend
 '''
 
+
 # Tests for the user login, logout, register and retrieve, put, list, delete
 # functionality
 class UserTestCase(TestCase):
@@ -1892,6 +1893,7 @@ class ExpiryTestCase(TestCase):
 
         self.assertEqual(json.loads(response.content), expected_response)
 
+
 # Testing search metadata
 class MetaSearchTestCase(TestCase):
     def setUp(self):
@@ -2389,7 +2391,6 @@ class MyRecipesTest(TestCase):
         self.assertEqual(json.loads(response.content), expected_response)
 
 
-
 class CookbookTest(TestCase):
     def setUp(self) -> None:
         # set up meal categories and dietary requirements
@@ -2686,11 +2687,14 @@ class ValidatorTest(TestCase):
                 "meal_cat": [{"name": "lunch"}],
                 "diet_req": [{"name": "vegan"}, {"name": "dairy-free"}]}
 
+        # post recipe
         self.c1.post('/recipes/', json.dumps(recipe_data), 
             content_type='application/json')
 
+        # get posted recipe back
         response = self.c1.get('/recipes/1/')
-        
+
+        # verify recipe was created with correct information
         expected_response = {'id': 1, 'name': 'Fruit salad', 'cook_time': '20 minutes', 'method': 'Yummy yummy', 
                 'author': {'id': 1, 'username': 'jess', 'email': 'jess@gmail.com'},
                 "image_URL": None,
