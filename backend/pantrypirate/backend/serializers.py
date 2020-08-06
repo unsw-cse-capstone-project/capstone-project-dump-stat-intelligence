@@ -48,6 +48,27 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 
+# Django authentication model for user updating with no password specifically
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email"]
+        # Cannot read the password normally, favourites are not needed for
+        # user creation
+        extra_kwargs = {"favourites": {"required": False}}
+
+    # Password changes require use of builtin function (as they are hashed by
+    # default, using Modelviewset will cause errors)
+    def update(self, instance, validated_data):
+
+        instance.username = validated_data.get("username", instance.username)
+        instance.email = validated_data.get("email", instance.email)
+        instance.save()
+        return instance
+
+
+
 # Serialiser for user object creation. All fields (excluding id) are required
 # input, returns the user details without the password in response
 class CreateUser(serializers.ModelSerializer):

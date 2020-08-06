@@ -333,6 +333,88 @@ class UserTestCase(TestCase):
         self.assertGreaterEqual(json.loads(response.content).items(),
                                 test_data2.items())
 
+    # Test checking that a user can update their password
+    def test_put_user3(self):
+        # Create testing clients
+        api_client = APIClient()
+        api_client1 = APIClient()
+
+        # Data for the accounts and testing
+        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        change_data = {'username': 'Cob1', 'password': 'Tob', 'email'
+        : 'Cob@gmail.com'}
+        test_data = {'username': 'Cob1', 'email'
+        : 'Cob@gmail.com'}
+        new_user_data = {'username': 'Cob1', 'password': 'Tob'}
+
+        # Register and log in user
+        token = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to change details and verify returned are correct
+        user = api_client.put('/user/1/', json.dumps(change_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                test_data.items())
+
+        # Log user out and log in again and verify they are logged in
+        api_client.post('/user/logout/')
+        token = api_client1.post('/user/login/', json.dumps(new_user_data),
+               content_type='application/json')
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        self.assertContains(token, '', status_code=200)
+
+        # Attempt to retrieve user details and verify they are correct
+        response = api_client1.get('/user/1/')
+        self.assertContains(response, '', status_code=200)
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                test_data.items())
+
+    # Test checking that a user can update their password
+    def test_put_user4(self):
+        # Create testing clients
+        api_client = APIClient()
+        api_client1 = APIClient()
+
+        # Data for the accounts and testing
+        user_data = {'username' : 'Cob', 'password' : 'Cob', 'email':
+            'Cob@gmail.com'}
+        change_data = {'username': 'Cob1', 'password': '', 'email'
+        : 'Cob@gmail.com'}
+        test_data = {'username': 'Cob1', 'email'
+        : 'Cob@gmail.com'}
+        new_user_data = {'username': 'Cob1', 'password': 'Cob'}
+
+        # Register and log in user
+        token = api_client.post('/user/register/', json.dumps(user_data),
+                      content_type='application/json')
+        api_client.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+
+        # Attempt to change details and verify returned are correct
+        user = api_client.put('/user/1/', json.dumps(change_data),
+                     content_type='application/json')
+        self.assertGreaterEqual(json.loads(user.content).items(),
+                                test_data.items())
+
+        # Log user out and log in again and verify they are logged in
+        api_client.post('/user/logout/')
+        token = api_client1.post('/user/login/', json.dumps(new_user_data),
+               content_type='application/json')
+        api_client1.credentials(HTTP_AUTHORIZATION='Token ' + token.data[
+            'token'])
+        self.assertContains(token, '', status_code=200)
+
+        # Attempt to retrieve user details and verify they are correct
+        response = api_client1.get('/user/1/')
+        self.assertContains(response, '', status_code=200)
+        self.assertGreaterEqual(json.loads(response.content).items(),
+                                test_data.items())
+
 
 class IngredientCategoryTest(TestCase):
     # Test that ingredient categories can contain spaces
@@ -1946,6 +2028,8 @@ class MetaSearchTestCase(TestCase):
         carrot.save()
         potato = Ingredient(name="potato", category=vegetable)
         potato.save()
+        black_pepper = Ingredient(name="black pepper", category=vegetable)
+        black_pepper.save()
 
         r_apple = RecipeIngredient(adjective="chopped", unit="whole",
                                    amount="3", ingredient=apple,
