@@ -25,8 +25,8 @@ To run the project:
   - ensure no other processes are running on ports 3000, 8000
   - open 2 terminal windows in the root directory of the project
   - run `make frontend` in one window
+  - in the other window run `pipenv shell` to use the pipenv environment
   - run `make backend` in the other window
-  - in this window run `pipenv shell` to use the pipenv environment
   - visit `http://localhost:3000` and use the project
 
 
