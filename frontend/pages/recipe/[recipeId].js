@@ -60,7 +60,7 @@ const Recipe = (props) => {
   }
 
   function addFave() {
-    dispatch(add_favourite({ name: recipe.name, src: null, id: recipe.id }));
+    dispatch(add_favourite({ ...recipe }));
     setFavourite(true);
   }
 

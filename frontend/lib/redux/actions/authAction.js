@@ -45,7 +45,7 @@ export const remove_favourite = (id) => async (dispatch) => {
 
 export const add_favourite = (recipe) => async (dispatch) => {
   let user = store.getState().auth;
-
+  console.log(recipe)
   CookbookAPI.add(recipe.id)
     .then((res) => {
       // console.log(res);
@@ -153,7 +153,7 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
         let favourites = res.data;
         dispatch({
           type: types.LOGIN,
-          userInfo: data,
+          userInfo: {...data, username : "email"},
           uid: data.id,
           token: user.token,
           favourites,
@@ -181,11 +181,13 @@ export const login = (email, password) => {
         let data = res.data;
         setUser({ id: data.id, token: data.token });
         return CookbookAPI.get().then((res) => {
+          let favourites = res.data;
           return dispatch({
             type: types.LOGIN,
-            userInfo: data,
+            userInfo: {...data, username : email},
             uid: data.id,
             token: data.token,
+            favourites
           });
         });
 
