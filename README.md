@@ -26,6 +26,7 @@ To run the project:
   - open 2 terminal windows in the root directory of the project
   - run `make frontend` in one window
   - run `make backend` in the other window
+  - in this window run `pipenv shell` to use the pipenv environment
   - visit `http://localhost:3000` and use the project
 
 
