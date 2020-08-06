@@ -153,7 +153,7 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
         let favourites = res.data;
         dispatch({
           type: types.LOGIN,
-          userInfo: {...data, username : "email"},
+          userInfo: {...data},
           uid: data.id,
           token: user.token,
           favourites,
@@ -184,7 +184,7 @@ export const login = (email, password) => {
           let favourites = res.data;
           return dispatch({
             type: types.LOGIN,
-            userInfo: {...data, username : email},
+            userInfo: {...data},
             uid: data.id,
             token: data.token,
             favourites
