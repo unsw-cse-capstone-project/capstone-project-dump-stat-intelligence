@@ -4,7 +4,10 @@
 
 backend:
 	cd backend/pantrypirate && python manage.py runserver
+#frontend:
+#	cd frontend && yarn run dev
 frontend:
-	cd frontend && yarn run dev
+	cd frontend && yarn run build && yarn run start
+
 all:
 	concurrently "make frontend" "make backend"
