@@ -58,7 +58,7 @@ class CustomObtainAuthToken(ObtainAuthToken):
         token = Token.objects.get(key=response.data["token"])
         user = User.objects.get(pk=token.user_id)
         return Response({"token": token.key, "id": token.user_id, "email":
-            user.email})
+            user.email, "username": user.username})
 
 
 # Allows updating of the user accounts, can get a list of all users
@@ -96,6 +96,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def update(self, request, *args, **kwargs):
         user_id = int([i for i in str(request.META["PATH_INFO"]).split("/") if i][-1])
         if request.user.id is user_id:
+            if request.data['password'] == '' and request.user.is_authenticated:
+                user = User.objects.get(pk=request.user.id)
+                serialiser = UserUpdateSerializer(user, data=request.data)
+                serialiser.is_valid()
+                serialiser.save()
+                return Response(data=serialiser.data, status=200)
             return super(UserViewSet, self).update(request, *args, **kwargs)
         else:
             return Response(status=401)
