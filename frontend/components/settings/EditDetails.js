@@ -17,7 +17,7 @@ export default function EditDetails(props) {
       update_details(
         event.target.elements.username.value,
         event.target.elements.email.value,
-        event.target.elements.password.value
+        ""
       )
     );
     //Either way, should reset form

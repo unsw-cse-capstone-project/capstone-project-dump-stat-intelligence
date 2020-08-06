@@ -176,20 +176,16 @@ export const attemptLoginFromLocalStorage = () => async (dispatch) => {
 export const login = (email, password) => {
   return (dispatch) => {
     removeUser();
-
     return UserAPI.login(email, password)
       .then((res) => {
         let data = res.data;
         setUser({ id: data.id, token: data.token });
-
         return CookbookAPI.get().then((res) => {
-          let favourites = res.data;
           return dispatch({
             type: types.LOGIN,
             userInfo: data,
             uid: data.id,
             token: data.token,
-            favourites,
           });
         });
 
