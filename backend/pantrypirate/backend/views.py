@@ -56,7 +56,9 @@ class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data["token"])
-        return Response({"token": token.key, "id": token.user_id})
+        user = User.objects.get(pk=token.user_id)
+        return Response({"token": token.key, "id": token.user_id, "email":
+            user.email})
 
 
 # Allows updating of the user accounts, can get a list of all users
@@ -373,7 +375,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def update_search(self, list_string, full_match):
         # Update meta search model for query
         running_list = sorted(list_string["ingredients"][0].split(","))
-
         if 3 >= len(running_list) > 1 and "" not in running_list:
             running_list = "|".join(running_list)
             search = MetaSearch.objects.get_or_create(search=running_list)
