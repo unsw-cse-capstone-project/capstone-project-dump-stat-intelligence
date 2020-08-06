@@ -65,4 +65,21 @@ WEEK 8:
 
 Implemented and tested views for 'my recipes' (user's added recipes) and 'cookbook' (user's favourited recipes).
 
-Extended search to also return a suggested ingredient for the running list based on missing ingredients from partially matching recipes.
+Extended search to also return a suggested ingredient for the running list based on missing ingredients from partially matching recipes. 
+
+WEEK 9:
+
+During one of our meetings this week, we decided to slightly change the pantry functionality to make it more useful. Changed code in the backend to reflect 
+these changes - notably, suggested ingredients now draw from the pantry and missing ingredients also take into account the pantry. Changed the search function 
+to also return nearly expiring ingredients for each recipe to the frontend so they could display it to the user. Wrote tests for these new functions.
+
+Also fixed a few bugs that came up in the backend code while we were testing the site.
+
+Met up to delegate tasks for the report. I'm going to write the design overview and some of the functionality/project objectives section. I'll also 
+format the report beforesubmission.
+
+Went through the backend code and commented/improved readability where possible
+
+WEEK 10:
+
+Project was mostly finished by this week. We continued to work on the report and fix any further bugs that came up before submission.
