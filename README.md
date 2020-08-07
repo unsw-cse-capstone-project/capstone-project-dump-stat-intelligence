@@ -2,6 +2,34 @@
 # Pantry Pirate
 COMP3900 Group Project - Dump Stat Intelligence
 
+## Running Requirements / User Guide
+
+To run the project, ensure most recent version of:
+
+- nodejs is installed: https://nodejs.org/en/download/
+- python3 https://www.python.org/downloads/
+- yarn package manager: https://yarnpkg.com/
+- pipenv package manager: https://pipenv-fork.readthedocs.io/en/latest/
+
+are all installed.
+
+To install required packages for backend:
+  - create a new python3 virtual environment with `pipenv --three` when in the root directory of the project
+  - Run `pipenv install` in the root directory to install all required packages
+
+To install required packages for the frontend:
+  - cd into `/frontend`
+  - run `yarn install` (note if you get to a message that says the installer is "locking" and doesn't end you can control-c and continue)
+
+To run the project:
+  - ensure no other processes are running on ports 3000, 8000
+  - open 2 terminal windows in the root directory of the project
+  - run `make frontend` in one window
+  - in the other window run `pipenv shell` to use the pipenv environment
+  - run `make backend` in the other window
+  - visit `http://localhost:3000` and use the project
+
+
 ## Getting Started
 
 ### Using Make
