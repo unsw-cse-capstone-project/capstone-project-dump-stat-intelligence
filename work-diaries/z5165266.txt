@@ -77,4 +77,6 @@ improved at a later date.
 Week 10
 
 Updated meta search to better reflect the definition of full match, 
-updated test accordingly and wiped meta entries in database.
+updated test accordingly and wiped meta entries in database. Minor bug 
+fixes for the backend / frontend API interaction. Work on the report and 
+presentation.
